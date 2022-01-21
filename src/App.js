@@ -1,4 +1,4 @@
-import Home from "./views/Home";
+import Index from "./views/home";
 import GlobalStyles from "./styles/globalStyles";
 import CustomThemeProvider from "./components/CustomThemeProvider";
 
@@ -8,8 +8,8 @@ function App() {
       <>
         <CustomThemeProvider >
           <div>
-              <GlobalStyles />
-            <Home/>
+            <GlobalStyles />
+            <Index/>
           </div>
         </CustomThemeProvider>
       </>

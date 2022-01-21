@@ -1,17 +1,15 @@
 import React from 'react';
-import Navbar from "../components/Navbar";
-import {Container} from "./styles";
+import Navbar from "../../components/Navbar";
+import Presentation from "../../components/Presentation";
 
 //sending changeTheme via props without store, because in my vision we don't need to kill an ant with war tanks
-function Home({changeTheme}) {
+function Index({changeTheme}) {
     return (
         <div >
+            <Presentation />
             <Navbar changeTheme={changeTheme}/>
-            <Container>
-
-            </Container>
         </div>
     );
 }
 
-export default Home;
+export default Index;

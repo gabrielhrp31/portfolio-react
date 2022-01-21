@@ -1,18 +1,23 @@
-
 export const light = {
+    dark: false,
     background: '#EBF4F8',
-    titles: '#2C2738',
-    text: '#2C2738',
-    accentText: '#FFFFFF',
-    accent: '#1a237e',
+    titles: '#000000',
+    text: '#000000',
+    textAccent: '#EBF4F8',
+    inverse: '#3C3C3B',
+    accent: '#16c426',
+    softAccent: '#48c558',
 }
 
 export const dark = {
-    background: '#1C2025',
-    titles: '#D6E1DF',
-    text: '#D6E1DF',
-    accentText: '#FFFFFF',
-    accent: '#1a237e',
+    dark: true,
+    background: '#3C3C3B',
+    titles: '#f2f2f2',
+    text: '#f2f2f2',
+    inverse: '#EBF4F8',
+    textAccent: '#3C3C3B',
+    accent: '#16c426',
+    softAccent: '#48c558',
 }
 
 

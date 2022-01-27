@@ -21,6 +21,8 @@ export const Parallax = styled.div`
     justify-content: space-evenly;
     align-items: center;
 
+    position: relative;
+
     max-width: 80vw;
     height: 80vh;
 
@@ -90,7 +92,7 @@ export const Parallax = styled.div`
     width: 45px;
     height: unset;
 
-    bottom: 10px;
+    bottom: -30px;
 
     cursor: pointer;
 
@@ -120,6 +122,11 @@ export const TransitionLogo = styled.div`
   position: relative;
 
   background-image: url(${({image}) => image});
+  //background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+
   transition: background .5s;
 
   &:hover {

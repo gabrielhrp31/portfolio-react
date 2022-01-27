@@ -1,22 +1,18 @@
 import React, {useState} from 'react';
 
-import {Parallax} from './styles';
+import {Parallax, TransitionLogo} from './styles';
 import logoverde from '../../assets/logos/Isologoverde.png';
 import logoMescla from '../../assets/logos/Isologomescla.png';
 import {ImMail4, SiGithub, SiTelegram, SiLinkedin, FaChevronDown} from "react-icons/all";
 
 function Presentation(props) {
 
-		const [hover, setHover] = useState(false);
-
 		return (
 				<Parallax>
 						<div className="p-content">
-								<img className="p-content__logo"
-										 src={hover?logoMescla:logoverde}
-										 onMouseEnter={()=>setHover(true)}
-										 onMouseLeave={()=>setHover(false)}
-										 alt="Gabriel Rodrigues Logo"
+								<TransitionLogo
+		                image={logoverde}
+		                hoverImage={logoMescla}
 								/>
 								<h1 className="p-content__text" >
 										Olá,  sou

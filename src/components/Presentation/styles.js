@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import binary from "../../assets/backgrounds/binary.jpg";
+import {colorScheme} from "../../styles/themes";
 
 export const Parallax = styled.div`
 	display: flex;
@@ -31,17 +32,6 @@ export const Parallax = styled.div`
 		
     @media (min-width: 1920px) {
       max-width:30vw;
-    }
-  }
-
-  .p-content__logo{
-
-    margin-left: auto;
-    margin-right: auto;
-    width: min(175px, 80%);
-
-    @media (min-width: 1920px) {
-      width: min(230px, 80%);
     }
   }
 	
@@ -78,12 +68,17 @@ export const Parallax = styled.div`
 		height: 40px;
 		width: unset;
 		
+	  border: 3px solid ${colorScheme.offWhite};
     border-radius: 100%;
     overflow: hidden;
 		
 		cursor: pointer;
 		
-		fill: white;
+		fill: ${colorScheme.offWhite};
+	  
+	  &:hover{
+		  transform: scale(1.25);
+	  }
 		
     @media (min-width: 1920px) {
       height: 51px;
@@ -119,4 +114,25 @@ export const Parallax = styled.div`
 		opacity: 0.8;
 		z-index: 0;
 	}
+`
+export const TransitionLogo = styled.div`
+		cursor: pointer;
+  position: relative;
+		
+			background-image: url(${({image})=>image});
+			transition: background .5s;
+		
+		&:hover{
+		  background-image: url(${({hoverImage})=>hoverImage});
+		}
+		
+		margin-left: auto;
+		margin-right: auto;
+		width: min(175px, 80vw);
+		height: min(175px, 80vw);
+		
+		@media (min-width: 1920px) {
+		  width: min(230px, 80vw);
+		  height: min(230px, 80vw);
+		}
 `

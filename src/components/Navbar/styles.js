@@ -11,6 +11,8 @@ export const NavbarWrapper =  styled.div`
 	background-color: ${({theme})=>theme.background};
 	color: ${({theme})=>theme.softAccent};
 	
+	transition: background-color .5s;
+	
 	.n-logo{
 		height: 75%;
 		margin-left: auto;

@@ -11,6 +11,8 @@ export const AboutWrapper = styled.div`
 	padding: 120px 50px 50px;
 	height: fit-content;
 
+	z-index: 1;
+
 	display: flex;
 	justify-content: center;
 

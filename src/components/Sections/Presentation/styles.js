@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import binary from "../../assets/backgrounds/binary.jpg";
-import {colorScheme} from "../../styles/themes";
+import binary from "../../../assets/backgrounds/binary.jpg";
+import {colorScheme} from "../../../styles/themes";
 
 export const Parallax = styled.div`
   display: flex;

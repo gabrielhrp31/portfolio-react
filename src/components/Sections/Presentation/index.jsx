@@ -1,8 +1,8 @@
 import React from 'react';
 
 import {Parallax, TransitionLogo} from './styles';
-import logoverde from '../../assets/logos/Isologoverde.png';
-import logoMescla from '../../assets/logos/Isologomescla.png';
+import logoverde from '../../../assets/logos/Isologoverde.png';
+import logoMescla from '../../../assets/logos/Isologomescla.png';
 import {FaChevronDown, ImMail4, SiGithub, SiLinkedin, SiTelegram} from "react-icons/all";
 
 function Presentation(props) {

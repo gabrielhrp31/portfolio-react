@@ -1,8 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {NavbarWrapper, ThemeButton} from "./styles";
 import {FaMoon, FaSun} from "react-icons/all";
-import {CustomThemeContext} from "../CustomThemeProvider";
-import logoNavbar from "../../assets/logos/Imagologo verde.png";
+import {CustomThemeContext} from "../../CustomThemeProvider";
+import logoNavbar from "../../../assets/logos/Imagologo verde.png";
 
 function Navbar(props) {
 		const {currentTheme, setTheme} = useContext(CustomThemeContext);

@@ -16,13 +16,13 @@ const CustomThemeProvider = (props) => {
 
     // Read current theme from localStorage or maybe from an api
     // State to hold the selected theme name
-    const [themeName, _setThemeName] = useState('light')
+    const [themeName, _setThemeName] = useState('dark')
 
     // Retrieve the theme object by theme name
     const theme = getTheme(themeName)
 
     useEffect(() => {
-        const currentTheme = localStorage.getItem('appTheme') || 'light'
+        const currentTheme = localStorage.getItem('appTheme') || 'dark'
         setThemeName(currentTheme);
     }, [])
 

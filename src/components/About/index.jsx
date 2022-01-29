@@ -5,6 +5,7 @@ import id1 from "../../assets/images/id1.png";
 import id2 from "../../assets/images/id2.png";
 import id3 from "../../assets/images/id3.png";
 import {FaChevronDown} from "react-icons/all";
+import about from "../../data/about";
 
 
 function About(props) {
@@ -17,10 +18,10 @@ function About(props) {
 												Gabriel Henrique Rodrigues Pinto
 										</p>
 										<p className="text">
-												4 Anos de Experiência
+											{about.xp} Anos de Experiência
 										</p>
 										<p className="text">
-												Inglês Intermediário
+											{about.english}
 										</p>
 										<p className="text">
 												Arcos/MG

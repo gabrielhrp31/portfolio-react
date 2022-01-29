@@ -18,7 +18,7 @@ function Navbar(props) {
 		function handleScroll(event) {
 				const winScroll =
 						document.body.scrollTop || document.documentElement.scrollTop
-				if (winScroll > (window.innerHeight + 10)) {
+				if (winScroll > (window.innerHeight )) {
 						setAfterNavbar(true);
 				} else {
 						setAfterNavbar(false);

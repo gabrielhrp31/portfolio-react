@@ -70,13 +70,13 @@ export const Parallax = styled.div`
     height: 40px;
     width: unset;
 
-    border: 3px solid ${colorScheme.offWhite};
     border-radius: 100%;
     overflow: hidden;
 
     cursor: pointer;
 
     fill: ${colorScheme.offWhite};
+
 
     &:hover {
       transform: scale(1.25);
@@ -92,9 +92,12 @@ export const Parallax = styled.div`
     width: 45px;
     height: unset;
 
-    bottom: -30px;
+    bottom: 0;
+    z-index: 100;
 
     cursor: pointer;
+    
+    fill: ${colorScheme.offWhite};
 
     transform: scale(1);
     animation: pulse 2s infinite;

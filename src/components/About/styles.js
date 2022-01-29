@@ -7,14 +7,14 @@ const calculateSize = () => {
 };
 
 export const AboutWrapper = styled.div`
-  position: relative;
-  padding: 50px;
-  height: fit-content;
+	position: relative;
+	padding: 120px 50px 50px;
+	height: fit-content;
 
-  display: flex;
-  justify-content: center;
+	display: flex;
+	justify-content: center;
 
-  background-color: ${({theme}) => theme.softAccent};
+	background-color: ${({theme}) => theme.softAccent};
 `
 export const AboutContent = styled.div`
   width: 100%;

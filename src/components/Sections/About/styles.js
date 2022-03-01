@@ -114,6 +114,17 @@ export const AboutContent = styled.div`
       width: calc(${textAndInfosSize + "%"} - ${gap});
     }
   }
+	
+	.tech-icon{
+		width: 80px;
+    background-color: ${({theme}) => theme.background};
+    fill: ${({theme}) => theme.softAccent};
+		border-radius: 15px;
+		padding-top: 11px;
+		padding-bottom: 11px;
+		padding-left: 10px;
+		padding-right: 12px;
+	}
 
   @media (min-width: 1280px) {
     width: 100%;

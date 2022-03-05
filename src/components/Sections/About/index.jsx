@@ -30,8 +30,8 @@ function About(props) {
 								</div>
 								<div className="text-and-infos">
 										{
-												about.topics.map((item)=>(
-														<>
+												about.topics.map((item, index)=>(
+														<div key={index}>
 																<h1 className="title">
 																		{item.title}
 																</h1>
@@ -39,7 +39,7 @@ function About(props) {
 																		{item.text}
 																</p>
 																{item.after || null}
-														</>
+														</div>
 												))
 										}
 								</div>

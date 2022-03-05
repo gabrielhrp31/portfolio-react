@@ -4,8 +4,8 @@ import {TecnologiesWrapper} from "./styles";
 function Tecnologies({icons}) {
 		return (
 				<TecnologiesWrapper>
-						{icons.map((icon)=>(
-								<div className="icon-wrapper">
+						{icons.map((icon, index)=>(
+								<div className="icon-wrapper" key={index}>
 										<i className={'devicon-' + icon + '-plain'}/>
 								</div>
 						))}

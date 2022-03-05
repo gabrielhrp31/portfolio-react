@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const NavbarWrapper = styled.div`
   position: ${({afterNavbar}) => afterNavbar ? 'fixed' : 'relative'};
-  z-index: ${({afterNavbar}) => afterNavbar ? 1 : 100};
+  z-index:2;
   top: 0;
   left: 0;
 

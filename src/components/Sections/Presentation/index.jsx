@@ -22,16 +22,16 @@ function Presentation(props) {
 						setWritting(true)
 						await typeSentence("Olá sou ","sentence")
 						await typeSentence("Gabriel Rodrigues ","sentence-name")
-						await typeSentence("lorem ipsum sit amet","sentence-final")
+						await typeSentence("um Desenvolvedor Fullstack e Amante do Conhecimento","sentence-final")
 						setWritting(false)
 						setWrited(true)
 				}
 		}
 
 		async function clearText() {
-				await deleteSentence("sentence-final", 0)
-				await deleteSentence("sentence-name", 0)
-				await deleteSentence("sentence", 0);
+				deleteSentence("sentence-final")
+				deleteSentence("sentence-name")
+				deleteSentence("sentence");
 		}
 
 		async function deleteSentence(eleRef) {

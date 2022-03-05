@@ -18,7 +18,7 @@ export const ParallaxWaves = styled.div`
     height: unset !important;
 
     > *{
-      fill: ${colorScheme.softGreen}!important;
+      fill:  ${({theme}) => theme.softAccent}!important;
     }
   }
 	
@@ -36,11 +36,12 @@ export const ParallaxWaves = styled.div`
     left: 0;
     width: 100%;
     height: auto;
-
-    > *{
-      fill: ${colorScheme.gray}!important;
-    }
+    fill: ${({theme}) => theme.background}!important;
   }
+	
+	svg{
+		z-index: 1;
+	}
 	
 	::before{
 		content: "";

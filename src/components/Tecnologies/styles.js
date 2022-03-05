@@ -4,23 +4,25 @@ export const TecnologiesWrapper = styled.div`
 		display: flex;
 		align-items: center;
   	flex-flow: wrap;
-  	gap: 20px;
+  	gap: ${({padding})=>padding}px;
 	
 		.icon-wrapper{
 			display: flex;
+      align-items: center;
+      justify-content: center;
 			
-      min-width: 80px;
-      width: 80px;
-      height: 80px;
+      min-width: ${({size})=>size}px;
+      width: ${({size})=>size}px;
+      height: ${({size})=>size}px;
 			
 			border-radius: 8px;
 			
-      background-color: ${({theme}) => theme.background};
+      background-color: ${({theme, bgColor}) => bgColor?theme[bgColor]:theme.background};
       color: ${({theme}) => theme.softAccent};
 			
 			i{
 				margin: auto;
-        font-size: 55px;
+        font-size: ${({size, padding})=>(size-padding)}px;
 			}
 		}
 `

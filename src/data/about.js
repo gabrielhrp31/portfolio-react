@@ -37,7 +37,7 @@ const about =  {
         },
         {
             title:"Tecnologias",
-            after:<Tecnologies icons={['react','vuejs','spring','laravel','django','html5','css3','javascript']}/>
+            after:<Tecnologies size={80} padding={25} icons={['react','vuejs','spring','laravel','django','html5','css3','javascript']}/>
         }
     ]
 }

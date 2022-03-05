@@ -59,6 +59,16 @@ export const Parallax = styled.div`
   .p-content__text__name {
     color: ${({theme}) => theme.softAccent};
   }
+	
+	.p-content__input_cursor{
+    display: inline-block;
+    width: 2px;
+    height: 42px;
+    background-color: white;
+    margin-left: 8px;
+		transform: translateY(8px);
+    animation: blink .6s linear infinite alternate;
+	}
 
   .p-content__socials {
     display: flex;

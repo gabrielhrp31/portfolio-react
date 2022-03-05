@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {Parallax, TransitionLogo} from './styles';
 import logoverde from '../../../assets/logos/Isologoverde.png';
@@ -6,6 +6,50 @@ import logoMescla from '../../../assets/logos/Isologomescla.png';
 import {FaChevronDown, ImMail4, SiGithub, SiLinkedin, SiTelegram} from "react-icons/all";
 
 function Presentation(props) {
+		const [writting, setWritting] = useState(false);
+
+		useEffect(()=>{
+				if(!writting){
+						rewriteText();
+				}
+		},[])
+
+		async function rewriteText() {
+				setWritting(true)
+				await deleteSentence("sentence-final", 0)
+				await deleteSentence("sentence-name", 0)
+				await deleteSentence("sentence", 0);
+				await typeSentence("Olá sou ","sentence")
+				await typeSentence("Gabriel Rodrigues ","sentence-name")
+				await typeSentence("lorem ipsum sit amet","sentence-final")
+				setWritting(false);
+		}
+
+		async function deleteSentence(eleRef, delay=100) {
+				const sentence = document.getElementById(eleRef).innerHTML;
+				const letters = sentence.split("");
+				let i = 0;
+				while(letters.length > 0) {
+						await waitForMs(delay);
+						letters.pop();
+						document.getElementById(eleRef).innerHTML= letters.join("");
+				}
+		}
+
+		async function typeSentence(sentence, eleRef, delay = 100) {
+				const letters = sentence.split("");
+				let i = 0;
+				while(i < letters.length) {
+						await waitForMs(delay);
+						document.getElementById(eleRef).append(letters[i]);
+						i++
+				}
+				return Promise.resolve();
+		}
+
+		function waitForMs(ms) {
+				return new Promise(resolve => setTimeout(resolve, ms))
+		}
 
 		function handleArrowClick() {
 				window.scrollTo(0, (window.innerHeight + 50));
@@ -18,11 +62,18 @@ function Presentation(props) {
 										image={logoverde}
 										hoverImage={logoMescla}
 								/>
-								<h1 className="p-content__text">
-										Olá, sou
-										<span className="p-content__text__name"> Gabriel Rodrigues </span>
-										lorem ipsum sit amet
-								</h1>
+								<div className="p-content__text">
+										<span id="sentence">
+												{/*Olá, sou*/}
+										</span>
+										<span id="sentence-name" className="p-content__text__name">
+												{/*Gabriel Rodrigues*/}
+										</span>
+										<span id="sentence-final">
+												{/*lorem ipsum sit amet*/}
+										</span>
+										<span className="p-content__input_cursor"></span>
+								</div>
 								<div className="p-content__socials">
 										<SiLinkedin className="p-content__socials__icon"/>
 										<SiGithub className="p-content__socials__icon"/>

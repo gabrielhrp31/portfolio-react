@@ -1,9 +1,6 @@
 import React from 'react';
 import {AboutContent, AboutWrapper} from "./styles";
 import profile from "../../../assets/images/profile.jpg";
-import id1 from "../../../assets/images/id1.png";
-import id2 from "../../../assets/images/id2.png";
-import id3 from "../../../assets/images/id3.png";
 import {FaChevronDown} from "react-icons/all";
 import about from "../../../data/about";
 

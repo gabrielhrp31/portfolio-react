@@ -1,6 +1,6 @@
 import React from 'react';
 import {ParallaxWaves} from "./styles";
-import {FaCode, FaMobile, FaMobileAlt, FaServer} from "react-icons/all";
+import {FaCode, FaMobileAlt, FaServer} from "react-icons/all";
 import Service from "../../Service";
 
 function Services(props) {

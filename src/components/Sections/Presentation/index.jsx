@@ -7,33 +7,35 @@ import {FaChevronDown, ImMail4, SiGithub, SiLinkedin, SiTelegram} from "react-ic
 
 function Presentation(props) {
 		const [writting, setWritting] = useState(false);
+		const [writed, setWrited] = useState(false);
 
 		useEffect(()=>{
-				if(!writting){
-						rewriteText();
+				writeText();
+				return ()=>{
+						clearText();
 				}
+		// eslint-disable-next-line
 		},[])
 
-		async function rewriteText() {
-				setWritting(true)
+		async function writeText() {
+				if(!writting && !writed){
+						setWritting(true)
+						await typeSentence("Olá sou ","sentence")
+						await typeSentence("Gabriel Rodrigues ","sentence-name")
+						await typeSentence("lorem ipsum sit amet","sentence-final")
+						setWritting(false)
+						setWrited(true)
+				}
+		}
+
+		async function clearText() {
 				await deleteSentence("sentence-final", 0)
 				await deleteSentence("sentence-name", 0)
 				await deleteSentence("sentence", 0);
-				await typeSentence("Olá sou ","sentence")
-				await typeSentence("Gabriel Rodrigues ","sentence-name")
-				await typeSentence("lorem ipsum sit amet","sentence-final")
-				setWritting(false);
 		}
 
-		async function deleteSentence(eleRef, delay=100) {
-				const sentence = document.getElementById(eleRef).innerHTML;
-				const letters = sentence.split("");
-				let i = 0;
-				while(letters.length > 0) {
-						await waitForMs(delay);
-						letters.pop();
-						document.getElementById(eleRef).innerHTML= letters.join("");
-				}
+		async function deleteSentence(eleRef) {
+				document.getElementById(eleRef).innerHTML = "";
 		}
 
 		async function typeSentence(sentence, eleRef, delay = 100) {

@@ -26,7 +26,7 @@ function About(props) {
 										<p className="text">
 												{about.age} Anos
 										</p>
-										<a><button>Ver Linkedin</button></a>
+										<a href="https://www.linkedin.com/in/gabrielhrp31/" target="_blank" rel="noreferrer">Ver Linkedin</a>
 								</div>
 								<div className="text-and-infos">
 										{

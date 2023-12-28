@@ -49,7 +49,7 @@ export const AboutContent = styled.div`
       }
     }
 
-    button {
+    a {
       width: 100%;
       max-width: min(350px, 80%);
       height: 60px;
@@ -64,6 +64,7 @@ export const AboutContent = styled.div`
 
       font-size: 22px;
       font-weight: 600;
+			text-decoration: none;
 
       background-color: ${({theme}) => theme.background};
       color: ${({theme}) => theme.softAccent};

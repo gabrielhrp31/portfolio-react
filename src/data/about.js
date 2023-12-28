@@ -21,10 +21,10 @@ const about =  {
             title:"Sobre Mim",
             text: "Olá como dito acima me chamo Gabriel e pretendo no próximo ano além do meu trabalho desenvolver" +
                 " meu lado criativo em projetos pessoais, atualmente colaboro como desenvolvedor fullstack na R2DA Tecnologia " +
-                " porém trago comigo uma experiência que agrega nmuito valor devido a minha curiosidade e meu ingresso prematuro" +
+                " porém trago comigo uma experiência que agrega muito valor devido a minha curiosidade e meu ingresso prematuro" +
                 " como estagiário, desde então não parei de aprender. Atualmente faço pós graduação em Inteligência Artifical e " +
 								" Aprendizado de Máquina pela PUC. Nas horas vagas gosto de me aventurar com alguns instrumentos musicais, assistir "+
-								" sitcoms e tambem estudar assuntos aleatorios sobre história. Inicialmente esse novo portfólio traz minha identidade " +
+								" sitcoms e tambem estudar assuntos aleatórios sobre história e sobre minha àrea. Inicialmente esse novo portfólio traz minha identidade " +
 								" visual criada por um terceiro e o design todo criado por mim e está estático mas em breve todos os dados dessa página" +
 								" virá de uma base de dados através de uma api criada por mim mesmo."
         },

@@ -24,7 +24,10 @@ export default createGlobalStyle`
     background: ${(props) => props.theme.background};
     color: ${props => props.theme.text};
     transition: background-color 0.5s ease;
-    padding-bottom: 50px;
+
+		.global-wrapper{
+			padding-bottom: 50px;
+		}
   }
 
   h1 {

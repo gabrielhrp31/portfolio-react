@@ -142,7 +142,7 @@ export const TransitionLogo = styled.div`
 
   transition: background .5s;
 
-  &:hover {
+  &:hover, &.show {
     background-image: url(${({hoverImage}) => hoverImage});
   }
 

@@ -24,9 +24,9 @@ function About(props) {
 												Arcos/MG
 										</p>
 										<p className="text">
-												21 Anos
+												{about.age} Anos
 										</p>
-										<button><FaChevronDown/> Baixar Curriculum</button>
+										<a><button>Ver Linkedin</button></a>
 								</div>
 								<div className="text-and-infos">
 										{

@@ -13,7 +13,7 @@ export const PortfolioWrapper = styled.div`
 	
 		.portfolio__items{
       display: flex;
-      justify-content: center;
+			justify-content: ${({itemsQty}) => itemsQty>=3 ? 'center':'flex-start'};
       flex-direction: row;
       flex-flow: wrap;
 			gap: 50px;

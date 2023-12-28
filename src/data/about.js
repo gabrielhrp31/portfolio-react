@@ -19,19 +19,19 @@ const about =  {
     topics:[
         {
             title:"Sobre Mim",
-            text: "Elit et mattis velit potenti tempor quam lacinia luctus, quisque aliquam mi gravida sapien " +
-                "cras est nec, sagittis vulputate lobortis molestie urna porttitor suspendisse. ultricies sed leo " +
-                "at orci sit curabitur pulvinar dictum, semper curae nibh tempor mi cras mollis, commodo nulla" +
-                " adipiscing blandit metus amet leo. venenatis inceptos eget habitant dictum cubilia curabitur " +
-                "tellus massa nullam conubia sagittis vulputate etiam at, suscipit fermentum nisi dapibus elementum " +
-                "volutpat porttitor sapien torquent rutrum curae adipiscing vehicula. maecenas amet curae ut quisque " +
-                "sapien commodo dui massa, sed himenaeos tempor tortor interdum volutpat commodo nam amet, dictumst " +
-                "tempus libero scelerisque mi purus ante."
+            text: "Olá como dito acima me chamo Gabriel e pretendo no próximo ano além do meu trabalho desenvolver" +
+                " meu lado criativo em projetos pessoais, atualmente colaboro como desenvolvedor fullstack na R2DA Tecnologia " +
+                " porém trago comigo uma experiência que agrega nmuito valor devido a minha curiosidade e meu ingresso prematuro" +
+                " como estagiário, desde então não parei de aprender. Atualmente faço pós graduação em Inteligência Artifical e " +
+								" Aprendizado de Máquina pela PUC. Nas horas vagas gosto de me aventurar com alguns instrumentos musicais, assistir "+
+								" sitcoms e tambem estudar assuntos aleatorios sobre história. Inicialmente esse novo portfólio traz minha identidade " +
+								" visual criada por um terceiro e o design todo criado por mim e está estático mas em breve todos os dados dessa página" +
+								" virá de uma base de dados através de uma api criada por mim mesmo."
         },
         {
             title:"Minha \"Marca\"",
             text: "Todo o trabalho da logo foi desenvolvido pelo designer Breno Ribeiro após uma breve conversa "+
-            "sobre gostos e a imagem que eu queria passar aos clientes com a mesma, foram discutidas"+
+            "sobre gostos e a imagem que eu queria passar aos clientes com a mesma, foram discutidas "+
             "semelhanças com logos de grandes empresas e minhas inspirações.",
             after:<IdentityDescription />
         },

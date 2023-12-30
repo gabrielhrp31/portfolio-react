@@ -7,7 +7,7 @@ import Portfolio from "../../components/Sections/Portfolio";
 import Countdown from 'react-countdown';
 
 const renderer = ({ days, hours, minutes, seconds, completed, changeTheme }) => {
-	if (completed) {
+	// if (completed) {
 		return (
 				<div className="global-wrapper">
 					<Presentation completed={completed} />
@@ -17,9 +17,9 @@ const renderer = ({ days, hours, minutes, seconds, completed, changeTheme }) => 
 					<Portfolio />
 				</div>
 			);
-	} else {
-		return <Presentation days={days} hours={hours} minutes={minutes} seconds={seconds} completed={completed}/>;
-	}
+	// } else {
+	// 	return <Presentation days={days} hours={hours} minutes={minutes} seconds={seconds} completed={completed}/>;
+	// }
 };
 
 //sending changeTheme via props without store, because in my vision we don't need to kill an ant with war tanks

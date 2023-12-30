@@ -14,6 +14,12 @@ export const PortfolioItemWrapper = styled.div`
   justify-content: space-between;
   flex-flow: wrap;
 	
+	a {
+		color:white;
+		text-decoration: none;
+		font-weight: bold;
+	}
+
   .portfolio__item__title {
 		display: block;
 	  width: 100%;

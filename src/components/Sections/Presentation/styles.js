@@ -44,9 +44,9 @@ export const Parallax = styled.div`
   .p-content__text {
     text-align: center;
     font-weight: 200;
-    font-size: 40px;
+    font-size: 22px;
     color: white;
-
+		
     @media (min-width: 1025px) {
       font-size: 48px;
     }
@@ -59,15 +59,31 @@ export const Parallax = styled.div`
   .p-content__text__name {
     color: ${({theme}) => theme.softAccent};
   }
-	
+
 	.p-content__input_cursor{
     display: inline-block;
     width: 2px;
-    height: 42px;
+    height: 24px;
     background-color: white;
     margin-left: 8px;
 		transform: translateY(8px);
     animation: blink .6s linear infinite alternate;
+
+    @media (min-width: 400px) {
+    	height: 32px;
+		}
+
+    @media (min-width: 600px) {
+    	height: 40px;
+		}
+
+    @media (min-width: 1025px) {
+      height: 48px;
+    }
+
+    @media (min-width: 1920px) {
+      height: 64px;
+    }
 	}
 
   .p-content__socials {

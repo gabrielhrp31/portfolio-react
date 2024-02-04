@@ -15,7 +15,7 @@ export const PortfolioItemWrapper = styled.div`
   flex-flow: wrap;
 	
 	a {
-		color:white;
+		color:${({theme}) => theme.softAccent};
 		text-decoration: none;
 		font-weight: bold;
 	}

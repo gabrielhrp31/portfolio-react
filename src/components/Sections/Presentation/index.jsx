@@ -26,7 +26,7 @@ function Presentation({ completed, days, hours, minutes, seconds, ...props}) {
 						setWritting(true)
 						await typeSentence("Olá me chamo","sentence")
 						await typeSentence(" Gabriel Rodrigues ","sentence-name")
-						await typeSentence(" desenvolvedor fullstack e Pós Graduando em IA.", "sentence-final")
+						await typeSentence(" desenvolvedor fullstack.", "sentence-final")
 						setWritting(false)
 						setWrited(true)
 				}

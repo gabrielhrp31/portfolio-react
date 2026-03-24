@@ -21,7 +21,7 @@ function About(props) {
 											{about.english}
 										</p>
 										<p className="text">
-												Arcos/MG
+												Belo Horizonte/MG
 										</p>
 										<p className="text">
 												{about.age} Anos

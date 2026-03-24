@@ -19,14 +19,7 @@ const about =  {
     topics:[
         {
             title:"Sobre Mim",
-            text: "Olá como dito acima me chamo Gabriel e pretendo no próximo ano além do meu trabalho desenvolver" +
-                " meu lado criativo em projetos pessoais, atualmente colaboro como desenvolvedor fullstack na R2DA Tecnologia " +
-                " porém trago comigo uma experiência que agrega muito valor devido a minha curiosidade e meu ingresso prematuro" +
-                " como estagiário, desde então não parei de aprender. Atualmente faço pós graduação em Inteligência Artifical e " +
-								" Aprendizado de Máquina pela PUC. Nas horas vagas gosto de me aventurar com alguns instrumentos musicais, assistir "+
-								" sitcoms e tambem estudar assuntos aleatórios sobre história e sobre minha àrea. Inicialmente esse novo portfólio traz minha identidade " +
-								" visual criada por um terceiro e o design todo criado por mim e está estático mas em breve todos os dados dessa página" +
-								" virá de uma base de dados através de uma api criada por mim mesmo."
+            text: "Olá! Meu nome é Gabriel e, além do meu trabalho como Desenvolvedor Java Sênior, estou focado em expandir meu lado criativo através de projetos pessoais. Minha jornada na tecnologia começou cedo, quando ingressei como estagiário, impulsionado pela curiosidade e pela vontade constante de aprender. Desde então, venho aprimorando minhas habilidades e adquirindo experiências valiosas ao longo da minha trajetória. Neste novo ano, tenho como meta conquistar certificações internacionais e finalizar meu curso de inglês para agregar ainda mais à minha carreira. Além do desenvolvimento de software, gosto de explorar o universo da música tocando alguns instrumentos, assistir sitcoms e estudar temas variados, desde história até assuntos técnicos da minha área. Se quiser trocar ideias sobre tecnologia, certificações ou qualquer outro assunto, será um prazer conversar!"
         },
         {
             title:"Minha \"Marca\"",

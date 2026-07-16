@@ -131,3 +131,49 @@ export const ItemRow = styled.div`
 export const EmptyState = styled.p`
   opacity: 0.75;
 `;
+
+export const TabList = styled.div`
+  width: min(920px, 100%);
+  margin: 0 auto 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 12px 0 10px;
+  background: ${({ theme }) => theme.background};
+  border-bottom: 1px solid ${({ theme }) => theme.titles}22;
+`;
+
+export const TabButton = styled.button`
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  border: 1px solid
+    ${({ theme, $active }) =>
+      $active ? theme.softAccent : `${theme.titles}44`} !important;
+  background: ${({ theme, $active }) =>
+    $active ? theme.softAccent : "transparent"};
+  color: ${({ theme, $active }) => ($active ? theme.text : theme.titles)};
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.softAccent} !important;
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.softAccent};
+    outline-offset: 2px;
+  }
+`;
+
+export const SectionTitle = styled.h2`
+  font-size: 22px;
+  color: ${({ theme }) => theme.softAccent};
+  margin: 0;
+`;

@@ -140,6 +140,34 @@ O workflow grava os Secrets em `${DEPLOY_PATH}/.env.production` (chmod 600) ante
 2. Registrar runner com label `ubuntu-latest`  
 3. Habilitar Actions no repositório  
 
+### Erro `Could not resolve host: server`
+
+Isso acontece quando o `actions/checkout` tenta clonar de `http://server:3000/...`  
+(URL interna do Docker do Gitea) e o container do job não resolve o hostname `server`.
+
+O workflow deste repo **já contorna** isso clonando pela URL pública do Gitea
+(host `gitea.portfolio.vps-kinghost.net` + `gitea.repository` do contexto do Actions),
+em vez de `http://server:3000/...`.
+
+Ainda assim, ajuste o Gitea para evitar outros problemas:
+
+```ini
+# app.ini (ou env do container Gitea)
+[server]
+DOMAIN = gitea.portfolio.vps-kinghost.net
+ROOT_URL = https://gitea.portfolio.vps-kinghost.net/
+```
+
+No `act_runner` (opcional, se precisar falar com o Gitea na rede Docker):
+
+```yaml
+# config.yaml do act_runner
+container:
+  network: host
+```
+
+Reinicie Gitea + act_runner depois de mudar `ROOT_URL`.
+
 ## 6. Fluxo automático
 
 Push em `master`/`main` (ou **Run workflow**):

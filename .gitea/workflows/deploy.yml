@@ -47,8 +47,39 @@ jobs:
     name: Deploy gabrielhrp.com
     runs-on: ubuntu-latest
     steps:
+      # Avoid actions/checkout when Gitea ROOT_URL is an internal host like
+      # http://server:3000 (job containers cannot resolve "server").
       - name: Checkout
-        uses: actions/checkout@v4
+        env:
+          # gitea.* (nativo) + github.* (compat act_runner)
+          GITEA_TOKEN: ${{ gitea.token || github.token }}
+          GITEA_SHA: ${{ gitea.sha || github.sha }}
+          GITEA_REF: ${{ gitea.ref || github.ref }}
+          # owner/repo from Actions context (avoids hardcoding)
+          GITEA_REPOSITORY: ${{ gitea.repository || github.repository }}
+        run: |
+          set -euo pipefail
+          PUBLIC_HOST="gitea.portfolio.vps-kinghost.net"
+          REPO_PATH="${GITEA_REPOSITORY}.git"
+          if [ -n "${GITEA_TOKEN:-}" ]; then
+            CLONE_URL="https://oauth2:${GITEA_TOKEN}@${PUBLIC_HOST}/${REPO_PATH}"
+          else
+            CLONE_URL="https://${PUBLIC_HOST}/${REPO_PATH}"
+          fi
+
+          git init
+          git remote add origin "$CLONE_URL"
+
+          # Fetch the exact commit of this Actions run when possible.
+          if [ -n "${GITEA_SHA:-}" ]; then
+            git fetch --depth=1 origin "${GITEA_SHA}" \
+              || git fetch --depth=1 origin "${GITEA_REF:-refs/heads/main}"
+            git checkout --force FETCH_HEAD
+          else
+            git fetch --depth=1 origin "${GITEA_REF:-refs/heads/main}"
+            git checkout --force FETCH_HEAD
+          fi
+          echo "Checked out $(git rev-parse --short HEAD) via public Gitea host"
 
       - name: Validate secrets
         env:

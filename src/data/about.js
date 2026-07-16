@@ -1,17 +1,43 @@
-const calculateCurrentDiff = (dateStr, roundTo = 0) => {
-  const date1 = new Date(dateStr);
-  const date2 = new Date();
-  const Difference_In_Time = date2.getTime() - date1.getTime();
-  return ((Difference_In_Time / (1000 * 3600 * 24)) / 30 / 12).toFixed(roundTo);
-};
+/** Parse MM/DD/YYYY as a local calendar date (avoids UTC timezone shifts). */
+function parseLocalDate(dateStr) {
+  const [month, day, year] = String(dateStr)
+    .split("/")
+    .map((part) => Number(part));
+  return { year, month, day, date: new Date(year, month - 1, day) };
+}
+
+/** Whole years since a date (e.g. age from birthdate). */
+function calculateAge(dateStr) {
+  const { year, month, day } = parseLocalDate(dateStr);
+  const today = new Date();
+  let age = today.getFullYear() - year;
+  const monthNow = today.getMonth() + 1;
+  const dayNow = today.getDate();
+  const birthdayPassed =
+    monthNow > month || (monthNow === month && dayNow >= day);
+  if (!birthdayPassed) age -= 1;
+  return age;
+}
+
+/** Fractional years since a date (e.g. experience), using average year length. */
+function calculateYearsSince(dateStr, decimals = 0) {
+  const { date } = parseLocalDate(dateStr);
+  const msPerYear = 1000 * 60 * 60 * 24 * 365.25;
+  const years = (Date.now() - date.getTime()) / msPerYear;
+  return Number(years.toFixed(decimals));
+}
+
+const BIRTHDATE = "01/31/2000";
+const CAREER_START = "06/30/2018";
 
 const about = {
   name: "Gabriel Henrique Rodrigues Pinto",
-  xp: calculateCurrentDiff("06/30/2018", 1),
+  birthdate: BIRTHDATE,
+  xp: calculateYearsSince(CAREER_START, 1),
   english: "Inglês Intermediário",
   city: "Arcos",
   state: "MG",
-  age: calculateCurrentDiff("01/31/2000"),
+  age: calculateAge(BIRTHDATE),
   topics: [
     {
       title: "Sobre Mim",

@@ -42,11 +42,33 @@ const emptyTechnology = {
   sortOrder: 0,
 };
 
+const emptyExperience = {
+  company: "",
+  position: "",
+  period: "",
+  location: "",
+  description: "",
+  sortOrder: 0,
+};
+
+const emptyCourse = {
+  title: "",
+  institution: "",
+  period: "",
+  location: "",
+  description: "",
+  link: "",
+  kind: "course",
+  sortOrder: 0,
+};
+
 export default function AdminClient({
   initialAuthenticated = false,
   initialPortfolio = [],
   initialServices = [],
   initialTechnologies = [],
+  initialExperiences = [],
+  initialCourses = [],
 }) {
   const [authenticated, setAuthenticated] = useState(initialAuthenticated);
   const [password, setPassword] = useState("");
@@ -56,29 +78,35 @@ export default function AdminClient({
   const [portfolio, setPortfolio] = useState(initialPortfolio);
   const [services, setServices] = useState(initialServices);
   const [technologies, setTechnologies] = useState(initialTechnologies);
+  const [experiences, setExperiences] = useState(initialExperiences);
+  const [courses, setCourses] = useState(initialCourses);
 
   const [portfolioForm, setPortfolioForm] = useState(emptyPortfolio);
   const [serviceForm, setServiceForm] = useState(emptyService);
   const [technologyForm, setTechnologyForm] = useState(emptyTechnology);
+  const [experienceForm, setExperienceForm] = useState(emptyExperience);
+  const [courseForm, setCourseForm] = useState(emptyCourse);
 
   const [editingPortfolioId, setEditingPortfolioId] = useState(null);
   const [editingServiceId, setEditingServiceId] = useState(null);
   const [editingTechnologyId, setEditingTechnologyId] = useState(null);
+  const [editingExperienceId, setEditingExperienceId] = useState(null);
+  const [editingCourseId, setEditingCourseId] = useState(null);
 
   async function refreshAll() {
-    const [portfolioRes, servicesRes, technologiesRes] = await Promise.all([
+    const responses = await Promise.all([
       fetch("/api/portfolio"),
       fetch("/api/services"),
       fetch("/api/technologies"),
+      fetch("/api/experiences"),
+      fetch("/api/courses"),
     ]);
-    const [portfolioData, servicesData, technologiesData] = await Promise.all([
-      portfolioRes.json(),
-      servicesRes.json(),
-      technologiesRes.json(),
-    ]);
-    setPortfolio(Array.isArray(portfolioData) ? portfolioData : []);
-    setServices(Array.isArray(servicesData) ? servicesData : []);
-    setTechnologies(Array.isArray(technologiesData) ? technologiesData : []);
+    const [p, s, t, e, c] = await Promise.all(responses.map((r) => r.json()));
+    setPortfolio(Array.isArray(p) ? p : []);
+    setServices(Array.isArray(s) ? s : []);
+    setTechnologies(Array.isArray(t) ? t : []);
+    setExperiences(Array.isArray(e) ? e : []);
+    setCourses(Array.isArray(c) ? c : []);
   }
 
   async function handleLogin(event) {
@@ -106,12 +134,18 @@ export default function AdminClient({
     setPortfolio([]);
     setServices([]);
     setTechnologies([]);
+    setExperiences([]);
+    setCourses([]);
     setEditingPortfolioId(null);
     setEditingServiceId(null);
     setEditingTechnologyId(null);
+    setEditingExperienceId(null);
+    setEditingCourseId(null);
     setPortfolioForm(emptyPortfolio);
     setServiceForm(emptyService);
     setTechnologyForm(emptyTechnology);
+    setExperienceForm(emptyExperience);
+    setCourseForm(emptyCourse);
   }
 
   async function saveEntity({
@@ -120,7 +154,6 @@ export default function AdminClient({
     editingId,
     payload,
     onReset,
-    onRefresh,
   }) {
     event.preventDefault();
     setLoading(true);
@@ -140,7 +173,7 @@ export default function AdminClient({
       return;
     }
     onReset();
-    await onRefresh();
+    await refreshAll();
   }
 
   async function deleteEntity(endpoint, id, onAfter) {
@@ -161,7 +194,9 @@ export default function AdminClient({
       <AdminPage>
         <Card as="form" onSubmit={handleLogin}>
           <Title>Admin do Portfólio</Title>
-          <p>Gerencie portfólio, serviços e tecnologias.</p>
+          <p>
+            Gerencie portfólio, serviços, tecnologias, experiências e cursos.
+          </p>
           <label>
             Senha
             <input
@@ -185,7 +220,9 @@ export default function AdminClient({
     <AdminPage>
       <Card>
         <Title>Painel Admin</Title>
-        <p>Cadastre portfólio, serviços prestados e tecnologias exibidas.</p>
+        <p>
+          Cadastre portfólio, serviços, tecnologias, experiências e formação.
+        </p>
         <div style={{ display: "flex", gap: 12, marginBottom: 8 }}>
           <SecondaryButton type="button" onClick={handleLogout}>
             Sair
@@ -193,6 +230,349 @@ export default function AdminClient({
           <Link href="/">Ver site</Link>
         </div>
         {error ? <ErrorText>{error}</ErrorText> : null}
+      </Card>
+
+      <Card>
+        <Title>Experiência</Title>
+        <form
+          onSubmit={(event) =>
+            saveEntity({
+              event,
+              endpoint: "/api/experiences",
+              editingId: editingExperienceId,
+              payload: {
+                ...experienceForm,
+                sortOrder: Number(experienceForm.sortOrder || 0),
+              },
+              onReset: () => {
+                setEditingExperienceId(null);
+                setExperienceForm(emptyExperience);
+              },
+            })
+          }
+        >
+          <FormGrid>
+            <label>
+              Empresa
+              <input
+                value={experienceForm.company}
+                onChange={(e) =>
+                  setExperienceForm({
+                    ...experienceForm,
+                    company: e.target.value,
+                  })
+                }
+                required
+              />
+            </label>
+            <label>
+              Cargo
+              <input
+                value={experienceForm.position}
+                onChange={(e) =>
+                  setExperienceForm({
+                    ...experienceForm,
+                    position: e.target.value,
+                  })
+                }
+                required
+              />
+            </label>
+            <label>
+              Período
+              <input
+                value={experienceForm.period}
+                onChange={(e) =>
+                  setExperienceForm({
+                    ...experienceForm,
+                    period: e.target.value,
+                  })
+                }
+              />
+            </label>
+            <label>
+              Local
+              <input
+                value={experienceForm.location}
+                onChange={(e) =>
+                  setExperienceForm({
+                    ...experienceForm,
+                    location: e.target.value,
+                  })
+                }
+              />
+            </label>
+            <label>
+              Ordem
+              <input
+                type="number"
+                value={experienceForm.sortOrder}
+                onChange={(e) =>
+                  setExperienceForm({
+                    ...experienceForm,
+                    sortOrder: e.target.value,
+                  })
+                }
+              />
+            </label>
+            <label className="full">
+              Descrição
+              <textarea
+                rows={4}
+                value={experienceForm.description}
+                onChange={(e) =>
+                  setExperienceForm({
+                    ...experienceForm,
+                    description: e.target.value,
+                  })
+                }
+              />
+            </label>
+          </FormGrid>
+          <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
+            <PrimaryButton type="submit" disabled={loading}>
+              {editingExperienceId
+                ? "Atualizar experiência"
+                : "Cadastrar experiência"}
+            </PrimaryButton>
+            {editingExperienceId ? (
+              <SecondaryButton
+                type="button"
+                onClick={() => {
+                  setEditingExperienceId(null);
+                  setExperienceForm(emptyExperience);
+                }}
+              >
+                Cancelar
+              </SecondaryButton>
+            ) : null}
+          </div>
+        </form>
+        <ItemList>
+          {experiences.length === 0 ? (
+            <EmptyState>Nenhuma experiência cadastrada.</EmptyState>
+          ) : (
+            experiences.map((item) => (
+              <ItemRow key={item.id}>
+                <div>
+                  <strong>
+                    #{item.id} · {item.company}
+                  </strong>
+                  <p>
+                    {item.position} — {item.period}
+                  </p>
+                </div>
+                <div className="actions">
+                  <SecondaryButton
+                    type="button"
+                    onClick={() => {
+                      setEditingExperienceId(item.id);
+                      setExperienceForm({
+                        company: item.company || "",
+                        position: item.position || "",
+                        period: item.period || "",
+                        location: item.location || "",
+                        description: item.description || "",
+                        sortOrder: item.sortOrder || 0,
+                      });
+                    }}
+                  >
+                    Editar
+                  </SecondaryButton>
+                  <SecondaryButton
+                    type="button"
+                    onClick={() =>
+                      deleteEntity("/api/experiences", item.id, () => {
+                        if (editingExperienceId === item.id) {
+                          setEditingExperienceId(null);
+                          setExperienceForm(emptyExperience);
+                        }
+                      })
+                    }
+                  >
+                    Excluir
+                  </SecondaryButton>
+                </div>
+              </ItemRow>
+            ))
+          )}
+        </ItemList>
+      </Card>
+
+      <Card>
+        <Title>Formação & Cursos</Title>
+        <form
+          onSubmit={(event) =>
+            saveEntity({
+              event,
+              endpoint: "/api/courses",
+              editingId: editingCourseId,
+              payload: {
+                ...courseForm,
+                sortOrder: Number(courseForm.sortOrder || 0),
+              },
+              onReset: () => {
+                setEditingCourseId(null);
+                setCourseForm(emptyCourse);
+              },
+            })
+          }
+        >
+          <FormGrid>
+            <label>
+              Título
+              <input
+                value={courseForm.title}
+                onChange={(e) =>
+                  setCourseForm({ ...courseForm, title: e.target.value })
+                }
+                required
+              />
+            </label>
+            <label>
+              Instituição
+              <input
+                value={courseForm.institution}
+                onChange={(e) =>
+                  setCourseForm({
+                    ...courseForm,
+                    institution: e.target.value,
+                  })
+                }
+              />
+            </label>
+            <label>
+              Tipo
+              <select
+                value={courseForm.kind}
+                onChange={(e) =>
+                  setCourseForm({ ...courseForm, kind: e.target.value })
+                }
+              >
+                <option value="formation">Formação</option>
+                <option value="course">Curso</option>
+                <option value="certificate">Certificado</option>
+              </select>
+            </label>
+            <label>
+              Período
+              <input
+                value={courseForm.period}
+                onChange={(e) =>
+                  setCourseForm({ ...courseForm, period: e.target.value })
+                }
+              />
+            </label>
+            <label>
+              Local
+              <input
+                value={courseForm.location}
+                onChange={(e) =>
+                  setCourseForm({ ...courseForm, location: e.target.value })
+                }
+              />
+            </label>
+            <label>
+              Ordem
+              <input
+                type="number"
+                value={courseForm.sortOrder}
+                onChange={(e) =>
+                  setCourseForm({ ...courseForm, sortOrder: e.target.value })
+                }
+              />
+            </label>
+            <label className="full">
+              Descrição
+              <textarea
+                rows={3}
+                value={courseForm.description}
+                onChange={(e) =>
+                  setCourseForm({
+                    ...courseForm,
+                    description: e.target.value,
+                  })
+                }
+              />
+            </label>
+            <label className="full">
+              Link do certificado
+              <input
+                value={courseForm.link}
+                onChange={(e) =>
+                  setCourseForm({ ...courseForm, link: e.target.value })
+                }
+              />
+            </label>
+          </FormGrid>
+          <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
+            <PrimaryButton type="submit" disabled={loading}>
+              {editingCourseId ? "Atualizar curso" : "Cadastrar curso"}
+            </PrimaryButton>
+            {editingCourseId ? (
+              <SecondaryButton
+                type="button"
+                onClick={() => {
+                  setEditingCourseId(null);
+                  setCourseForm(emptyCourse);
+                }}
+              >
+                Cancelar
+              </SecondaryButton>
+            ) : null}
+          </div>
+        </form>
+        <ItemList>
+          {courses.length === 0 ? (
+            <EmptyState>Nenhum curso cadastrado.</EmptyState>
+          ) : (
+            courses.map((item) => (
+              <ItemRow key={item.id}>
+                <div>
+                  <strong>
+                    #{item.id} · {item.title}
+                  </strong>
+                  <p>
+                    {item.institution} — {item.kind}
+                  </p>
+                </div>
+                <div className="actions">
+                  <SecondaryButton
+                    type="button"
+                    onClick={() => {
+                      setEditingCourseId(item.id);
+                      setCourseForm({
+                        title: item.title || "",
+                        institution: item.institution || "",
+                        period: item.period || "",
+                        location: item.location || "",
+                        description: item.description || "",
+                        link: item.link || "",
+                        kind: item.kind || "course",
+                        sortOrder: item.sortOrder || 0,
+                      });
+                    }}
+                  >
+                    Editar
+                  </SecondaryButton>
+                  <SecondaryButton
+                    type="button"
+                    onClick={() =>
+                      deleteEntity("/api/courses", item.id, () => {
+                        if (editingCourseId === item.id) {
+                          setEditingCourseId(null);
+                          setCourseForm(emptyCourse);
+                        }
+                      })
+                    }
+                  >
+                    Excluir
+                  </SecondaryButton>
+                </div>
+              </ItemRow>
+            ))
+          )}
+        </ItemList>
       </Card>
 
       <Card>
@@ -211,7 +591,6 @@ export default function AdminClient({
                 setEditingPortfolioId(null);
                 setPortfolioForm(emptyPortfolio);
               },
-              onRefresh: refreshAll,
             })
           }
         >
@@ -263,7 +642,7 @@ export default function AdminClient({
               />
             </label>
             <label className="full">
-              Tecnologias do projeto (Devicon, separadas por vírgula)
+              Tecnologias do projeto
               <input
                 value={portfolioForm.technologies}
                 onChange={(e) =>
@@ -303,69 +682,54 @@ export default function AdminClient({
             <PrimaryButton type="submit" disabled={loading}>
               {editingPortfolioId ? "Atualizar projeto" : "Cadastrar projeto"}
             </PrimaryButton>
-            {editingPortfolioId ? (
-              <SecondaryButton
-                type="button"
-                onClick={() => {
-                  setEditingPortfolioId(null);
-                  setPortfolioForm(emptyPortfolio);
-                }}
-              >
-                Cancelar
-              </SecondaryButton>
-            ) : null}
           </div>
         </form>
         <ItemList>
-          {portfolio.length === 0 ? (
-            <EmptyState>Nenhum projeto cadastrado.</EmptyState>
-          ) : (
-            portfolio.map((item) => (
-              <ItemRow key={item.id}>
-                <div>
-                  <strong>
-                    #{item.id} · {item.name}
-                  </strong>
-                  <p>{item.description}</p>
-                </div>
-                <div className="actions">
-                  <SecondaryButton
-                    type="button"
-                    onClick={() => {
-                      setEditingPortfolioId(item.id);
-                      setPortfolioForm({
-                        name: item.name || "",
-                        description: item.description || "",
-                        image: item.image || "",
-                        technologies: (item.technologies || []).join(", "),
-                        urlDemo: item.urlDemo || "",
-                        urlGithub: item.urlGithub || "",
-                        user: item.user || "",
-                        password: item.password || "",
-                        roles: item.roles || "",
-                        sortOrder: item.sortOrder || 0,
-                      });
-                    }}
-                  >
-                    Editar
-                  </SecondaryButton>
-                  <SecondaryButton
-                    type="button"
-                    onClick={() =>
-                      deleteEntity("/api/portfolio", item.id, () => {
-                        if (editingPortfolioId === item.id) {
-                          setEditingPortfolioId(null);
-                          setPortfolioForm(emptyPortfolio);
-                        }
-                      })
-                    }
-                  >
-                    Excluir
-                  </SecondaryButton>
-                </div>
-              </ItemRow>
-            ))
-          )}
+          {portfolio.map((item) => (
+            <ItemRow key={item.id}>
+              <div>
+                <strong>
+                  #{item.id} · {item.name}
+                </strong>
+                <p>{item.description}</p>
+              </div>
+              <div className="actions">
+                <SecondaryButton
+                  type="button"
+                  onClick={() => {
+                    setEditingPortfolioId(item.id);
+                    setPortfolioForm({
+                      name: item.name || "",
+                      description: item.description || "",
+                      image: item.image || "",
+                      technologies: (item.technologies || []).join(", "),
+                      urlDemo: item.urlDemo || "",
+                      urlGithub: item.urlGithub || "",
+                      user: item.user || "",
+                      password: item.password || "",
+                      roles: item.roles || "",
+                      sortOrder: item.sortOrder || 0,
+                    });
+                  }}
+                >
+                  Editar
+                </SecondaryButton>
+                <SecondaryButton
+                  type="button"
+                  onClick={() =>
+                    deleteEntity("/api/portfolio", item.id, () => {
+                      if (editingPortfolioId === item.id) {
+                        setEditingPortfolioId(null);
+                        setPortfolioForm(emptyPortfolio);
+                      }
+                    })
+                  }
+                >
+                  Excluir
+                </SecondaryButton>
+              </div>
+            </ItemRow>
+          ))}
         </ItemList>
       </Card>
 
@@ -385,7 +749,6 @@ export default function AdminClient({
                 setEditingServiceId(null);
                 setServiceForm(emptyService);
               },
-              onRefresh: refreshAll,
             })
           }
         >
@@ -415,16 +778,6 @@ export default function AdminClient({
                 ))}
               </select>
             </label>
-            <label>
-              Ordem
-              <input
-                type="number"
-                value={serviceForm.sortOrder}
-                onChange={(e) =>
-                  setServiceForm({ ...serviceForm, sortOrder: e.target.value })
-                }
-              />
-            </label>
             <label className="full">
               Descrição
               <textarea
@@ -444,73 +797,53 @@ export default function AdminClient({
             <PrimaryButton type="submit" disabled={loading}>
               {editingServiceId ? "Atualizar serviço" : "Cadastrar serviço"}
             </PrimaryButton>
-            {editingServiceId ? (
-              <SecondaryButton
-                type="button"
-                onClick={() => {
-                  setEditingServiceId(null);
-                  setServiceForm(emptyService);
-                }}
-              >
-                Cancelar
-              </SecondaryButton>
-            ) : null}
           </div>
         </form>
         <ItemList>
-          {services.length === 0 ? (
-            <EmptyState>Nenhum serviço cadastrado.</EmptyState>
-          ) : (
-            services.map((item) => (
-              <ItemRow key={item.id}>
-                <div>
-                  <strong>
-                    #{item.id} · {item.name}
-                  </strong>
-                  <p>{item.description}</p>
-                  <small>ícone: {item.iconKey}</small>
-                </div>
-                <div className="actions">
-                  <SecondaryButton
-                    type="button"
-                    onClick={() => {
-                      setEditingServiceId(item.id);
-                      setServiceForm({
-                        name: item.name || "",
-                        description: item.description || "",
-                        iconKey: item.iconKey || "code",
-                        sortOrder: item.sortOrder || 0,
-                      });
-                    }}
-                  >
-                    Editar
-                  </SecondaryButton>
-                  <SecondaryButton
-                    type="button"
-                    onClick={() =>
-                      deleteEntity("/api/services", item.id, () => {
-                        if (editingServiceId === item.id) {
-                          setEditingServiceId(null);
-                          setServiceForm(emptyService);
-                        }
-                      })
-                    }
-                  >
-                    Excluir
-                  </SecondaryButton>
-                </div>
-              </ItemRow>
-            ))
-          )}
+          {services.map((item) => (
+            <ItemRow key={item.id}>
+              <div>
+                <strong>
+                  #{item.id} · {item.name}
+                </strong>
+                <p>{item.description}</p>
+              </div>
+              <div className="actions">
+                <SecondaryButton
+                  type="button"
+                  onClick={() => {
+                    setEditingServiceId(item.id);
+                    setServiceForm({
+                      name: item.name || "",
+                      description: item.description || "",
+                      iconKey: item.iconKey || "code",
+                      sortOrder: item.sortOrder || 0,
+                    });
+                  }}
+                >
+                  Editar
+                </SecondaryButton>
+                <SecondaryButton
+                  type="button"
+                  onClick={() =>
+                    deleteEntity("/api/services", item.id, () => {
+                      if (editingServiceId === item.id) {
+                        setEditingServiceId(null);
+                        setServiceForm(emptyService);
+                      }
+                    })
+                  }
+                >
+                  Excluir
+                </SecondaryButton>
+              </div>
+            </ItemRow>
+          ))}
         </ItemList>
       </Card>
 
       <Card>
         <Title>Tecnologias</Title>
-        <p>
-          Use o slug do Devicon (ex: <code>react</code>, <code>spring</code>,{" "}
-          <code>mysql</code>).
-        </p>
         <form
           onSubmit={(event) =>
             saveEntity({
@@ -525,7 +858,6 @@ export default function AdminClient({
                 setEditingTechnologyId(null);
                 setTechnologyForm(emptyTechnology);
               },
-              onRefresh: refreshAll,
             })
           }
         >
@@ -540,7 +872,6 @@ export default function AdminClient({
                     slug: e.target.value,
                   })
                 }
-                placeholder="react"
                 required
               />
             </label>
@@ -554,20 +885,6 @@ export default function AdminClient({
                     label: e.target.value,
                   })
                 }
-                placeholder="React"
-              />
-            </label>
-            <label>
-              Ordem
-              <input
-                type="number"
-                value={technologyForm.sortOrder}
-                onChange={(e) =>
-                  setTechnologyForm({
-                    ...technologyForm,
-                    sortOrder: e.target.value,
-                  })
-                }
               />
             </label>
           </FormGrid>
@@ -577,62 +894,47 @@ export default function AdminClient({
                 ? "Atualizar tecnologia"
                 : "Cadastrar tecnologia"}
             </PrimaryButton>
-            {editingTechnologyId ? (
-              <SecondaryButton
-                type="button"
-                onClick={() => {
-                  setEditingTechnologyId(null);
-                  setTechnologyForm(emptyTechnology);
-                }}
-              >
-                Cancelar
-              </SecondaryButton>
-            ) : null}
           </div>
         </form>
         <ItemList>
-          {technologies.length === 0 ? (
-            <EmptyState>Nenhuma tecnologia cadastrada.</EmptyState>
-          ) : (
-            technologies.map((item) => (
-              <ItemRow key={item.id}>
-                <div>
-                  <strong>
-                    #{item.id} · {item.label}
-                  </strong>
-                  <p>slug: {item.slug}</p>
-                </div>
-                <div className="actions">
-                  <SecondaryButton
-                    type="button"
-                    onClick={() => {
-                      setEditingTechnologyId(item.id);
-                      setTechnologyForm({
-                        slug: item.slug || "",
-                        label: item.label || "",
-                        sortOrder: item.sortOrder || 0,
-                      });
-                    }}
-                  >
-                    Editar
-                  </SecondaryButton>
-                  <SecondaryButton
-                    type="button"
-                    onClick={() =>
-                      deleteEntity("/api/technologies", item.id, () => {
-                        if (editingTechnologyId === item.id) {
-                          setEditingTechnologyId(null);
-                          setTechnologyForm(emptyTechnology);
-                        }
-                      })
-                    }
-                  >
-                    Excluir
-                  </SecondaryButton>
-                </div>
-              </ItemRow>
-            ))
-          )}
+          {technologies.map((item) => (
+            <ItemRow key={item.id}>
+              <div>
+                <strong>
+                  #{item.id} · {item.label}
+                </strong>
+                <p>slug: {item.slug}</p>
+              </div>
+              <div className="actions">
+                <SecondaryButton
+                  type="button"
+                  onClick={() => {
+                    setEditingTechnologyId(item.id);
+                    setTechnologyForm({
+                      slug: item.slug || "",
+                      label: item.label || "",
+                      sortOrder: item.sortOrder || 0,
+                    });
+                  }}
+                >
+                  Editar
+                </SecondaryButton>
+                <SecondaryButton
+                  type="button"
+                  onClick={() =>
+                    deleteEntity("/api/technologies", item.id, () => {
+                      if (editingTechnologyId === item.id) {
+                        setEditingTechnologyId(null);
+                        setTechnologyForm(emptyTechnology);
+                      }
+                    })
+                  }
+                >
+                  Excluir
+                </SecondaryButton>
+              </div>
+            </ItemRow>
+          ))}
         </ItemList>
       </Card>
     </AdminPage>

@@ -1,5 +1,7 @@
 import { isAuthenticated } from "@/lib/auth";
 import {
+  listCourses,
+  listExperiences,
   listPortfolioItems,
   listServices,
   listTechnologies,
@@ -13,14 +15,19 @@ export default async function AdminPage() {
   let portfolio = [];
   let services = [];
   let technologies = [];
+  let experiences = [];
+  let courses = [];
 
   if (authenticated) {
     try {
-      [portfolio, services, technologies] = await Promise.all([
-        listPortfolioItems(),
-        listServices(),
-        listTechnologies(),
-      ]);
+      [portfolio, services, technologies, experiences, courses] =
+        await Promise.all([
+          listPortfolioItems(),
+          listServices(),
+          listTechnologies(),
+          listExperiences(),
+          listCourses(),
+        ]);
     } catch (error) {
       console.error(error);
     }
@@ -32,6 +39,8 @@ export default async function AdminPage() {
       initialPortfolio={portfolio}
       initialServices={services}
       initialTechnologies={technologies}
+      initialExperiences={experiences}
+      initialCourses={courses}
     />
   );
 }

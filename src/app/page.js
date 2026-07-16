@@ -1,5 +1,7 @@
 import HomeView from "@/views/home";
 import {
+  listCourses,
+  listExperiences,
   listPortfolioItems,
   listServices,
   listTechnologies,
@@ -17,17 +19,22 @@ async function safeList(loader, label) {
 }
 
 export default async function HomePage() {
-  const [portfolio, services, technologies] = await Promise.all([
-    safeList(listPortfolioItems, "portfolio"),
-    safeList(listServices, "services"),
-    safeList(listTechnologies, "technologies"),
-  ]);
+  const [portfolio, services, technologies, experiences, courses] =
+    await Promise.all([
+      safeList(listPortfolioItems, "portfolio"),
+      safeList(listServices, "services"),
+      safeList(listTechnologies, "technologies"),
+      safeList(listExperiences, "experiences"),
+      safeList(listCourses, "courses"),
+    ]);
 
   return (
     <HomeView
       portfolio={portfolio}
       services={services}
       technologies={technologies}
+      experiences={experiences}
+      courses={courses}
     />
   );
 }

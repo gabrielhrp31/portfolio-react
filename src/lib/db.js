@@ -233,3 +233,159 @@ export async function deleteTechnology(id) {
   );
   return result.affectedRows > 0;
 }
+
+export function mapExperienceRow(row) {
+  return {
+    id: row.id,
+    company: row.company,
+    position: row.position,
+    period: row.period || "",
+    location: row.location || "",
+    description: row.description || "",
+    sortOrder: row.sort_order,
+  };
+}
+
+export function mapCourseRow(row) {
+  return {
+    id: row.id,
+    title: row.title,
+    institution: row.institution || "",
+    period: row.period || "",
+    location: row.location || "",
+    description: row.description || "",
+    link: row.link || "",
+    kind: row.kind || "course",
+    sortOrder: row.sort_order,
+  };
+}
+
+export async function listExperiences() {
+  const [rows] = await getPool().query(
+    "SELECT * FROM experiences ORDER BY sort_order ASC, id ASC"
+  );
+  return rows.map(mapExperienceRow);
+}
+
+export async function getExperience(id) {
+  const [rows] = await getPool().query(
+    "SELECT * FROM experiences WHERE id = ?",
+    [id]
+  );
+  return rows[0] ? mapExperienceRow(rows[0]) : null;
+}
+
+export async function createExperience(data) {
+  const [result] = await getPool().query(
+    `INSERT INTO experiences
+      (company, position, period, location, description, sort_order)
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [
+      data.company,
+      data.position,
+      data.period || "",
+      data.location || "",
+      data.description || "",
+      data.sortOrder ?? 0,
+    ]
+  );
+  return getExperience(result.insertId);
+}
+
+export async function updateExperience(id, data) {
+  await getPool().query(
+    `UPDATE experiences SET
+      company = ?,
+      position = ?,
+      period = ?,
+      location = ?,
+      description = ?,
+      sort_order = ?
+     WHERE id = ?`,
+    [
+      data.company,
+      data.position,
+      data.period || "",
+      data.location || "",
+      data.description || "",
+      data.sortOrder ?? 0,
+      id,
+    ]
+  );
+  return getExperience(id);
+}
+
+export async function deleteExperience(id) {
+  const [result] = await getPool().query(
+    "DELETE FROM experiences WHERE id = ?",
+    [id]
+  );
+  return result.affectedRows > 0;
+}
+
+export async function listCourses() {
+  const [rows] = await getPool().query(
+    "SELECT * FROM courses ORDER BY sort_order ASC, id ASC"
+  );
+  return rows.map(mapCourseRow);
+}
+
+export async function getCourse(id) {
+  const [rows] = await getPool().query("SELECT * FROM courses WHERE id = ?", [
+    id,
+  ]);
+  return rows[0] ? mapCourseRow(rows[0]) : null;
+}
+
+export async function createCourse(data) {
+  const [result] = await getPool().query(
+    `INSERT INTO courses
+      (title, institution, period, location, description, link, kind, sort_order)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      data.title,
+      data.institution || "",
+      data.period || "",
+      data.location || "",
+      data.description || "",
+      data.link || "",
+      data.kind || "course",
+      data.sortOrder ?? 0,
+    ]
+  );
+  return getCourse(result.insertId);
+}
+
+export async function updateCourse(id, data) {
+  await getPool().query(
+    `UPDATE courses SET
+      title = ?,
+      institution = ?,
+      period = ?,
+      location = ?,
+      description = ?,
+      link = ?,
+      kind = ?,
+      sort_order = ?
+     WHERE id = ?`,
+    [
+      data.title,
+      data.institution || "",
+      data.period || "",
+      data.location || "",
+      data.description || "",
+      data.link || "",
+      data.kind || "course",
+      data.sortOrder ?? 0,
+      id,
+    ]
+  );
+  return getCourse(id);
+}
+
+export async function deleteCourse(id) {
+  const [result] = await getPool().query("DELETE FROM courses WHERE id = ?", [
+    id,
+  ]);
+  return result.affectedRows > 0;
+}

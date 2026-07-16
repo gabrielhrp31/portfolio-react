@@ -54,5 +54,9 @@ Conteúdo dinâmico (CRUD em `/admin`):
 | `portfolio_items` | Cards do portfólio |
 | `services` | Seção de serviços (`icon_key`: code, mobile, server, laptop, cloud) |
 | `technologies` | Ícones Devicon na seção Sobre (`slug` ex: `react`, `mysql`) |
+| `experiences` | Timeline de experiência profissional |
+| `courses` | Formação, cursos e certificados (`kind`: formation/course/certificate) |
 
-APIs públicas de listagem: `GET /api/portfolio`, `GET /api/services`, `GET /api/technologies`.
+APIs: `GET /api/portfolio`, `/api/services`, `/api/technologies`, `/api/experiences`, `/api/courses`.
+
+Sugestões de evolução (inspiradas em [valadao.works](https://valadao.works/)): ver `docs/IMPROVEMENTS.md`.

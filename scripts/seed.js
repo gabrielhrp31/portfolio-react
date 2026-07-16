@@ -79,6 +79,132 @@ const seedTechnologies = [
   { slug: "javascript", label: "JavaScript", sort_order: 8 },
 ];
 
+// Conteúdo colado/adaptado dos dados estáticos antigos (src/data/resume/*)
+const seedExperiences = [
+  {
+    company: "R2DA Tecnologia",
+    position: "Desenvolvedor Fullstack / Suporte Técnico de Equipe",
+    period: "Abril de 2021 — Atualmente",
+    location: "Belo Horizonte, Minas Gerais",
+    description:
+      "Atuação fullstack com foco em evolução de produtos, suporte técnico à equipe e entrega de soluções alinhadas a processos e qualidade. Participação em definição de melhorias, implementação de features e acompanhamento de demandas em produção.",
+    sort_order: 1,
+  },
+  {
+    company: "Avante Soluções Digitais",
+    position: "Desenvolvedor Web (Java / Laravel / React)",
+    period: "Janeiro de 2020 — Maio de 2021 (1 ano e 4 meses)",
+    location: "Formiga, Minas Gerais",
+    description:
+      "Desenvolvimento de aplicações web com Java, Laravel e React. Contribuição em projetos de sistemas internos e sites, com atenção a integrações, usabilidade e manutenção evolutiva.",
+    sort_order: 2,
+  },
+  {
+    company: "Desenvolvedor Autônomo",
+    position: "Desenvolvedor Full-Stack (Laravel / Vue.js)",
+    period: "Julho de 2019 — Janeiro de 2020 (7 meses)",
+    location: "Remoto",
+    description:
+      "Projetos independentes end-to-end: levantamento de necessidades, desenvolvimento fullstack com Laravel e Vue.js, publicação e ajustes pós-entrega para clientes de pequeno e médio porte.",
+    sort_order: 3,
+  },
+  {
+    company: "Célula Web",
+    position: "Estagiário",
+    period: "Agosto de 2018 — Julho de 2019 (1 ano)",
+    location: "Formiga, Minas Gerais",
+    description:
+      "Início da trajetória profissional com suporte a desenvolvimento web, aprendizado de boas práticas de equipe e participação em demandas de sites e sistemas sob orientação da equipe técnica.",
+    sort_order: 4,
+  },
+];
+
+const seedCourses = [
+  {
+    title: "Bacharelado em Ciência da Computação",
+    institution: "IFMG Campus Formiga",
+    period: "Desde 2018",
+    location: "Formiga/MG",
+    description: "Formação superior em Ciência da Computação.",
+    link: "",
+    kind: "formation",
+    sort_order: 1,
+  },
+  {
+    title: "Técnico em Informática",
+    institution: "E. E. Dona Berenice de Magalhães Pinto",
+    period: "2016 — 2017",
+    location: "Arcos/MG",
+    description:
+      "Desenvolvimento de um app de conclusão de curso semelhante ao iFood.",
+    link: "",
+    kind: "formation",
+    sort_order: 2,
+  },
+  {
+    title: "SPA com Vue.js e API com Laravel",
+    institution: "Udemy",
+    period: "Emitido em Agosto de 2019",
+    location: "",
+    description:
+      "API e frontend para uma rede social utilizando Laravel e Vue.js.",
+    link: "https://www.udemy.com/certificate/UC-U8OI07IB/",
+    kind: "certificate",
+    sort_order: 3,
+  },
+  {
+    title: "Django 2.x com Deploy no Heroku",
+    institution: "Udemy",
+    period: "Emitido em Maio de 2019",
+    location: "",
+    description:
+      "Aplicação de gerenciamento de serviços com deploy no Heroku, usada também em disciplina de Engenharia de Software.",
+    link: "https://www.udemy.com/certificate/UC-34E554C9/",
+    kind: "certificate",
+    sort_order: 4,
+  },
+  {
+    title: "Desenvolvedor Android",
+    institution: "Udemy",
+    period: "Emitido em Maio de 2019",
+    location: "",
+    description: "Formação em desenvolvimento Android.",
+    link: "https://www.udemy.com/certificate/UC-4UF5MYQ8/",
+    kind: "certificate",
+    sort_order: 5,
+  },
+  {
+    title: "Desenvolvedor Multiplataforma (Android/iOS) com React e Redux",
+    institution: "Udemy",
+    period: "Emitido em Abril de 2019",
+    location: "",
+    description: "Apps multiplataforma com React e Redux.",
+    link: "http://ude.my/UC-A41BCURF",
+    kind: "certificate",
+    sort_order: 6,
+  },
+  {
+    title: "JAVA Tutorial Course",
+    institution: "SoloLearn",
+    period: "Emitido em Junho de 2019",
+    location: "",
+    description: "Fundamentos de Java.",
+    link: "https://www.sololearn.com/Certificate/1068-5716533/pdf",
+    kind: "certificate",
+    sort_order: 7,
+  },
+  {
+    title: "Flutter e Dart - Curso Completo de Criação de Apps",
+    institution: "Udemy",
+    period: "Emitido em Fevereiro de 2022",
+    location: "",
+    description: "Criação de apps com Flutter e Dart.",
+    link: "https://www.udemy.com/certificate/UC-f32c3362-d305-46aa-90c6-3a398991e47c/",
+    kind: "certificate",
+    sort_order: 8,
+  },
+];
+
 async function seedTable(connection, table, countSql, insertFn, items, label) {
   const [rows] = await connection.query(countSql);
   if (rows[0].total > 0) {
@@ -161,6 +287,54 @@ async function main() {
     },
     seedTechnologies,
     "technologies"
+  );
+
+  await seedTable(
+    connection,
+    "experiences",
+    "SELECT COUNT(*) AS total FROM experiences",
+    async (item) => {
+      await connection.query(
+        `INSERT INTO experiences
+          (company, position, period, location, description, sort_order)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [
+          item.company,
+          item.position,
+          item.period,
+          item.location,
+          item.description,
+          item.sort_order,
+        ]
+      );
+    },
+    seedExperiences,
+    "experiences"
+  );
+
+  await seedTable(
+    connection,
+    "courses",
+    "SELECT COUNT(*) AS total FROM courses",
+    async (item) => {
+      await connection.query(
+        `INSERT INTO courses
+          (title, institution, period, location, description, link, kind, sort_order)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          item.title,
+          item.institution,
+          item.period,
+          item.location,
+          item.description,
+          item.link,
+          item.kind,
+          item.sort_order,
+        ]
+      );
+    },
+    seedCourses,
+    "courses"
   );
 
   await connection.end();

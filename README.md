@@ -47,12 +47,12 @@ npm run dev
 
 ## Modelo de dados
 
-Tabela `portfolio_items`:
+Conteúdo dinâmico (CRUD em `/admin`):
 
-- `name`, `description`, `image`
-- `technologies` (JSON)
-- `url_demo`, `url_github`
-- `demo_user`, `demo_password`, `roles`
-- `sort_order`
+| Tabela | Uso na home |
+|--------|-------------|
+| `portfolio_items` | Cards do portfólio |
+| `services` | Seção de serviços (`icon_key`: code, mobile, server, laptop, cloud) |
+| `technologies` | Ícones Devicon na seção Sobre (`slug` ex: `react`, `mysql`) |
 
-Os itens da home vêm dessa tabela via Server Components / API `GET /api/portfolio`.
+APIs públicas de listagem: `GET /api/portfolio`, `GET /api/services`, `GET /api/technologies`.

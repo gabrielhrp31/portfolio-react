@@ -28,16 +28,7 @@ const about = {
     },
     {
       title: "Tecnologias",
-      technologies: [
-        "react",
-        "vuejs",
-        "spring",
-        "laravel",
-        "django",
-        "html5",
-        "css3",
-        "javascript",
-      ],
+      showTechnologies: true,
     },
   ],
 };

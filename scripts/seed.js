@@ -18,7 +18,7 @@ async function loadEnvLocal() {
   }
 }
 
-const seedItems = [
+const seedPortfolio = [
   {
     name: "Portfólio",
     description: "Este próprio site...",
@@ -46,6 +46,51 @@ const seedItems = [
   },
 ];
 
+const seedServices = [
+  {
+    name: "Web",
+    description:
+      "Desenvolvimento de sistemas em nuvem e sites ambos responsivos",
+    icon_key: "code",
+    sort_order: 1,
+  },
+  {
+    name: "Mobile",
+    description: "Desenvolvimento de aplicações android",
+    icon_key: "mobile",
+    sort_order: 2,
+  },
+  {
+    name: "API's",
+    description: "Desenvolvimentos de serviços para aplicações através de API’s",
+    icon_key: "server",
+    sort_order: 3,
+  },
+];
+
+const seedTechnologies = [
+  { slug: "react", label: "React", sort_order: 1 },
+  { slug: "vuejs", label: "Vue.js", sort_order: 2 },
+  { slug: "spring", label: "Spring", sort_order: 3 },
+  { slug: "laravel", label: "Laravel", sort_order: 4 },
+  { slug: "django", label: "Django", sort_order: 5 },
+  { slug: "html5", label: "HTML5", sort_order: 6 },
+  { slug: "css3", label: "CSS3", sort_order: 7 },
+  { slug: "javascript", label: "JavaScript", sort_order: 8 },
+];
+
+async function seedTable(connection, table, countSql, insertFn, items, label) {
+  const [rows] = await connection.query(countSql);
+  if (rows[0].total > 0) {
+    console.log(`Seed skipped for ${label}: ${rows[0].total} row(s) already exist.`);
+    return;
+  }
+  for (const item of items) {
+    await insertFn(item);
+  }
+  console.log(`Seeded ${items.length} ${label}.`);
+}
+
 async function main() {
   await loadEnvLocal();
 
@@ -58,42 +103,66 @@ async function main() {
     multipleStatements: true,
   });
 
-  const schema = fs.readFileSync(
-    path.join(__dirname, "schema.sql"),
-    "utf8"
-  );
+  const schema = fs.readFileSync(path.join(__dirname, "schema.sql"), "utf8");
   await connection.query(schema);
 
-  const [rows] = await connection.query(
-    "SELECT COUNT(*) AS total FROM portfolio_items"
+  await seedTable(
+    connection,
+    "portfolio_items",
+    "SELECT COUNT(*) AS total FROM portfolio_items",
+    async (item) => {
+      await connection.query(
+        `INSERT INTO portfolio_items
+          (name, description, image, technologies, url_demo, url_github, demo_user, demo_password, roles, sort_order)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          item.name,
+          item.description,
+          item.image,
+          JSON.stringify(item.technologies),
+          item.url_demo,
+          item.url_github,
+          item.demo_user,
+          item.demo_password,
+          item.roles,
+          item.sort_order,
+        ]
+      );
+    },
+    seedPortfolio,
+    "portfolio items"
   );
-  if (rows[0].total > 0) {
-    console.log(`Seed skipped: ${rows[0].total} item(s) already exist.`);
-    await connection.end();
-    return;
-  }
 
-  for (const item of seedItems) {
-    await connection.query(
-      `INSERT INTO portfolio_items
-        (name, description, image, technologies, url_demo, url_github, demo_user, demo_password, roles, sort_order)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        item.name,
-        item.description,
-        item.image,
-        JSON.stringify(item.technologies),
-        item.url_demo,
-        item.url_github,
-        item.demo_user,
-        item.demo_password,
-        item.roles,
-        item.sort_order,
-      ]
-    );
-  }
+  await seedTable(
+    connection,
+    "services",
+    "SELECT COUNT(*) AS total FROM services",
+    async (item) => {
+      await connection.query(
+        `INSERT INTO services (name, description, icon_key, sort_order)
+         VALUES (?, ?, ?, ?)`,
+        [item.name, item.description, item.icon_key, item.sort_order]
+      );
+    },
+    seedServices,
+    "services"
+  );
 
-  console.log(`Seeded ${seedItems.length} portfolio items.`);
+  await seedTable(
+    connection,
+    "technologies",
+    "SELECT COUNT(*) AS total FROM technologies",
+    async (item) => {
+      await connection.query(
+        `INSERT INTO technologies (slug, label, sort_order)
+         VALUES (?, ?, ?)`,
+        [item.slug, item.label, item.sort_order]
+      );
+    },
+    seedTechnologies,
+    "technologies"
+  );
+
   await connection.end();
 }
 

@@ -33,7 +33,8 @@ export const Card = styled.section`
   }
 
   input,
-  textarea {
+  textarea,
+  select {
     width: 100%;
     padding: 10px 12px;
     border-radius: 8px;
@@ -41,6 +42,10 @@ export const Card = styled.section`
     background: ${({ theme }) => theme.background};
     color: ${({ theme }) => theme.titles};
     font: inherit;
+  }
+
+  code {
+    color: ${({ theme }) => theme.softAccent};
   }
 `;
 

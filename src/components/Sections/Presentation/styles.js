@@ -19,13 +19,15 @@ export const Parallax = styled.div`
   .p-content {
     display: flex;
     flex-flow: column;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
+    gap: 28px;
 
     position: relative;
 
     max-width: 80vw;
-    height: 80vh;
+    min-height: 80vh;
+    padding: 24px 0 32px;
 
     z-index: 1;
 
@@ -132,23 +134,25 @@ export const Parallax = styled.div`
     }
   }
 
-  .p-content__arrow {
-    position: absolute;
-    display: block;
-    width: 45px !important;
-    height: 45px !important;
-    font-size: 45px !important;
-
-    bottom: 0;
-    z-index: 100;
-
+  .p-content__arrow-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+    padding: 0;
+    background: transparent;
+    border: none;
     cursor: pointer;
-
-    fill: ${colorScheme.offWhite};
-    color: ${colorScheme.offWhite};
-
-    transform: scale(1);
+    z-index: 2;
     animation: pulse 2s infinite;
+
+    svg {
+      display: block;
+      width: 45px !important;
+      height: 45px !important;
+      fill: ${colorScheme.offWhite};
+      color: ${colorScheme.offWhite};
+    }
   }
 
   &::before {

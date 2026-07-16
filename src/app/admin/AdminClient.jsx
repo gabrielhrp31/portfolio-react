@@ -14,8 +14,9 @@ import {
   SecondaryButton,
   Title,
 } from "./styles";
+import { SERVICE_ICON_OPTIONS } from "@/lib/serviceIcons";
 
-const emptyForm = {
+const emptyPortfolio = {
   name: "",
   description: "",
   image: "/assets/images/portfolio.jpg",
@@ -28,22 +29,56 @@ const emptyForm = {
   sortOrder: 0,
 };
 
+const emptyService = {
+  name: "",
+  description: "",
+  iconKey: "code",
+  sortOrder: 0,
+};
+
+const emptyTechnology = {
+  slug: "",
+  label: "",
+  sortOrder: 0,
+};
+
 export default function AdminClient({
   initialAuthenticated = false,
-  initialItems = [],
+  initialPortfolio = [],
+  initialServices = [],
+  initialTechnologies = [],
 }) {
   const [authenticated, setAuthenticated] = useState(initialAuthenticated);
   const [password, setPassword] = useState("");
-  const [items, setItems] = useState(initialItems);
-  const [form, setForm] = useState(emptyForm);
-  const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function refreshItems() {
-    const response = await fetch("/api/portfolio");
-    const data = await response.json();
-    setItems(Array.isArray(data) ? data : []);
+  const [portfolio, setPortfolio] = useState(initialPortfolio);
+  const [services, setServices] = useState(initialServices);
+  const [technologies, setTechnologies] = useState(initialTechnologies);
+
+  const [portfolioForm, setPortfolioForm] = useState(emptyPortfolio);
+  const [serviceForm, setServiceForm] = useState(emptyService);
+  const [technologyForm, setTechnologyForm] = useState(emptyTechnology);
+
+  const [editingPortfolioId, setEditingPortfolioId] = useState(null);
+  const [editingServiceId, setEditingServiceId] = useState(null);
+  const [editingTechnologyId, setEditingTechnologyId] = useState(null);
+
+  async function refreshAll() {
+    const [portfolioRes, servicesRes, technologiesRes] = await Promise.all([
+      fetch("/api/portfolio"),
+      fetch("/api/services"),
+      fetch("/api/technologies"),
+    ]);
+    const [portfolioData, servicesData, technologiesData] = await Promise.all([
+      portfolioRes.json(),
+      servicesRes.json(),
+      technologiesRes.json(),
+    ]);
+    setPortfolio(Array.isArray(portfolioData) ? portfolioData : []);
+    setServices(Array.isArray(servicesData) ? servicesData : []);
+    setTechnologies(Array.isArray(technologiesData) ? technologiesData : []);
   }
 
   async function handleLogin(event) {
@@ -62,80 +97,63 @@ export default function AdminClient({
     }
     setAuthenticated(true);
     setPassword("");
-    await refreshItems();
+    await refreshAll();
   }
 
   async function handleLogout() {
     await fetch("/api/admin/logout", { method: "POST" });
     setAuthenticated(false);
-    setItems([]);
-    setEditingId(null);
-    setForm(emptyForm);
+    setPortfolio([]);
+    setServices([]);
+    setTechnologies([]);
+    setEditingPortfolioId(null);
+    setEditingServiceId(null);
+    setEditingTechnologyId(null);
+    setPortfolioForm(emptyPortfolio);
+    setServiceForm(emptyService);
+    setTechnologyForm(emptyTechnology);
   }
 
-  function startEdit(item) {
-    setEditingId(item.id);
-    setForm({
-      name: item.name || "",
-      description: item.description || "",
-      image: item.image || "",
-      technologies: (item.technologies || []).join(", "),
-      urlDemo: item.urlDemo || "",
-      urlGithub: item.urlGithub || "",
-      user: item.user || "",
-      password: item.password || "",
-      roles: item.roles || "",
-      sortOrder: item.sortOrder || 0,
-    });
-  }
-
-  function resetForm() {
-    setEditingId(null);
-    setForm(emptyForm);
-  }
-
-  async function handleSubmit(event) {
+  async function saveEntity({
+    event,
+    endpoint,
+    editingId,
+    payload,
+    onReset,
+    onRefresh,
+  }) {
     event.preventDefault();
     setLoading(true);
     setError("");
-
-    const payload = {
-      ...form,
-      sortOrder: Number(form.sortOrder || 0),
-    };
-
     const response = await fetch(
-      editingId ? `/api/portfolio/${editingId}` : "/api/portfolio",
+      editingId ? `${endpoint}/${editingId}` : endpoint,
       {
         method: editingId ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       }
     );
-
     setLoading(false);
-
     if (!response.ok) {
       const data = await response.json().catch(() => ({}));
-      setError(data.error || "Falha ao salvar item");
+      setError(data.error || "Falha ao salvar");
       return;
     }
-
-    resetForm();
-    await refreshItems();
+    onReset();
+    await onRefresh();
   }
 
-  async function handleDelete(id) {
+  async function deleteEntity(endpoint, id, onAfter) {
     if (!window.confirm("Excluir este item?")) return;
     setLoading(true);
-    const response = await fetch(`/api/portfolio/${id}`, { method: "DELETE" });
+    const response = await fetch(`${endpoint}/${id}`, { method: "DELETE" });
     setLoading(false);
     if (!response.ok) {
-      setError("Falha ao excluir item");
+      setError("Falha ao excluir");
       return;
     }
-    if (editingId === id) resetForm();
-    await refreshItems();
+    onAfter();
+    await refreshAll();
   }
 
   if (!authenticated) {
@@ -143,7 +161,7 @@ export default function AdminClient({
       <AdminPage>
         <Card as="form" onSubmit={handleLogin}>
           <Title>Admin do Portfólio</Title>
-          <p>Entre com a senha definida em ADMIN_PASSWORD para cadastrar itens.</p>
+          <p>Gerencie portfólio, serviços e tecnologias.</p>
           <label>
             Senha
             <input
@@ -166,25 +184,45 @@ export default function AdminClient({
   return (
     <AdminPage>
       <Card>
-        <Title>Gerenciar Portfólio</Title>
-        <p>
-          Cadastre, edite ou remova projetos. Eles aparecem automaticamente na
-          home.
-        </p>
-        <div style={{ display: "flex", gap: 12, marginBottom: 20 }}>
+        <Title>Painel Admin</Title>
+        <p>Cadastre portfólio, serviços prestados e tecnologias exibidas.</p>
+        <div style={{ display: "flex", gap: 12, marginBottom: 8 }}>
           <SecondaryButton type="button" onClick={handleLogout}>
             Sair
           </SecondaryButton>
           <Link href="/">Ver site</Link>
         </div>
+        {error ? <ErrorText>{error}</ErrorText> : null}
+      </Card>
 
-        <form onSubmit={handleSubmit}>
+      <Card>
+        <Title>Portfólio</Title>
+        <form
+          onSubmit={(event) =>
+            saveEntity({
+              event,
+              endpoint: "/api/portfolio",
+              editingId: editingPortfolioId,
+              payload: {
+                ...portfolioForm,
+                sortOrder: Number(portfolioForm.sortOrder || 0),
+              },
+              onReset: () => {
+                setEditingPortfolioId(null);
+                setPortfolioForm(emptyPortfolio);
+              },
+              onRefresh: refreshAll,
+            })
+          }
+        >
           <FormGrid>
             <label>
               Nome
               <input
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                value={portfolioForm.name}
+                onChange={(e) =>
+                  setPortfolioForm({ ...portfolioForm, name: e.target.value })
+                }
                 required
               />
             </label>
@@ -192,9 +230,12 @@ export default function AdminClient({
               Ordem
               <input
                 type="number"
-                value={form.sortOrder}
+                value={portfolioForm.sortOrder}
                 onChange={(e) =>
-                  setForm({ ...form, sortOrder: e.target.value })
+                  setPortfolioForm({
+                    ...portfolioForm,
+                    sortOrder: e.target.value,
+                  })
                 }
               />
             </label>
@@ -202,118 +243,397 @@ export default function AdminClient({
               Descrição
               <textarea
                 rows={3}
-                value={form.description}
+                value={portfolioForm.description}
                 onChange={(e) =>
-                  setForm({ ...form, description: e.target.value })
+                  setPortfolioForm({
+                    ...portfolioForm,
+                    description: e.target.value,
+                  })
                 }
                 required
               />
             </label>
             <label className="full">
-              Imagem (URL pública, ex: /assets/images/portfolio.jpg)
+              Imagem
               <input
-                value={form.image}
-                onChange={(e) => setForm({ ...form, image: e.target.value })}
+                value={portfolioForm.image}
+                onChange={(e) =>
+                  setPortfolioForm({ ...portfolioForm, image: e.target.value })
+                }
               />
             </label>
             <label className="full">
-              Tecnologias (separadas por vírgula, ícones Devicon)
+              Tecnologias do projeto (Devicon, separadas por vírgula)
               <input
-                value={form.technologies}
+                value={portfolioForm.technologies}
                 onChange={(e) =>
-                  setForm({ ...form, technologies: e.target.value })
+                  setPortfolioForm({
+                    ...portfolioForm,
+                    technologies: e.target.value,
+                  })
                 }
-                placeholder="react, javascript, css3"
               />
             </label>
             <label>
               URL Demo
               <input
-                value={form.urlDemo}
-                onChange={(e) => setForm({ ...form, urlDemo: e.target.value })}
+                value={portfolioForm.urlDemo}
+                onChange={(e) =>
+                  setPortfolioForm({
+                    ...portfolioForm,
+                    urlDemo: e.target.value,
+                  })
+                }
               />
             </label>
             <label>
               URL Github
               <input
-                value={form.urlGithub}
+                value={portfolioForm.urlGithub}
                 onChange={(e) =>
-                  setForm({ ...form, urlGithub: e.target.value })
+                  setPortfolioForm({
+                    ...portfolioForm,
+                    urlGithub: e.target.value,
+                  })
                 }
-              />
-            </label>
-            <label>
-              Usuário demo
-              <input
-                value={form.user}
-                onChange={(e) => setForm({ ...form, user: e.target.value })}
-              />
-            </label>
-            <label>
-              Senha demo
-              <input
-                value={form.password}
-                onChange={(e) =>
-                  setForm({ ...form, password: e.target.value })
-                }
-              />
-            </label>
-            <label className="full">
-              Cargos
-              <input
-                value={form.roles}
-                onChange={(e) => setForm({ ...form, roles: e.target.value })}
               />
             </label>
           </FormGrid>
-          {error ? <ErrorText>{error}</ErrorText> : null}
           <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
             <PrimaryButton type="submit" disabled={loading}>
-              {loading
-                ? "Salvando..."
-                : editingId
-                  ? "Atualizar item"
-                  : "Cadastrar item"}
+              {editingPortfolioId ? "Atualizar projeto" : "Cadastrar projeto"}
             </PrimaryButton>
-            {editingId ? (
-              <SecondaryButton type="button" onClick={resetForm}>
-                Cancelar edição
+            {editingPortfolioId ? (
+              <SecondaryButton
+                type="button"
+                onClick={() => {
+                  setEditingPortfolioId(null);
+                  setPortfolioForm(emptyPortfolio);
+                }}
+              >
+                Cancelar
               </SecondaryButton>
             ) : null}
           </div>
         </form>
-      </Card>
-
-      <Card>
-        <Title>Itens cadastrados ({items.length})</Title>
-        {items.length === 0 ? (
-          <EmptyState>Nenhum item ainda. Cadastre o primeiro acima.</EmptyState>
-        ) : (
-          <ItemList>
-            {items.map((item) => (
+        <ItemList>
+          {portfolio.length === 0 ? (
+            <EmptyState>Nenhum projeto cadastrado.</EmptyState>
+          ) : (
+            portfolio.map((item) => (
               <ItemRow key={item.id}>
                 <div>
                   <strong>
                     #{item.id} · {item.name}
                   </strong>
                   <p>{item.description}</p>
-                  <small>{(item.technologies || []).join(", ")}</small>
                 </div>
                 <div className="actions">
-                  <SecondaryButton type="button" onClick={() => startEdit(item)}>
+                  <SecondaryButton
+                    type="button"
+                    onClick={() => {
+                      setEditingPortfolioId(item.id);
+                      setPortfolioForm({
+                        name: item.name || "",
+                        description: item.description || "",
+                        image: item.image || "",
+                        technologies: (item.technologies || []).join(", "),
+                        urlDemo: item.urlDemo || "",
+                        urlGithub: item.urlGithub || "",
+                        user: item.user || "",
+                        password: item.password || "",
+                        roles: item.roles || "",
+                        sortOrder: item.sortOrder || 0,
+                      });
+                    }}
+                  >
                     Editar
                   </SecondaryButton>
                   <SecondaryButton
                     type="button"
-                    onClick={() => handleDelete(item.id)}
+                    onClick={() =>
+                      deleteEntity("/api/portfolio", item.id, () => {
+                        if (editingPortfolioId === item.id) {
+                          setEditingPortfolioId(null);
+                          setPortfolioForm(emptyPortfolio);
+                        }
+                      })
+                    }
                   >
                     Excluir
                   </SecondaryButton>
                 </div>
               </ItemRow>
-            ))}
-          </ItemList>
-        )}
+            ))
+          )}
+        </ItemList>
+      </Card>
+
+      <Card>
+        <Title>Serviços</Title>
+        <form
+          onSubmit={(event) =>
+            saveEntity({
+              event,
+              endpoint: "/api/services",
+              editingId: editingServiceId,
+              payload: {
+                ...serviceForm,
+                sortOrder: Number(serviceForm.sortOrder || 0),
+              },
+              onReset: () => {
+                setEditingServiceId(null);
+                setServiceForm(emptyService);
+              },
+              onRefresh: refreshAll,
+            })
+          }
+        >
+          <FormGrid>
+            <label>
+              Nome
+              <input
+                value={serviceForm.name}
+                onChange={(e) =>
+                  setServiceForm({ ...serviceForm, name: e.target.value })
+                }
+                required
+              />
+            </label>
+            <label>
+              Ícone
+              <select
+                value={serviceForm.iconKey}
+                onChange={(e) =>
+                  setServiceForm({ ...serviceForm, iconKey: e.target.value })
+                }
+              >
+                {SERVICE_ICON_OPTIONS.map((key) => (
+                  <option key={key} value={key}>
+                    {key}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Ordem
+              <input
+                type="number"
+                value={serviceForm.sortOrder}
+                onChange={(e) =>
+                  setServiceForm({ ...serviceForm, sortOrder: e.target.value })
+                }
+              />
+            </label>
+            <label className="full">
+              Descrição
+              <textarea
+                rows={3}
+                value={serviceForm.description}
+                onChange={(e) =>
+                  setServiceForm({
+                    ...serviceForm,
+                    description: e.target.value,
+                  })
+                }
+                required
+              />
+            </label>
+          </FormGrid>
+          <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
+            <PrimaryButton type="submit" disabled={loading}>
+              {editingServiceId ? "Atualizar serviço" : "Cadastrar serviço"}
+            </PrimaryButton>
+            {editingServiceId ? (
+              <SecondaryButton
+                type="button"
+                onClick={() => {
+                  setEditingServiceId(null);
+                  setServiceForm(emptyService);
+                }}
+              >
+                Cancelar
+              </SecondaryButton>
+            ) : null}
+          </div>
+        </form>
+        <ItemList>
+          {services.length === 0 ? (
+            <EmptyState>Nenhum serviço cadastrado.</EmptyState>
+          ) : (
+            services.map((item) => (
+              <ItemRow key={item.id}>
+                <div>
+                  <strong>
+                    #{item.id} · {item.name}
+                  </strong>
+                  <p>{item.description}</p>
+                  <small>ícone: {item.iconKey}</small>
+                </div>
+                <div className="actions">
+                  <SecondaryButton
+                    type="button"
+                    onClick={() => {
+                      setEditingServiceId(item.id);
+                      setServiceForm({
+                        name: item.name || "",
+                        description: item.description || "",
+                        iconKey: item.iconKey || "code",
+                        sortOrder: item.sortOrder || 0,
+                      });
+                    }}
+                  >
+                    Editar
+                  </SecondaryButton>
+                  <SecondaryButton
+                    type="button"
+                    onClick={() =>
+                      deleteEntity("/api/services", item.id, () => {
+                        if (editingServiceId === item.id) {
+                          setEditingServiceId(null);
+                          setServiceForm(emptyService);
+                        }
+                      })
+                    }
+                  >
+                    Excluir
+                  </SecondaryButton>
+                </div>
+              </ItemRow>
+            ))
+          )}
+        </ItemList>
+      </Card>
+
+      <Card>
+        <Title>Tecnologias</Title>
+        <p>
+          Use o slug do Devicon (ex: <code>react</code>, <code>spring</code>,{" "}
+          <code>mysql</code>).
+        </p>
+        <form
+          onSubmit={(event) =>
+            saveEntity({
+              event,
+              endpoint: "/api/technologies",
+              editingId: editingTechnologyId,
+              payload: {
+                ...technologyForm,
+                sortOrder: Number(technologyForm.sortOrder || 0),
+              },
+              onReset: () => {
+                setEditingTechnologyId(null);
+                setTechnologyForm(emptyTechnology);
+              },
+              onRefresh: refreshAll,
+            })
+          }
+        >
+          <FormGrid>
+            <label>
+              Slug (Devicon)
+              <input
+                value={technologyForm.slug}
+                onChange={(e) =>
+                  setTechnologyForm({
+                    ...technologyForm,
+                    slug: e.target.value,
+                  })
+                }
+                placeholder="react"
+                required
+              />
+            </label>
+            <label>
+              Label
+              <input
+                value={technologyForm.label}
+                onChange={(e) =>
+                  setTechnologyForm({
+                    ...technologyForm,
+                    label: e.target.value,
+                  })
+                }
+                placeholder="React"
+              />
+            </label>
+            <label>
+              Ordem
+              <input
+                type="number"
+                value={technologyForm.sortOrder}
+                onChange={(e) =>
+                  setTechnologyForm({
+                    ...technologyForm,
+                    sortOrder: e.target.value,
+                  })
+                }
+              />
+            </label>
+          </FormGrid>
+          <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
+            <PrimaryButton type="submit" disabled={loading}>
+              {editingTechnologyId
+                ? "Atualizar tecnologia"
+                : "Cadastrar tecnologia"}
+            </PrimaryButton>
+            {editingTechnologyId ? (
+              <SecondaryButton
+                type="button"
+                onClick={() => {
+                  setEditingTechnologyId(null);
+                  setTechnologyForm(emptyTechnology);
+                }}
+              >
+                Cancelar
+              </SecondaryButton>
+            ) : null}
+          </div>
+        </form>
+        <ItemList>
+          {technologies.length === 0 ? (
+            <EmptyState>Nenhuma tecnologia cadastrada.</EmptyState>
+          ) : (
+            technologies.map((item) => (
+              <ItemRow key={item.id}>
+                <div>
+                  <strong>
+                    #{item.id} · {item.label}
+                  </strong>
+                  <p>slug: {item.slug}</p>
+                </div>
+                <div className="actions">
+                  <SecondaryButton
+                    type="button"
+                    onClick={() => {
+                      setEditingTechnologyId(item.id);
+                      setTechnologyForm({
+                        slug: item.slug || "",
+                        label: item.label || "",
+                        sortOrder: item.sortOrder || 0,
+                      });
+                    }}
+                  >
+                    Editar
+                  </SecondaryButton>
+                  <SecondaryButton
+                    type="button"
+                    onClick={() =>
+                      deleteEntity("/api/technologies", item.id, () => {
+                        if (editingTechnologyId === item.id) {
+                          setEditingTechnologyId(null);
+                          setTechnologyForm(emptyTechnology);
+                        }
+                      })
+                    }
+                  >
+                    Excluir
+                  </SecondaryButton>
+                </div>
+              </ItemRow>
+            ))
+          )}
+        </ItemList>
       </Card>
     </AdminPage>
   );

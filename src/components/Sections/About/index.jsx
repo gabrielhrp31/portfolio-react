@@ -6,7 +6,9 @@ import about from "@/data/about";
 import IdentityDescription from "@/components/IdentityDescription";
 import Tecnologies from "@/components/Tecnologies";
 
-function About() {
+function About({ technologies = [] }) {
+  const techSlugs = technologies.map((item) => item.slug).filter(Boolean);
+
   return (
     <AboutWrapper>
       <AboutContent>
@@ -31,8 +33,12 @@ function About() {
               <h1 className="title">{item.title}</h1>
               {item.text ? <p className="text">{item.text}</p> : null}
               {item.showIdentity ? <IdentityDescription /> : null}
-              {item.technologies ? (
-                <Tecnologies size={80} padding={25} icons={item.technologies} />
+              {item.showTechnologies ? (
+                techSlugs.length > 0 ? (
+                  <Tecnologies size={80} padding={25} icons={techSlugs} />
+                ) : (
+                  <p className="text">Nenhuma tecnologia cadastrada ainda.</p>
+                )
               ) : null}
             </div>
           ))}

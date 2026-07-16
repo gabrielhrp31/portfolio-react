@@ -12,6 +12,7 @@ import { ImMail4 } from "react-icons/im";
 import TextType from "@/components/react-bits/TextType";
 import ShinyText from "@/components/react-bits/ShinyText";
 import Magnet from "@/components/react-bits/Magnet";
+import LetterGlitch from "@/components/react-bits/LetterGlitch";
 
 const SOCIAL_ICON_SIZE = 40;
 const ARROW_ICON_SIZE = 45;
@@ -66,6 +67,20 @@ function Presentation() {
 
   return (
     <Parallax id="inicio">
+      <div className="hero-bg" aria-hidden="true" />
+      <div className="hero-glitch" aria-hidden="true">
+        <LetterGlitch
+          glitchSpeed={70}
+          smooth
+          outerVignette={false}
+          centerVignette={false}
+          backgroundColor="transparent"
+          glitchColors={["#163524", "#2f8f4e", "#48c558", "#9dffb0"]}
+          characters="01<>{}[]/=+*&$#@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        />
+      </div>
+      <div className="hero-veil" aria-hidden="true" />
+
       <div className="p-content">
         <TransitionLogo
           id="logo"

@@ -1,20 +1,57 @@
 import styled from "styled-components";
 import { colorScheme } from "@/styles/themes";
 
-export const Parallax = styled.div`
+export const Parallax = styled.section`
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-
-  background-image: url("/assets/backgrounds/binary.jpg");
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-
   min-height: 100vh;
+  background: #050805;
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: url("/assets/backgrounds/binary.jpg");
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    filter: saturate(1.15) contrast(1.05) brightness(0.55);
+    transform: scale(1.02);
+  }
+
+  .hero-glitch {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0.42;
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+
+  .hero-veil {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        ellipse 70% 55% at 50% 45%,
+        rgba(0, 0, 0, 0.28) 0%,
+        rgba(0, 0, 0, 0.72) 70%,
+        rgba(0, 0, 0, 0.88) 100%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.55) 0%,
+        rgba(0, 0, 0, 0.35) 40%,
+        rgba(0, 0, 0, 0.7) 100%
+      ),
+      ${({ theme }) => theme.heroOverlay};
+  }
 
   .p-content {
     display: flex;
@@ -24,12 +61,12 @@ export const Parallax = styled.div`
     gap: 28px;
 
     position: relative;
+    z-index: 3;
 
     max-width: 80vw;
     min-height: 80vh;
-    padding: 24px 0 32px;
-
-    z-index: 1;
+    padding: 28px 20px;
+    border-radius: 24px;
 
     @media (min-width: 769px) {
       max-width: 50vw;
@@ -48,22 +85,30 @@ export const Parallax = styled.div`
     text-align: center;
     font-weight: 200;
     font-size: 22px;
-    color: white;
+    color: #f5fff8;
     min-height: 1.4em;
+    text-shadow:
+      0 2px 18px rgba(0, 0, 0, 0.85),
+      0 1px 2px rgba(0, 0, 0, 0.9),
+      0 0 24px rgba(16, 40, 22, 0.65);
 
     .p-content__shiny-name {
-      font-weight: 500;
+      font-weight: 600;
       vertical-align: baseline;
+      text-shadow:
+        0 2px 14px rgba(0, 0, 0, 0.8),
+        0 0 18px rgba(72, 197, 88, 0.35);
     }
 
     .p-content__text-type,
     .text-type {
-      color: white;
+      color: #f5fff8;
       font-weight: 200;
     }
 
     .text-type__cursor {
       color: ${({ theme }) => theme.softAccent};
+      text-shadow: 0 0 10px ${({ theme }) => theme.softAccent};
     }
 
     @media (min-width: 1025px) {
@@ -79,32 +124,6 @@ export const Parallax = styled.div`
     color: ${({ theme }) => theme.softAccent};
   }
 
-  .p-content__input_cursor {
-    display: inline-block;
-    width: 2px;
-    height: 24px;
-    background-color: white;
-    margin-left: 8px;
-    transform: translateY(8px);
-    animation: blink 0.6s linear infinite alternate;
-
-    @media (min-width: 400px) {
-      height: 32px;
-    }
-
-    @media (min-width: 600px) {
-      height: 40px;
-    }
-
-    @media (min-width: 1025px) {
-      height: 48px;
-    }
-
-    @media (min-width: 1920px) {
-      height: 64px;
-    }
-  }
-
   .p-content__socials {
     display: flex;
     align-items: center;
@@ -113,6 +132,11 @@ export const Parallax = styled.div`
     z-index: 1;
     font-size: 16px;
     line-height: 1;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.28);
+    border: 1px solid rgba(235, 244, 248, 0.12);
+    backdrop-filter: blur(6px);
 
     a {
       display: inline-flex;
@@ -143,6 +167,7 @@ export const Parallax = styled.div`
 
       fill: ${colorScheme.offWhite};
       color: ${colorScheme.offWhite};
+      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.55));
 
       &:hover {
         transform: scale(1.25);
@@ -168,30 +193,15 @@ export const Parallax = styled.div`
       height: 45px !important;
       fill: ${colorScheme.offWhite};
       color: ${colorScheme.offWhite};
+      filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.7));
     }
-  }
-
-  &::before {
-    content: "";
-    display: block;
-    pointer-events: none;
-
-    position: absolute;
-    inset: 0;
-
-    width: 100%;
-    height: 100%;
-
-    background-color: ${({ theme }) => theme.heroOverlay};
-
-    opacity: 1;
-    z-index: 0;
   }
 `;
 
 export const TransitionLogo = styled.div`
   cursor: pointer;
   position: relative;
+  z-index: 2;
 
   background-image: url(${({ $image }) => $image});
   background-position: center;
@@ -199,6 +209,7 @@ export const TransitionLogo = styled.div`
   background-size: contain;
 
   transition: background 0.5s;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.55));
 
   &:hover,
   &.show {

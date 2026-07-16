@@ -23,7 +23,7 @@ export const light = {
   bookmark: "#1DB954",
   bookmarkActive: "#0F8A2A",
   bookmarkText: "#FFFFFF",
-  heroOverlay: "rgba(15, 28, 20, 0.62)",
+  heroOverlay: "rgba(8, 18, 12, 0.55)",
   shadow: "0 10px 30px rgba(30, 43, 36, 0.08)",
 };
 
@@ -45,7 +45,7 @@ export const dark = {
   bookmark: "#48c558",
   bookmarkActive: "#16c426",
   bookmarkText: "#152018",
-  heroOverlay: "rgba(0, 0, 0, 0.78)",
+  heroOverlay: "rgba(0, 0, 0, 0.5)",
   shadow: "0 12px 32px rgba(0, 0, 0, 0.28)",
 };
 

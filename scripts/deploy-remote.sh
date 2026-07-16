@@ -39,7 +39,8 @@ done
 
 echo "==> Seed idempotente"
 MYSQL_NET="$(docker inspect portfolio-mysql --format '{{range $k, $v := .NetworkSettings.Networks}}{{println $k}}{{end}}' | head -n1)"
-# Repo is mounted read-only; npm must write into /tmp, not /workspace.
+# Repo is mounted read-only; install deps in /tmp and point NODE_PATH there
+# (Node resolves modules from the script path, not from cwd).
 docker run --rm \
   --network "$MYSQL_NET" \
   -v "$APP_DIR:/workspace:ro" \
@@ -54,6 +55,7 @@ docker run --rm \
     cd /tmp/seed-work
     npm init -y >/dev/null 2>&1
     npm install --no-save mysql2@3 >/dev/null
+    export NODE_PATH=/tmp/seed-work/node_modules
     node /workspace/scripts/seed.js
   '
 

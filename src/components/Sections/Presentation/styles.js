@@ -2,9 +2,11 @@ import styled from "styled-components";
 import { colorScheme } from "@/styles/themes";
 
 export const Parallax = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 
   background-image: url("/assets/backgrounds/binary.jpg");
   background-attachment: fixed;
@@ -91,51 +93,51 @@ export const Parallax = styled.div`
     justify-content: center;
     gap: 20px;
     z-index: 1;
+    font-size: 16px;
+    line-height: 1;
 
     a {
       display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
       line-height: 0;
-    }
-  }
-
-  .p-content__socials__icon {
-    width: 40px !important;
-    height: 40px !important;
-    min-width: 40px;
-    min-height: 40px;
-    max-width: 40px;
-    max-height: 40px;
-    font-size: 40px;
-
-    border-radius: 100%;
-    overflow: hidden;
-    flex-shrink: 0;
-
-    cursor: pointer;
-
-    fill: ${colorScheme.offWhite};
-    color: ${colorScheme.offWhite};
-
-    &:hover {
-      transform: scale(1.25);
+      flex: 0 0 40px;
     }
 
-    @media (min-width: 1920px) {
-      width: 48px !important;
-      height: 48px !important;
-      min-width: 48px;
-      min-height: 48px;
-      max-width: 48px;
-      max-height: 48px;
-      font-size: 48px;
+    svg.p-content__socials__icon,
+    .p-content__socials__icon {
+      display: block;
+      width: 40px !important;
+      height: 40px !important;
+      min-width: 40px !important;
+      min-height: 40px !important;
+      max-width: 40px !important;
+      max-height: 40px !important;
+      font-size: 40px !important;
+
+      border-radius: 100%;
+      overflow: hidden;
+      flex-shrink: 0;
+
+      cursor: pointer;
+
+      fill: ${colorScheme.offWhite};
+      color: ${colorScheme.offWhite};
+
+      &:hover {
+        transform: scale(1.25);
+      }
     }
   }
 
   .p-content__arrow {
     position: absolute;
+    display: block;
     width: 45px !important;
     height: 45px !important;
-    font-size: 45px;
+    font-size: 45px !important;
 
     bottom: 0;
     z-index: 100;
@@ -149,16 +151,16 @@ export const Parallax = styled.div`
     animation: pulse 2s infinite;
   }
 
-  ::before {
+  &::before {
     content: "";
-    display: flex;
+    display: block;
+    pointer-events: none;
 
     position: absolute;
-    left: 0;
-    top: 0;
+    inset: 0;
 
-    min-height: 100vh;
     width: 100%;
+    height: 100%;
 
     background-color: rgb(0, 0, 0);
 

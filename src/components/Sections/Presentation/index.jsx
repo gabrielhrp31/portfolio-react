@@ -2,9 +2,16 @@
 
 import React, { useEffect, useState } from "react";
 import { Parallax, TransitionLogo } from "./styles";
-import { FaChevronDown, FaLinkedin } from "react-icons/fa";
+import {
+  FaChevronDown,
+  FaGithub,
+  FaLinkedin,
+  FaWhatsapp,
+} from "react-icons/fa";
 import { ImMail4 } from "react-icons/im";
-import { SiGithub, SiWhatsapp } from "react-icons/si";
+
+const SOCIAL_ICON_SIZE = 40;
+const ARROW_ICON_SIZE = 45;
 
 function Presentation() {
   const [writting, setWritting] = useState(false);

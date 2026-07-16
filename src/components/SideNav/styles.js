@@ -43,8 +43,10 @@ export const SideNavWrapper = styled.nav`
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: stretch;
   gap: 10px;
+  width: max-content;
+  max-width: 168px;
   padding-right: 0;
   pointer-events: none;
 
@@ -57,14 +59,16 @@ export const Bookmark = styled.button`
   pointer-events: auto;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 10px;
+  width: 100%;
   min-height: 42px;
-  padding: 8px 14px 8px 18px;
+  padding: 8px 14px 8px 16px;
   cursor: pointer;
   box-shadow: ${({ theme }) => theme.shadow};
   border-radius: 14px 0 0 14px;
-  transform: translateX(${({ $active }) => ($active ? "0" : "46%")});
+  /* Peek the same right-edge strip on every item (avoids zigzag from % of variable widths). */
+  transform: translateX(${({ $active }) => ($active ? "0" : "calc(100% - 28px)")});
   transition: transform 0.25s ease, background 0.3s ease, color 0.3s ease,
     border-color 0.3s ease;
   writing-mode: horizontal-tb;
@@ -72,7 +76,8 @@ export const Bookmark = styled.button`
 
   ${({ $tone }) => toneStyles[$tone] || toneStyles.onSurface}
 
-  &:hover {
+  &:hover,
+  &:focus-visible {
     transform: translateX(0);
   }
 
@@ -81,6 +86,7 @@ export const Bookmark = styled.button`
     font-weight: 700;
     letter-spacing: 0.02em;
     white-space: nowrap;
+    text-align: left;
   }
 
   .bookmark__notch {
@@ -89,5 +95,6 @@ export const Bookmark = styled.button`
     border-radius: 50%;
     opacity: 0.95;
     flex-shrink: 0;
+    margin-left: auto;
   }
 `;

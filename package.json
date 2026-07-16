@@ -1,45 +1,29 @@
 {
   "name": "portfolio-react",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.15.0",
-    "@testing-library/react": "^11.2.7",
-    "@testing-library/user-event": "^12.8.3",
-    "devicon": "^2.14.0",
-    "react": "^17.0.2",
-    "react-countdown": "^2.3.5",
-    "react-dom": "^17.0.2",
-    "react-icons": "^4.3.1",
-    "react-scripts": "4.0.3",
-    "styled-components": "^5.3.3",
-    "web-vitals": "^1.1.2"
-  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "node --test tests/**/*.test.js",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:seed": "node scripts/seed.js",
+    "db:init": "node scripts/init-db.js"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "dependencies": {
+    "devicon": "^2.16.0",
+    "mysql2": "^3.11.5",
+    "next": "^14.2.18",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.3.0",
+    "styled-components": "^6.1.13"
   },
   "devDependencies": {
-    "eslint-plugin-react-hooks": "^4.3.0"
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.18"
   }
 }

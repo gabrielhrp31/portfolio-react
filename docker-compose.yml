@@ -1,0 +1,23 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: portfolio-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: portfolio
+      MYSQL_USER: portfolio
+      MYSQL_PASSWORD: portfolio
+    ports:
+      - "3306:3306"
+    volumes:
+      - portfolio_mysql_data:/var/lib/mysql
+      - ./scripts/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  portfolio_mysql_data:

@@ -1,49 +1,38 @@
-import React, { useEffect, useState } from 'react'
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { ThemeProvider } from "styled-components";
-import getTheme from '../../styles/themes'
+import getTheme from "@/styles/themes";
 
-// eslint-disable-next-line no-unused-vars
-export const CustomThemeContext = React.createContext(
-    {
-        currentTheme: 'light',
-        setTheme: null,
-    },
-)
+export const CustomThemeContext = React.createContext({
+  currentTheme: "dark",
+  setTheme: null,
+});
 
-const CustomThemeProvider = (props) => {
-    // eslint-disable-next-line react/prop-types
-    const { children } = props
+const CustomThemeProvider = ({ children }) => {
+  const [themeName, _setThemeName] = useState("dark");
+  const theme = getTheme(themeName);
 
-    // Read current theme from localStorage or maybe from an api
-    // State to hold the selected theme name
-    const [themeName, _setThemeName] = useState('dark')
+  useEffect(() => {
+    const currentTheme = localStorage.getItem("appTheme") || "dark";
+    setThemeName(currentTheme);
+  }, []);
 
-    // Retrieve the theme object by theme name
-    const theme = getTheme(themeName)
+  const setThemeName = (name) => {
+    localStorage.setItem("appTheme", name);
+    _setThemeName(name);
+  };
 
-    useEffect(() => {
-        const currentTheme = localStorage.getItem('appTheme') || 'dark'
-        setThemeName(currentTheme);
-    }, [])
+  const contextValue = {
+    currentTheme: themeName,
+    setTheme: setThemeName,
+  };
 
-    // Wrap _setThemeName to store new theme names in localStorage
-    const setThemeName = (name) => {
-        localStorage.setItem('appTheme', name)
-        _setThemeName(name)
-    }
+  return (
+    <CustomThemeContext.Provider value={contextValue}>
+      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+    </CustomThemeContext.Provider>
+  );
+};
 
-    const contextValue = {
-        currentTheme: themeName,
-        setTheme: setThemeName,
-    }
-
-    return (
-        <CustomThemeContext.Provider value={contextValue}>
-                <ThemeProvider theme={theme}>
-                    {children}
-                </ThemeProvider>
-        </CustomThemeContext.Provider>
-    )
-}
-
-export default CustomThemeProvider
+export default CustomThemeProvider;

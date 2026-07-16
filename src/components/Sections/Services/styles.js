@@ -1,14 +1,13 @@
 import styled from "styled-components";
-import binary from "../../../assets/backgrounds/binary.jpg";
-import {colorScheme} from "../../../styles/themes";
+import { colorScheme } from "@/styles/themes";
 
 export const ParallaxWaves = styled.div`
   position: relative;
-	background: ${colorScheme.gray};
+  background: ${colorScheme.gray};
   height: fit-content;
   overflow: visible;
   z-index: 100;
-	padding: 20vw 50px 22vw 50px;
+  padding: 20vw 50px 22vw 50px;
 
   > svg:first-child {
     position: absolute;
@@ -17,17 +16,17 @@ export const ParallaxWaves = styled.div`
     width: 100%;
     height: unset !important;
 
-    > *{
-      fill:  ${({theme}) => theme.softAccent}!important;
+    > * {
+      fill: ${({ theme }) => theme.softAccent} !important;
     }
   }
-	
-	.services-wrapper{
-		display: flex;
-		justify-content: center;
-		flex-flow: wrap;
-		gap: 150px;
-	}
+
+  .services-wrapper {
+    display: flex;
+    justify-content: center;
+    flex-flow: wrap;
+    gap: 150px;
+  }
 
   > svg:last-child {
     position: absolute;
@@ -36,28 +35,27 @@ export const ParallaxWaves = styled.div`
     left: 0;
     width: 100%;
     height: auto;
-    fill: ${({theme}) => theme.background}!important;
+    fill: ${({ theme }) => theme.background} !important;
   }
-	
-	svg{
-		z-index: 1;
-	}
-	
-	::before{
-		content: "";
-		display: flex;
-    position: absolute;	
-		left: 0;
-		top: 0;
-		opacity: 0.25;
-		
-		width: 100%;
-		height: 100%;
 
-		
-    background-image: url(${binary});
+  svg {
+    z-index: 1;
+  }
+
+  ::before {
+    content: "";
+    display: flex;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0.25;
+
+    width: 100%;
+    height: 100%;
+
+    background-image: url("/assets/backgrounds/binary.jpg");
     background-attachment: fixed;
     background-position: center;
     background-size: cover;
-	}
-`
+  }
+`;

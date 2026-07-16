@@ -1,6 +1,7 @@
-// styles/globalStyles.js
-import {createGlobalStyle} from 'styled-components'
-import {fontFaces} from "./fonts";
+"use client";
+
+import { createGlobalStyle } from "styled-components";
+import { fontFaces } from "./fonts";
 import animations from "./animations";
 
 export default createGlobalStyle`
@@ -11,7 +12,7 @@ export default createGlobalStyle`
     margin: 0;
     outline: 0;
     transition: 0.1s;
-    font-family: "Outfit", Arial;
+    font-family: "Outfit", Arial, sans-serif;
   }
 
   button {
@@ -22,41 +23,41 @@ export default createGlobalStyle`
   body {
     position: relative;
     background: ${(props) => props.theme.background};
-    color: ${props => props.theme.text};
+    color: ${(props) => props.theme.text};
     transition: background-color 0.5s ease;
 
-		.global-wrapper{
-			padding-bottom: 50px;
-		}
+    .global-wrapper {
+      padding-bottom: 50px;
+    }
   }
 
   h1 {
-    color: ${props => props.theme.titles};
+    color: ${(props) => props.theme.titles};
   }
 
   .text-green {
-    color: ${({theme}) => theme.softAccent};
+    color: ${({ theme }) => theme.softAccent};
   }
-  
+
   .title-green {
     width: 100%;
     font-size: 36px;
     margin-bottom: 0;
     font-weight: 600;
-    color: ${({theme}) => theme.softAccent};
+    color: ${({ theme }) => theme.softAccent};
   }
 
   .text-bg-reverse {
     width: 100%;
     font-size: 16px;
-    color: ${({theme}) => theme.titles};
+    color: ${({ theme }) => theme.titles};
     text-align: justify;
   }
 
-  .text-bg-reverse-60{
+  .text-bg-reverse-60 {
     font-size: 16px;
-    color: ${({theme}) => theme.titles};
+    color: ${({ theme }) => theme.titles};
     opacity: 0.6;
     text-align: justify;
   }
-`
+`;

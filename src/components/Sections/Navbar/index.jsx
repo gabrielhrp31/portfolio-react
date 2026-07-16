@@ -27,7 +27,7 @@ function Navbar() {
   }
 
   return (
-    <NavbarWrapper afterNavbar={afterNavbar}>
+    <NavbarWrapper $afterNavbar={afterNavbar}>
       <img
         src="/assets/logos/Imagologo%20verde.png"
         alt="Logo Gabriel Rodrigues"

@@ -4,9 +4,9 @@ import React from "react";
 import { PortfolioWrapper } from "./styles";
 import PortfolioItem from "@/components/PortfolioItem";
 
-function Portfolio({ items = [], ...props }) {
+function Portfolio({ items = [] }) {
   return (
-    <PortfolioWrapper {...props} itemsQty={items.length}>
+    <PortfolioWrapper $itemsQty={items.length}>
       <div className="title-green">Portfólio</div>
       <div className="text-bg-reverse">
         Em breve mais projetos em que trabalhei e dediquei meu amor e carinho

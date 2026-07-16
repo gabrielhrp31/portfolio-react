@@ -1,0 +1,106 @@
+# Produção na VPS (KingHost) atrás do Traefik
+# Rede externa esperada: traefik (criada pelo stack do Traefik)
+#
+# Uso:
+#   cp .env.production.example .env.production
+#   docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: portfolio-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DATABASE_NAME:-portfolio}
+      MYSQL_USER: ${DATABASE_USER:-portfolio}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD:-portfolio}
+    volumes:
+      - portfolio_mysql_data:/var/lib/mysql
+      - ./scripts/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    networks:
+      - internal
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u${DATABASE_USER:-portfolio}",
+          "-p${DATABASE_PASSWORD:-portfolio}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: portfolio-app:latest
+    container_name: portfolio-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DATABASE_HOST: mysql
+      DATABASE_PORT: 3306
+      DATABASE_USER: ${DATABASE_USER:-portfolio}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-portfolio}
+      DATABASE_NAME: ${DATABASE_NAME:-portfolio}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      NODE_ENV: production
+      PORT: 3000
+    volumes:
+      - portfolio_uploads:/app/public/uploads
+    networks:
+      - internal
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+
+      # HTTPS — gabrielhrp.com + www
+      - traefik.http.routers.portfolio.rule=Host(`gabrielhrp.com`) || Host(`www.gabrielhrp.com`)
+      - traefik.http.routers.portfolio.entrypoints=websecure
+      - traefik.http.routers.portfolio.tls=true
+      - traefik.http.routers.portfolio.tls.certresolver=letsencrypt
+      - traefik.http.routers.portfolio.middlewares=portfolio-www-redirect@docker,portfolio-security@docker
+      - traefik.http.routers.portfolio.service=portfolio
+
+      # HTTP → HTTPS
+      - traefik.http.routers.portfolio-http.rule=Host(`gabrielhrp.com`) || Host(`www.gabrielhrp.com`)
+      - traefik.http.routers.portfolio-http.entrypoints=web
+      - traefik.http.routers.portfolio-http.middlewares=portfolio-https-redirect@docker
+      - traefik.http.routers.portfolio-http.service=portfolio
+
+      # www → apex
+      - traefik.http.middlewares.portfolio-www-redirect.redirectregex.regex=^https://www\\.gabrielhrp\\.com/(.*)
+      - traefik.http.middlewares.portfolio-www-redirect.redirectregex.replacement=https://gabrielhrp.com/$${1}
+      - traefik.http.middlewares.portfolio-www-redirect.redirectregex.permanent=true
+
+      - traefik.http.middlewares.portfolio-https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.portfolio-https-redirect.redirectscheme.permanent=true
+
+      - traefik.http.middlewares.portfolio-security.headers.stsSeconds=31536000
+      - traefik.http.middlewares.portfolio-security.headers.stsIncludeSubdomains=true
+      - traefik.http.middlewares.portfolio-security.headers.stsPreload=true
+      - traefik.http.middlewares.portfolio-security.headers.browserXssFilter=true
+      - traefik.http.middlewares.portfolio-security.headers.contentTypeNosniff=true
+      - traefik.http.middlewares.portfolio-security.headers.referrerPolicy=strict-origin-when-cross-origin
+      - traefik.http.middlewares.portfolio-security.headers.customFrameOptionsValue=SAMEORIGIN
+
+      - traefik.http.services.portfolio.loadbalancer.server.port=3000
+
+networks:
+  traefik:
+    external: true
+  internal:
+    driver: bridge
+
+volumes:
+  portfolio_mysql_data:
+  portfolio_uploads:

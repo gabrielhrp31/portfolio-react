@@ -1,0 +1,113 @@
+# Gitea Actions → VPS KingHost (Docker + Traefik)
+# Site: https://gabrielhrp.com/
+#
+# Secrets (Repo → Settings → Actions → Secrets):
+#   SSH_HOST          IP ou hostname da VPS
+#   SSH_USER          usuário SSH (ex: root / deploy)
+#   SSH_PRIVATE_KEY   chave privada OpenSSH completa
+#   SSH_PORT          (opcional) default 22
+#   DEPLOY_PATH       (opcional) default /opt/portfolio
+#
+# Pré-requisitos na VPS: docs/DEPLOY.md
+
+name: Deploy KingHost (Traefik)
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy gabrielhrp.com
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate secrets
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          : "${SSH_HOST:?missing secret SSH_HOST}"
+          : "${SSH_USER:?missing secret SSH_USER}"
+          : "${SSH_PRIVATE_KEY:?missing secret SSH_PRIVATE_KEY}"
+
+      - name: Setup SSH
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          PORT="${SSH_PORT:-22}"
+          ssh-keyscan -p "$PORT" -H "$SSH_HOST" >> ~/.ssh/known_hosts
+          cat > ~/.ssh/config <<EOF
+          Host kinghost
+            HostName ${SSH_HOST}
+            User ${SSH_USER}
+            Port ${PORT}
+            IdentityFile ~/.ssh/id_deploy
+            IdentitiesOnly yes
+            StrictHostKeyChecking accept-new
+            ServerAliveInterval 30
+          EOF
+          chmod 600 ~/.ssh/config
+
+      - name: Ensure remote directory
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          REMOTE_DIR="${DEPLOY_PATH:-/opt/portfolio}"
+          ssh kinghost "mkdir -p '$REMOTE_DIR' '$REMOTE_DIR/public/uploads'"
+
+      - name: Rsync code to VPS
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          REMOTE_DIR="${DEPLOY_PATH:-/opt/portfolio}"
+          rsync -az --delete \
+            -e "ssh" \
+            --exclude '.git/' \
+            --exclude 'node_modules/' \
+            --exclude '.next/' \
+            --exclude '.env' \
+            --exclude '.env.local' \
+            --exclude '.env.production' \
+            --exclude 'public/uploads/*' \
+            --exclude '.cursor/' \
+            --include 'public/uploads/.gitkeep' \
+            ./ "kinghost:${REMOTE_DIR}/"
+
+      - name: Build and restart containers
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          REMOTE_DIR="${DEPLOY_PATH:-/opt/portfolio}"
+          ssh kinghost "export DEPLOY_PATH='$REMOTE_DIR'; chmod +x '$REMOTE_DIR/scripts/deploy-remote.sh'; '$REMOTE_DIR/scripts/deploy-remote.sh'"
+
+      - name: Health check https://gabrielhrp.com
+        run: |
+          set +e
+          for i in $(seq 1 12); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 https://gabrielhrp.com/ || echo 000)
+            echo "Attempt $i → HTTP $code"
+            case "$code" in
+              200|301|302|307|308) echo "OK → https://gabrielhrp.com/"; exit 0 ;;
+            esac
+            sleep 5
+          done
+          echo "WARN: health check ainda sem resposta 2xx/3xx (DNS/TLS pode estar propagando)."
+          exit 0

@@ -39,20 +39,26 @@ done
 
 echo "==> Seed idempotente"
 MYSQL_NET="$(docker inspect portfolio-mysql --format '{{range $k, $v := .NetworkSettings.Networks}}{{println $k}}{{end}}' | head -n1)"
+# Repo is mounted read-only; npm must write into /tmp, not /workspace.
 docker run --rm \
   --network "$MYSQL_NET" \
   -v "$APP_DIR:/workspace:ro" \
-  -w /workspace \
   -e DATABASE_HOST=mysql \
   -e DATABASE_PORT=3306 \
   -e "DATABASE_USER=${DATABASE_USER}" \
   -e "DATABASE_PASSWORD=${DATABASE_PASSWORD}" \
   -e "DATABASE_NAME=${DATABASE_NAME}" \
   node:20-alpine \
-  sh -c "npm install --no-save mysql2@3 >/dev/null && node scripts/seed.js"
+  sh -c 'set -e
+    mkdir -p /tmp/seed-work
+    cd /tmp/seed-work
+    npm init -y >/dev/null 2>&1
+    npm install --no-save mysql2@3 >/dev/null
+    node /workspace/scripts/seed.js
+  '
 
 docker image prune -f >/dev/null || true
 
 echo "==> Status"
 docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" ps
-echo "Deploy OK → https://gabrielhrp.com/"
+echo "Deploy OK"

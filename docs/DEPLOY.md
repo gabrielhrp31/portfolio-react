@@ -1,6 +1,6 @@
 # Deploy — VPS KingHost + Traefik + Gitea Actions
 
-Domínio: **https://gabrielhrp.com/**
+Domínio: **https://SEU_DOMINIO.com/**
 
 ## Arquivos
 
@@ -76,7 +76,7 @@ No painel DNS do domínio:
 | A | `@` | IP da VPS |
 | A | `www` | IP da VPS |
 
-O compose redireciona `www.gabrielhrp.com` → `https://gabrielhrp.com/`.
+O compose redireciona `www.SEU_DOMINIO.com` → `https://SEU_DOMINIO.com/`.
 
 ## 3. Primeiro setup na VPS
 
@@ -177,11 +177,11 @@ Push em `master`/`main` (ou **Run workflow**):
 3. Rsync do código → `/opt/portfolio` (não sobrescreve `.env.production`/`uploads` via rsync)  
 4. `docker compose -f docker-compose.prod.yml up -d --build`  
 5. Seed MySQL idempotente  
-6. Health check em `https://gabrielhrp.com/`
+6. Health check em `https://SEU_DOMINIO.com/`
 
 ## Labels Traefik (resumo)
 
-- Hosts: `gabrielhrp.com`, `www.gabrielhrp.com`
+- Hosts: `SEU_DOMINIO.com`, `www.SEU_DOMINIO.com`
 - Entrypoint TLS: `websecure` + `letsencrypt`
 - HTTP → HTTPS
 - `www` → apex
@@ -190,5 +190,29 @@ Push em `master`/`main` (ou **Run workflow**):
 
 ## Admin
 
-Após o deploy: `https://gabrielhrp.com/admin`  
+Após o deploy: `https://SEU_DOMINIO.com/admin`  
 Senha: valor do secret `ADMIN_PASSWORD` (injetado no `.env.production`).
+
+## Certificado inválido (`ERR_CERT_AUTHORITY_INVALID`)
+
+O Chrome mostra esse aviso quando o Traefik ainda serve o certificado
+**default/self-signed** (ACME/Let’s Encrypt não emitiu o cert do domínio).
+
+Checklist:
+
+1. DNS `A` de `@` e `www` apontando para o IP da VPS (`dig +short SEU_DOMINIO.com`).
+2. Portas **80** e **443** abertas na VPS (challenge HTTP usa a 80).
+3. Traefik com certresolver chamado **`letsencrypt`** (mesmo nome das labels do compose).
+4. Logs do Traefik:
+   ```bash
+   docker logs traefik 2>&1 | tail -100
+   ```
+   Procure erros `acme` / `unable to generate` / `NXDOMAIN`.
+5. Depois do DNS certo, force recriação do app:
+   ```bash
+   cd /opt/portfolio
+   docker compose -f docker-compose.prod.yml --env-file .env.production up -d
+   ```
+
+Enquanto o Let’s Encrypt não emitir, o aviso de “invasores” é esperado
+(certificado temporário do Traefik) — não significa que o site foi invadido.

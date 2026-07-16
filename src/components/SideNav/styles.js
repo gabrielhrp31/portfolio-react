@@ -39,7 +39,7 @@ export const SideNavWrapper = styled.nav`
   position: fixed;
   top: 50%;
   right: 0;
-  z-index: 1200;
+  z-index: 2000;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;

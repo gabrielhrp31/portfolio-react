@@ -17,7 +17,6 @@ export default createGlobalStyle`
 
   html {
     scroll-behavior: smooth;
-    overflow-x: clip;
   }
 
   button {
@@ -28,7 +27,7 @@ export default createGlobalStyle`
   body {
     position: relative;
     max-width: 100%;
-    overflow-x: clip;
+    overflow-x: hidden;
     background: ${(props) => props.theme.background};
     color: ${(props) => props.theme.titles};
     transition: background-color 0.45s ease, color 0.45s ease;
@@ -37,6 +36,7 @@ export default createGlobalStyle`
       padding-bottom: 50px;
       position: relative;
       max-width: 100%;
+      overflow-x: hidden;
 
       @media (max-width: 900px) {
         /* Room for mobile bottom section nav */

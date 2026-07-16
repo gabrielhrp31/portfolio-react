@@ -56,6 +56,7 @@ export const SideNavWrapper = styled.nav`
 
   /* Mobile / tablet: bottom horizontal section nav */
   @media (max-width: 900px) {
+    position: fixed;
     top: auto;
     bottom: 0;
     left: 0;

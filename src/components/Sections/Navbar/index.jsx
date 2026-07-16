@@ -4,10 +4,14 @@ import React, { useContext, useEffect, useState } from "react";
 import { NavbarWrapper, ThemeButton } from "./styles";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { CustomThemeContext } from "@/components/CustomThemeProvider";
+import OptimizedImage from "@/components/OptimizedImage";
+import { mediaAlt, mediaUrl } from "@/lib/media";
 
-function Navbar() {
+function Navbar({ media = null }) {
   const { currentTheme, toggleTheme } = useContext(CustomThemeContext);
   const [afterNavbar, setAfterNavbar] = useState(false);
+  const logoSrc = mediaUrl(media, "logo_navbar");
+  const logoAlt = mediaAlt(media, "logo_navbar", "Logo Gabriel Rodrigues");
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -28,10 +32,14 @@ function Navbar() {
 
   return (
     <NavbarWrapper $afterNavbar={afterNavbar}>
-      <img
-        src="/assets/logos/Imagologo%20verde.png"
-        alt="Logo Gabriel Rodrigues"
+      <OptimizedImage
+        src={logoSrc}
+        alt={logoAlt}
+        width={180}
+        height={48}
         className="n-logo"
+        sizes="180px"
+        quality={90}
       />
       <ThemeButton
         type="button"

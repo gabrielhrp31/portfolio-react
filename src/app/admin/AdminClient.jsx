@@ -69,6 +69,7 @@ export default function AdminClient({
   initialTechnologies = [],
   initialExperiences = [],
   initialCourses = [],
+  initialMedia = [],
 }) {
   const [authenticated, setAuthenticated] = useState(initialAuthenticated);
   const [password, setPassword] = useState("");
@@ -80,6 +81,15 @@ export default function AdminClient({
   const [technologies, setTechnologies] = useState(initialTechnologies);
   const [experiences, setExperiences] = useState(initialExperiences);
   const [courses, setCourses] = useState(initialCourses);
+  const [media, setMedia] = useState(initialMedia);
+  const [mediaDrafts, setMediaDrafts] = useState(() =>
+    Object.fromEntries(
+      (initialMedia || []).map((item) => [
+        item.key,
+        { url: item.url || "", altText: item.altText || "" },
+      ])
+    )
+  );
 
   const [portfolioForm, setPortfolioForm] = useState(emptyPortfolio);
   const [serviceForm, setServiceForm] = useState(emptyService);
@@ -100,13 +110,81 @@ export default function AdminClient({
       fetch("/api/technologies"),
       fetch("/api/experiences"),
       fetch("/api/courses"),
+      fetch("/api/media"),
     ]);
-    const [p, s, t, e, c] = await Promise.all(responses.map((r) => r.json()));
+    const [p, s, t, e, c, m] = await Promise.all(
+      responses.map((r) => r.json())
+    );
     setPortfolio(Array.isArray(p) ? p : []);
     setServices(Array.isArray(s) ? s : []);
     setTechnologies(Array.isArray(t) ? t : []);
     setExperiences(Array.isArray(e) ? e : []);
     setCourses(Array.isArray(c) ? c : []);
+    const mediaList = Array.isArray(m) ? m : [];
+    setMedia(mediaList);
+    setMediaDrafts(
+      Object.fromEntries(
+        mediaList.map((item) => [
+          item.key,
+          { url: item.url || "", altText: item.altText || "" },
+        ])
+      )
+    );
+  }
+
+  async function uploadFile(file) {
+    const form = new FormData();
+    form.append("file", file);
+    const response = await fetch("/api/media/upload", {
+      method: "POST",
+      body: form,
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(data.error || "Falha no upload");
+    }
+    return data.url;
+  }
+
+  async function saveMediaItem(item) {
+    setLoading(true);
+    setError("");
+    const draft = mediaDrafts[item.key] || { url: item.url, altText: item.altText };
+    try {
+      let response;
+      if (item.id) {
+        response = await fetch(`/api/media/${item.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            label: item.label,
+            url: draft.url,
+            altText: draft.altText,
+            sortOrder: item.sortOrder || 0,
+          }),
+        });
+      } else {
+        response = await fetch("/api/media", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            key: item.key,
+            label: item.label,
+            url: draft.url,
+            altText: draft.altText,
+            sortOrder: item.sortOrder || 0,
+          }),
+        });
+      }
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        setError(data.error || "Falha ao salvar mídia");
+        return;
+      }
+      await refreshAll();
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleLogin(event) {
@@ -136,6 +214,8 @@ export default function AdminClient({
     setTechnologies([]);
     setExperiences([]);
     setCourses([]);
+    setMedia([]);
+    setMediaDrafts({});
     setEditingPortfolioId(null);
     setEditingServiceId(null);
     setEditingTechnologyId(null);
@@ -195,7 +275,8 @@ export default function AdminClient({
         <Card as="form" onSubmit={handleLogin}>
           <Title>Admin do Portfólio</Title>
           <p>
-            Gerencie portfólio, serviços, tecnologias, experiências e cursos.
+            Gerencie portfólio, serviços, tecnologias, experiências, cursos e
+            imagens.
           </p>
           <label>
             Senha
@@ -221,7 +302,8 @@ export default function AdminClient({
       <Card>
         <Title>Painel Admin</Title>
         <p>
-          Cadastre portfólio, serviços, tecnologias, experiências e formação.
+          Cadastre portfólio, serviços, tecnologias, experiências, formação e
+          imagens do site.
         </p>
         <div style={{ display: "flex", gap: 12, marginBottom: 8 }}>
           <SecondaryButton type="button" onClick={handleLogout}>
@@ -230,6 +312,105 @@ export default function AdminClient({
           <Link href="/">Ver site</Link>
         </div>
         {error ? <ErrorText>{error}</ErrorText> : null}
+      </Card>
+
+      <Card>
+        <Title>Imagens do site</Title>
+        <p style={{ marginBottom: 12 }}>
+          URLs locais (`/assets/...`, `/uploads/...`) são otimizadas (AVIF/WebP)
+          pelo Next.js. Você também pode colar uma URL externa ou fazer upload.
+        </p>
+        <ItemList>
+          {media.map((item) => {
+            const draft = mediaDrafts[item.key] || {
+              url: item.url || "",
+              altText: item.altText || "",
+            };
+            return (
+              <ItemRow key={item.key}>
+                <div style={{ width: "100%" }}>
+                  <strong>
+                    {item.label} <span style={{ opacity: 0.65 }}>({item.key})</span>
+                  </strong>
+                  <FormGrid style={{ marginTop: 10 }}>
+                    <label className="full">
+                      URL
+                      <input
+                        value={draft.url}
+                        onChange={(e) =>
+                          setMediaDrafts((prev) => ({
+                            ...prev,
+                            [item.key]: { ...draft, url: e.target.value },
+                          }))
+                        }
+                      />
+                    </label>
+                    <label className="full">
+                      Texto alternativo
+                      <input
+                        value={draft.altText}
+                        onChange={(e) =>
+                          setMediaDrafts((prev) => ({
+                            ...prev,
+                            [item.key]: { ...draft, altText: e.target.value },
+                          }))
+                        }
+                      />
+                    </label>
+                    <label>
+                      Upload
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          setLoading(true);
+                          setError("");
+                          try {
+                            const url = await uploadFile(file);
+                            setMediaDrafts((prev) => ({
+                              ...prev,
+                              [item.key]: { ...draft, url },
+                            }));
+                          } catch (err) {
+                            setError(err.message || "Falha no upload");
+                          } finally {
+                            setLoading(false);
+                            e.target.value = "";
+                          }
+                        }}
+                      />
+                    </label>
+                  </FormGrid>
+                  {draft.url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={draft.url}
+                      alt={draft.altText || item.label}
+                      style={{
+                        marginTop: 10,
+                        maxWidth: 160,
+                        maxHeight: 90,
+                        objectFit: "cover",
+                        borderRadius: 8,
+                      }}
+                    />
+                  ) : null}
+                  <div style={{ display: "flex", gap: 12, marginTop: 12 }}>
+                    <PrimaryButton
+                      type="button"
+                      disabled={loading}
+                      onClick={() => saveMediaItem(item)}
+                    >
+                      Salvar
+                    </PrimaryButton>
+                  </div>
+                </div>
+              </ItemRow>
+            );
+          })}
+        </ItemList>
       </Card>
 
       <Card>
@@ -633,12 +814,34 @@ export default function AdminClient({
               />
             </label>
             <label className="full">
-              Imagem
+              Imagem (URL)
               <input
                 value={portfolioForm.image}
                 onChange={(e) =>
                   setPortfolioForm({ ...portfolioForm, image: e.target.value })
                 }
+              />
+            </label>
+            <label>
+              Upload da imagem
+              <input
+                type="file"
+                accept="image/*"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setLoading(true);
+                  setError("");
+                  try {
+                    const url = await uploadFile(file);
+                    setPortfolioForm((prev) => ({ ...prev, image: url }));
+                  } catch (err) {
+                    setError(err.message || "Falha no upload");
+                  } finally {
+                    setLoading(false);
+                    e.target.value = "";
+                  }
+                }}
               />
             </label>
             <label className="full">

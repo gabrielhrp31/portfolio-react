@@ -6,7 +6,10 @@ export const ServiceWrapper = styled.div`
   z-index: 2;
   display: flex;
   flex-direction: column;
-  width: min(200px, 80%);
+  width: 100%;
+  height: 100%;
+  min-height: 284px;
+  box-sizing: border-box;
 
   .icon-wrapper {
     background: ${colorScheme.offWhite};
@@ -16,6 +19,7 @@ export const ServiceWrapper = styled.div`
     align-items: center;
     justify-content: center;
     height: 149px;
+    flex-shrink: 0;
     overflow: hidden;
 
     svg {
@@ -38,16 +42,29 @@ export const ServiceWrapper = styled.div`
       font-size: 22px;
       font-weight: bold;
       line-height: 1.2;
+      text-align: center;
+      padding: 0 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
   }
 
   .description {
     margin-top: 15px;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 500;
     text-align: center;
     color: ${colorScheme.offWhite};
     opacity: 1;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+    line-height: 1.45;
+    flex: 1;
+    min-height: 93px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 `;

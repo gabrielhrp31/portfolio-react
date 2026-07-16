@@ -6,6 +6,7 @@ import { PortfolioItemWrapper } from "./styles";
 import Tecnologies from "@/components/Tecnologies";
 import ShinyText from "@/components/react-bits/ShinyText";
 import Magnet from "@/components/react-bits/Magnet";
+import OptimizedImage from "@/components/OptimizedImage";
 
 function PortfolioItem({ item }) {
   const theme = useContext(ThemeContext);
@@ -13,7 +14,16 @@ function PortfolioItem({ item }) {
   return (
     <PortfolioItemWrapper className="portfolio__item">
       <div className="portfolio__item__img-wrapper">
-        {item.image ? <img src={item.image} alt={item.name} /> : null}
+        {item.image ? (
+          <OptimizedImage
+            src={item.image}
+            alt={item.name}
+            fill
+            sizes="(max-width: 768px) 100vw, 420px"
+            quality={78}
+            objectFit="cover"
+          />
+        ) : null}
         <div className="portfolio__item__techs-wrapper">
           <Tecnologies bgColor="titles" icons={item.technologies || []} />
         </div>

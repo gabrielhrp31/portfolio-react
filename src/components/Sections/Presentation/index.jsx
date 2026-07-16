@@ -13,6 +13,8 @@ import TextType from "@/components/react-bits/TextType";
 import ShinyText from "@/components/react-bits/ShinyText";
 import Magnet from "@/components/react-bits/Magnet";
 import LetterGlitch from "@/components/react-bits/LetterGlitch";
+import OptimizedImage from "@/components/OptimizedImage";
+import { mediaUrl } from "@/lib/media";
 
 const SOCIAL_ICON_SIZE = 40;
 const ARROW_ICON_SIZE = 45;
@@ -28,9 +30,12 @@ function readHeroTyped() {
   }
 }
 
-function Presentation() {
+function Presentation({ media = null }) {
   const [typedDone, setTypedDone] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const heroBg = mediaUrl(media, "hero_bg");
+  const logoHero = mediaUrl(media, "logo_hero");
+  const logoHeroHover = mediaUrl(media, "logo_hero_hover");
 
   useEffect(() => {
     setTypedDone(readHeroTyped());
@@ -67,7 +72,17 @@ function Presentation() {
 
   return (
     <Parallax id="inicio">
-      <div className="hero-bg" aria-hidden="true" />
+      <div className="hero-bg" aria-hidden="true">
+        <OptimizedImage
+          src={heroBg}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          quality={70}
+          objectFit="cover"
+        />
+      </div>
       <div className="hero-glitch" aria-hidden="true">
         <LetterGlitch
           glitchSpeed={70}
@@ -84,8 +99,8 @@ function Presentation() {
       <div className="p-content">
         <TransitionLogo
           id="logo"
-          $image="/assets/logos/Isologoverde.png"
-          $hoverImage="/assets/logos/Isologomescla.png"
+          $image={logoHero}
+          $hoverImage={logoHeroHover}
         />
 
         <div className="p-content__text">

@@ -14,13 +14,13 @@ export const Parallax = styled.section`
     position: absolute;
     inset: 0;
     z-index: 0;
-    background-image: url("/assets/backgrounds/binary.jpg");
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
     filter: saturate(1.15) contrast(1.05) brightness(0.55);
     transform: scale(1.02);
+
+    img {
+      object-fit: cover;
+      object-position: center;
+    }
   }
 
   .hero-glitch {

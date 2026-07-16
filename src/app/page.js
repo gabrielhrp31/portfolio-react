@@ -4,8 +4,10 @@ import {
   listExperiences,
   listPortfolioItems,
   listServices,
+  listSiteMedia,
   listTechnologies,
 } from "@/lib/db";
+import { buildMediaMap } from "@/lib/media";
 
 export const dynamic = "force-dynamic";
 
@@ -19,13 +21,14 @@ async function safeList(loader, label) {
 }
 
 export default async function HomePage() {
-  const [portfolio, services, technologies, experiences, courses] =
+  const [portfolio, services, technologies, experiences, courses, mediaRows] =
     await Promise.all([
       safeList(listPortfolioItems, "portfolio"),
       safeList(listServices, "services"),
       safeList(listTechnologies, "technologies"),
       safeList(listExperiences, "experiences"),
       safeList(listCourses, "courses"),
+      safeList(listSiteMedia, "media"),
     ]);
 
   return (
@@ -35,6 +38,7 @@ export default async function HomePage() {
       technologies={technologies}
       experiences={experiences}
       courses={courses}
+      media={buildMediaMap(mediaRows)}
     />
   );
 }

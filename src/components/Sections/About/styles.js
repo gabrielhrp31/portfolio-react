@@ -40,12 +40,23 @@ export const AboutContent = styled.div`
       text-align: justify;
     }
 
-    img {
-      max-width: 40%;
-      border-radius: 34px;
+    .profile-image {
+      width: 40%;
+      max-width: 280px;
       margin-bottom: 24px;
+      border-radius: 34px;
+      overflow: hidden;
+      line-height: 0;
+
+      img {
+        width: 100% !important;
+        height: auto !important;
+        border-radius: 34px;
+        object-fit: cover;
+      }
 
       @media (min-width: 1196px) {
+        width: 100%;
         max-width: 100%;
       }
     }
@@ -109,7 +120,10 @@ export const AboutContent = styled.div`
 
       img {
         border-radius: 100%;
-        width: 70px;
+        width: 70px !important;
+        height: 70px !important;
+        object-fit: cover;
+        flex-shrink: 0;
       }
     }
 

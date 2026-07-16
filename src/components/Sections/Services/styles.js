@@ -21,7 +21,8 @@ export const ParallaxWaves = styled.section`
     opacity: 0.18;
     width: 100%;
     height: 100%;
-    background-image: url("/assets/backgrounds/binary.jpg");
+    background-image: url(${({ $bgImage }) =>
+      $bgImage || "/assets/backgrounds/binary.jpg"});
     background-attachment: fixed;
     background-position: center;
     background-size: cover;
@@ -51,19 +52,13 @@ export const ParallaxWaves = styled.section`
     fill: ${({ theme }) => theme.background} !important;
   }
 
-  .services-wrapper {
+  .services-heading {
     position: relative;
     z-index: 2;
-    display: flex;
-    justify-content: center;
-    flex-flow: wrap;
-    gap: 48px 80px;
-  }
-
-  .services-heading {
     width: 100%;
     display: flex;
     justify-content: center;
+    margin-bottom: 36px;
   }
 
   .services-title {
@@ -72,8 +67,40 @@ export const ParallaxWaves = styled.section`
     font-weight: 700;
   }
 
+  .services-grid {
+    position: relative;
+    z-index: 2;
+    width: min(1100px, 100%);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 240px);
+    gap: 28px;
+    align-items: stretch;
+    justify-content: center;
+    justify-items: stretch;
+  }
+
+  .service-cell {
+    width: 240px;
+    max-width: 240px;
+    height: 100%;
+    display: flex;
+  }
+
   .service-spotlight {
     border-radius: 16px;
     padding: 8px;
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
   }
-`;
+
+  .service-spotlight > * {
+    width: 100%;
+    height: 100%;
+    flex: 1;
+  }
+`

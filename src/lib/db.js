@@ -389,3 +389,72 @@ export async function deleteCourse(id) {
   ]);
   return result.affectedRows > 0;
 }
+
+export function mapMediaRow(row) {
+  return {
+    id: row.id,
+    key: row.media_key,
+    label: row.label || row.media_key,
+    url: row.url || "",
+    altText: row.alt_text || "",
+    sortOrder: row.sort_order,
+  };
+}
+
+export async function listSiteMedia() {
+  const [rows] = await getPool().query(
+    "SELECT * FROM site_media ORDER BY sort_order ASC, id ASC"
+  );
+  return rows.map(mapMediaRow);
+}
+
+export async function getSiteMedia(id) {
+  const [rows] = await getPool().query("SELECT * FROM site_media WHERE id = ?", [
+    id,
+  ]);
+  return rows[0] ? mapMediaRow(rows[0]) : null;
+}
+
+export async function getSiteMediaByKey(key) {
+  const [rows] = await getPool().query(
+    "SELECT * FROM site_media WHERE media_key = ?",
+    [key]
+  );
+  return rows[0] ? mapMediaRow(rows[0]) : null;
+}
+
+export async function updateSiteMedia(id, data) {
+  await getPool().query(
+    `UPDATE site_media
+     SET label = ?, url = ?, alt_text = ?, sort_order = ?
+     WHERE id = ?`,
+    [
+      data.label || "",
+      data.url || "",
+      data.altText || "",
+      data.sortOrder ?? 0,
+      id,
+    ]
+  );
+  return getSiteMedia(id);
+}
+
+export async function upsertSiteMediaByKey(data) {
+  await getPool().query(
+    `INSERT INTO site_media (media_key, label, url, alt_text, sort_order)
+     VALUES (?, ?, ?, ?, ?)
+     ON DUPLICATE KEY UPDATE
+       label = VALUES(label),
+       url = IF(VALUES(url) = '', url, VALUES(url)),
+       alt_text = VALUES(alt_text),
+       sort_order = VALUES(sort_order)`,
+    [
+      data.key,
+      data.label || data.key,
+      data.url || "",
+      data.altText || "",
+      data.sortOrder ?? 0,
+    ]
+  );
+  return getSiteMediaByKey(data.key);
+}

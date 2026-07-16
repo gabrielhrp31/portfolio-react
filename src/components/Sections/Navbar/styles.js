@@ -22,8 +22,11 @@ export const NavbarWrapper = styled.div`
     color 0.45s ease;
 
   .n-logo {
-    height: 75%;
+    width: auto !important;
+    height: 75% !important;
+    max-height: 48px;
     margin-left: auto;
+    object-fit: contain;
   }
 `;
 

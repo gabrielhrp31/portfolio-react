@@ -119,6 +119,72 @@ const seedExperiences = [
   },
 ];
 
+const seedMedia = [
+  {
+    media_key: "profile",
+    label: "Foto de perfil (Sobre)",
+    url: "/assets/images/profile.jpg",
+    alt_text: "Imagem de Gabriel",
+    sort_order: 1,
+  },
+  {
+    media_key: "logo_navbar",
+    label: "Logo da navbar",
+    url: "/assets/logos/Imagologo verde.png",
+    alt_text: "Logo Gabriel Rodrigues",
+    sort_order: 2,
+  },
+  {
+    media_key: "logo_hero",
+    label: "Logo do hero",
+    url: "/assets/logos/Isologoverde.png",
+    alt_text: "Logo Gabriel Rodrigues",
+    sort_order: 3,
+  },
+  {
+    media_key: "logo_hero_hover",
+    label: "Logo do hero (hover)",
+    url: "/assets/logos/Isologomescla.png",
+    alt_text: "Logo Gabriel Rodrigues",
+    sort_order: 4,
+  },
+  {
+    media_key: "hero_bg",
+    label: "Fundo do hero",
+    url: "/assets/backgrounds/binary.jpg",
+    alt_text: "",
+    sort_order: 5,
+  },
+  {
+    media_key: "services_bg",
+    label: "Fundo da seção Serviços",
+    url: "/assets/backgrounds/binary.jpg",
+    alt_text: "",
+    sort_order: 6,
+  },
+  {
+    media_key: "id1",
+    label: "Identidade visual 1",
+    url: "/assets/images/id1.png",
+    alt_text: "Descrição 1 da Identidade Visual",
+    sort_order: 7,
+  },
+  {
+    media_key: "id2",
+    label: "Identidade visual 2",
+    url: "/assets/images/id2.png",
+    alt_text: "Descrição 3 da Identidade Visual",
+    sort_order: 8,
+  },
+  {
+    media_key: "id3",
+    label: "Identidade visual 3",
+    url: "/assets/images/id3.png",
+    alt_text: "Descrição 2 da Identidade Visual",
+    sort_order: 9,
+  },
+];
+
 const seedCourses = [
   {
     title: "Bacharelado em Ciência da Computação",
@@ -335,6 +401,29 @@ async function main() {
     },
     seedCourses,
     "courses"
+  );
+
+  // Media keys are upserted so new defaults appear without overwriting custom URLs.
+  let mediaInserted = 0;
+  for (const item of seedMedia) {
+    const [result] = await connection.query(
+      `INSERT INTO site_media (media_key, label, url, alt_text, sort_order)
+       VALUES (?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE
+         label = VALUES(label),
+         sort_order = VALUES(sort_order)`,
+      [
+        item.media_key,
+        item.label,
+        item.url,
+        item.alt_text,
+        item.sort_order,
+      ]
+    );
+    if (result.affectedRows === 1) mediaInserted += 1;
+  }
+  console.log(
+    `Ensured ${seedMedia.length} site media keys (${mediaInserted} newly inserted).`
   );
 
   await connection.end();

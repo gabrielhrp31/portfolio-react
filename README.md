@@ -56,7 +56,8 @@ Conteúdo dinâmico (CRUD em `/admin`):
 | `technologies` | Ícones Devicon na seção Sobre (`slug` ex: `react`, `mysql`) |
 | `experiences` | Timeline de experiência profissional |
 | `courses` | Formação, cursos e certificados (`kind`: formation/course/certificate) |
+| `site_media` | Imagens configuráveis (perfil, logos, fundos, identidade) |
 
-APIs: `GET /api/portfolio`, `/api/services`, `/api/technologies`, `/api/experiences`, `/api/courses`.
+APIs: `GET /api/portfolio`, `/api/services`, `/api/technologies`, `/api/experiences`, `/api/courses`, `/api/media`. Upload: `POST /api/media/upload` (admin). Imagens locais passam pelo otimizador do Next.js (AVIF/WebP).
 
 Sugestões de evolução (inspiradas em [valadao.works](https://valadao.works/)): ver `docs/IMPROVEMENTS.md`.

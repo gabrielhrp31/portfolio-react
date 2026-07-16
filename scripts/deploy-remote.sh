@@ -10,7 +10,8 @@ cd "$APP_DIR"
 
 if [[ ! -f "$ENV_FILE" ]]; then
   echo "ERRO: falta $APP_DIR/$ENV_FILE"
-  echo "Na VPS: cp .env.production.example .env.production && nano .env.production"
+  echo "O Gitea Actions deveria gerar este arquivo a partir dos Secrets."
+  echo "Confira ADMIN_PASSWORD, MYSQL_ROOT_PASSWORD e DATABASE_PASSWORD no Gitea."
   exit 1
 fi
 

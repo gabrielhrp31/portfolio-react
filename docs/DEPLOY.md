@@ -83,32 +83,45 @@ O compose redireciona `www.gabrielhrp.com` → `https://gabrielhrp.com/`.
 ```bash
 sudo mkdir -p /opt/portfolio
 sudo chown "$USER":"$USER" /opt/portfolio
-
-# Na primeira vez, copie o código (ou deixe o Actions fazer o rsync)
-# Depois:
-cd /opt/portfolio
-cp .env.production.example .env.production
-nano .env.production   # senhas fortes!
-
-chmod +x scripts/deploy-remote.sh
-./scripts/deploy-remote.sh
+# Docker + rede Traefik (ver seção 1)
+# Não é necessário criar .env.production manualmente:
+# o Gitea Actions gera o arquivo a partir dos Secrets a cada deploy.
 ```
+
+Na VPS, autorize a chave pública do deploy em `~/.ssh/authorized_keys` do `SSH_USER`  
+e garanta permissão Docker (`usermod -aG docker deploy` + relogin).
 
 ## 4. Secrets no Gitea
 
 Em **Repository → Settings → Actions → Secrets**:
 
-| Secret | Exemplo |
-|--------|---------|
-| `SSH_HOST` | `123.45.67.89` |
-| `SSH_USER` | `deploy` |
-| `SSH_PRIVATE_KEY` | conteúdo de `~/.ssh/id_ed25519` (chave privada) |
-| `SSH_PORT` | `22` (opcional) |
-| `DEPLOY_PATH` | `/opt/portfolio` (opcional) |
+### Obrigatórios
 
-Na VPS, autorize a chave pública correspondente em `~/.ssh/authorized_keys` do `SSH_USER`.
+| Secret | Uso |
+|--------|-----|
+| `SSH_HOST` | IP/hostname da VPS |
+| `SSH_USER` | usuário SSH |
+| `SSH_PRIVATE_KEY` | chave privada OpenSSH |
+| `ADMIN_PASSWORD` | senha do `/admin` |
+| `MYSQL_ROOT_PASSWORD` | root do MySQL no compose |
+| `DATABASE_PASSWORD` | senha do usuário MySQL da app |
 
-O usuário precisa de permissão para Docker (`usermod -aG docker deploy` + relogin).
+### Opcionais
+
+| Secret | Default / uso |
+|--------|----------------|
+| `SSH_PORT` | `22` |
+| `DEPLOY_PATH` | `/opt/portfolio` |
+| `DATABASE_NAME` | `portfolio` |
+| `DATABASE_USER` | `portfolio` |
+| `CONTACT_SMTP_HOST` | SMTP para orçamentos |
+| `CONTACT_SMTP_PORT` | `587` |
+| `CONTACT_SMTP_USER` / `CONTACT_SMTP_PASS` | auth SMTP |
+| `CONTACT_SMTP_FROM` | remetente |
+| `CONTACT_SMTP_TO` / `CONTACT_TO_EMAIL` | destinatário dos orçamentos |
+| `CONTACT_SMTP_SECURE` | `false` |
+
+O workflow grava esses valores em `${DEPLOY_PATH}/.env.production` (chmod 600) antes do `docker compose up`.
 
 ## 5. Runner Gitea (`act_runner`)
 
@@ -121,10 +134,11 @@ O usuário precisa de permissão para Docker (`usermod -aG docker deploy` + relo
 Push em `master`/`main` (ou **Run workflow**):
 
 1. Checkout no runner  
-2. Rsync do código → `/opt/portfolio` (preserva `.env.production` e `uploads`)  
-3. `docker compose -f docker-compose.prod.yml up -d --build`  
-4. Seed MySQL idempotente  
-5. Health check em `https://gabrielhrp.com/`
+2. Gera `.env.production` na VPS a partir dos Secrets  
+3. Rsync do código → `/opt/portfolio` (não sobrescreve `.env.production`/`uploads` via rsync)  
+4. `docker compose -f docker-compose.prod.yml up -d --build`  
+5. Seed MySQL idempotente  
+6. Health check em `https://gabrielhrp.com/`
 
 ## Labels Traefik (resumo)
 
@@ -138,4 +152,4 @@ Push em `master`/`main` (ou **Run workflow**):
 ## Admin
 
 Após o deploy: `https://gabrielhrp.com/admin`  
-Senha: `ADMIN_PASSWORD` do `.env.production`.
+Senha: valor do secret `ADMIN_PASSWORD` (injetado no `.env.production`).

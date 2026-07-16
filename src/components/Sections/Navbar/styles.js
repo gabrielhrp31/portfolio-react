@@ -9,9 +9,11 @@ export const NavbarWrapper = styled.div`
   width: 100%;
   max-width: 100%;
   height: 64px;
+  padding: 0 clamp(10px, 3vw, 20px);
 
   display: flex;
   align-items: center;
+  gap: 10px;
 
   background-color: ${({ theme }) => theme.navBg};
   backdrop-filter: blur(10px);
@@ -23,22 +25,23 @@ export const NavbarWrapper = styled.div`
 
   .n-logo {
     width: auto !important;
-    height: 75% !important;
-    max-height: 48px;
+    height: 70% !important;
+    max-height: 44px;
     margin-left: auto;
     object-fit: contain;
   }
 `;
 
 export const ThemeButton = styled.button`
-  margin-left: auto;
-  margin-right: 20px;
+  margin-left: 0;
+  margin-right: 0;
   padding: 8px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  flex-shrink: 0;
 
   background-color: ${({ theme }) => theme.surface};
   color: ${({ theme }) => theme.softAccent};
@@ -57,5 +60,9 @@ export const ThemeButton = styled.button`
     font-size: 12px;
     font-weight: 700;
     color: ${({ theme }) => theme.titles};
+
+    @media (max-width: 480px) {
+      display: none;
+    }
   }
 `;

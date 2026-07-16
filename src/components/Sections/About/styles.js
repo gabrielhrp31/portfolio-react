@@ -3,45 +3,49 @@ import styled from "styled-components";
 const gap = "100px";
 const textAndInfosSize = 75;
 const calculateSize = () => {
-		return 100 - textAndInfosSize;
+  return 100 - textAndInfosSize;
 };
 
 export const AboutWrapper = styled.section`
-	position: relative;
-	padding: 120px 50px 50px;
-	height: fit-content;
+  position: relative;
+  padding: clamp(72px, 10vw, 120px) clamp(16px, 4vw, 50px) clamp(36px, 5vw, 50px);
+  height: fit-content;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  background-color: ${({ theme }) => theme.softAccent};
+  transition: background-color 0.45s ease;
+`;
 
-	z-index: 1;
-
-	display: flex;
-	justify-content: center;
-
-	background-color: ${({theme}) => theme.softAccent};
-	transition: background-color 0.45s ease;
-`
 export const AboutContent = styled.div`
   width: 100%;
-
   display: flex;
   flex-flow: wrap;
-  gap: ${gap};
+  gap: 32px;
+
+  @media (min-width: 1024px) {
+    gap: ${gap};
+  }
 
   .infos-and-picture {
     width: 100%;
-
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: start;
 
     .text {
-      font-size: 18px;
-      color: ${({theme}) => theme.text};
-      text-align: justify;
+      font-size: clamp(16px, 2.5vw, 18px);
+      color: ${({ theme }) => theme.text};
+      text-align: center;
+
+      @media (min-width: 1024px) {
+        text-align: left;
+      }
     }
 
     .profile-image {
-      width: 40%;
+      width: min(56vw, 220px);
       max-width: 280px;
       margin-bottom: 24px;
       border-radius: 34px;
@@ -55,7 +59,7 @@ export const AboutContent = styled.div`
         object-fit: cover;
       }
 
-      @media (min-width: 1196px) {
+      @media (min-width: 1024px) {
         width: 100%;
         max-width: 100%;
       }
@@ -66,19 +70,16 @@ export const AboutContent = styled.div`
       align-items: center;
       justify-content: center;
       gap: 10px;
-
       margin-top: 28px;
       padding: 12px 22px;
       min-height: 44px;
       width: auto;
       max-width: none;
-
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.28);
       background: rgba(15, 22, 18, 0.22);
       color: #ffffff;
       backdrop-filter: blur(8px);
-
       font-size: 15px;
       font-weight: 600;
       letter-spacing: 0.02em;
@@ -108,7 +109,7 @@ export const AboutContent = styled.div`
       }
     }
 
-    @media (min-width: 1196px) {
+    @media (min-width: 1024px) {
       width: ${calculateSize() + "%"};
     }
   }
@@ -117,7 +118,7 @@ export const AboutContent = styled.div`
     width: 100%;
 
     .title {
-      font-size: 28px;
+      font-size: clamp(22px, 4vw, 28px);
       color: ${({ theme }) => (theme.dark ? theme.titles : theme.text)};
       margin-bottom: 24px;
       font-weight: 600;
@@ -125,47 +126,73 @@ export const AboutContent = styled.div`
 
     .text {
       font-size: 16px;
-      color: ${({theme}) => theme.text};
+      color: ${({ theme }) => theme.text};
       margin-bottom: 42px;
-      text-align: justify;
+      text-align: left;
+
+      @media (min-width: 768px) {
+        text-align: justify;
+      }
     }
 
     .text-and-image {
       display: flex;
-      align-items: center;
-      gap: 20px;
-      text-align: justify;
-
-      color: ${({theme}) => theme.text};
+      align-items: flex-start;
+      gap: clamp(12px, 3vw, 20px);
+      text-align: left;
+      color: ${({ theme }) => theme.text};
       margin-bottom: 32px;
+
+      @media (min-width: 768px) {
+        align-items: center;
+        text-align: justify;
+      }
 
       img {
         border-radius: 100%;
-        width: 70px !important;
-        height: 70px !important;
+        width: clamp(56px, 12vw, 70px) !important;
+        height: clamp(56px, 12vw, 70px) !important;
         object-fit: cover;
         flex-shrink: 0;
       }
     }
 
-    @media (min-width: 1196px) {
+    @media (min-width: 1024px) {
       width: calc(${textAndInfosSize + "%"} - ${gap});
     }
   }
-	
-	.tech-icon{
-		width: 80px;
-    background-color: ${({theme}) => theme.background};
-    fill: ${({theme}) => theme.softAccent};
-		border-radius: 15px;
-		padding-top: 11px;
-		padding-bottom: 11px;
-		padding-left: 10px;
-		padding-right: 12px;
-	}
+
+  .tech-icon {
+    width: 80px;
+    background-color: ${({ theme }) => theme.background};
+    fill: ${({ theme }) => theme.softAccent};
+    border-radius: 15px;
+    padding-top: 11px;
+    padding-bottom: 11px;
+    padding-left: 10px;
+    padding-right: 12px;
+  }
+
+  /* Scale tech chips on narrow screens (Tecnologies uses fixed pixel size). */
+  .text-and-infos [class*="icon-wrapper"],
+  .text-and-infos > div {
+    max-width: 100%;
+  }
+
+  @media (max-width: 640px) {
+    .text-and-infos .icon-wrapper {
+      min-width: 56px !important;
+      width: 56px !important;
+      height: 56px !important;
+
+      i {
+        font-size: 31px !important;
+      }
+    }
+  }
 
   @media (min-width: 1280px) {
     width: 100%;
     max-width: 1280px;
   }
-`
+`;

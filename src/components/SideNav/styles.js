@@ -54,8 +54,34 @@ export const SideNavWrapper = styled.nav`
     gap: 5px;
   }
 
+  /* Mobile / tablet: bottom horizontal section nav */
   @media (max-width: 900px) {
-    display: none;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: none;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 8px;
+    width: 100%;
+    max-width: none;
+    max-height: none;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    pointer-events: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    background: ${({ theme }) => theme.navBg};
+    border-top: 1px solid ${({ theme }) => theme.border};
+    backdrop-filter: blur(12px);
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.12);
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 `;
 
@@ -108,5 +134,29 @@ export const Bookmark = styled.button`
     opacity: 0.95;
     flex-shrink: 0;
     margin-left: auto;
+  }
+
+  @media (max-width: 900px) {
+    width: auto;
+    min-width: max-content;
+    min-height: 40px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    transform: none;
+    box-shadow: none;
+    flex-shrink: 0;
+
+    &:hover,
+    &:focus-visible {
+      transform: none;
+    }
+
+    .bookmark__notch {
+      display: none;
+    }
+
+    .bookmark__label {
+      font-size: 12px;
+    }
   }
 `;

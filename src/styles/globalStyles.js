@@ -17,6 +17,7 @@ export default createGlobalStyle`
 
   html {
     scroll-behavior: smooth;
+    overflow-x: clip;
   }
 
   button {
@@ -26,6 +27,8 @@ export default createGlobalStyle`
 
   body {
     position: relative;
+    max-width: 100%;
+    overflow-x: clip;
     background: ${(props) => props.theme.background};
     color: ${(props) => props.theme.titles};
     transition: background-color 0.45s ease, color 0.45s ease;
@@ -33,7 +36,20 @@ export default createGlobalStyle`
     .global-wrapper {
       padding-bottom: 50px;
       position: relative;
+      max-width: 100%;
+
+      @media (max-width: 900px) {
+        /* Room for mobile bottom section nav */
+        padding-bottom: 88px;
+      }
     }
+  }
+
+  img,
+  svg,
+  video,
+  canvas {
+    max-width: 100%;
   }
 
   a {
@@ -50,7 +66,7 @@ export default createGlobalStyle`
 
   .title-green {
     width: 100%;
-    font-size: 36px;
+    font-size: clamp(26px, 5vw, 36px);
     margin-bottom: 0;
     font-weight: 600;
     color: ${({ theme }) => theme.softAccent};
@@ -60,17 +76,30 @@ export default createGlobalStyle`
     width: 100%;
     font-size: 16px;
     color: ${({ theme }) => theme.textMuted};
-    text-align: justify;
+    text-align: left;
+
+    @media (min-width: 768px) {
+      text-align: justify;
+    }
   }
 
   .text-bg-reverse-60 {
     font-size: 16px;
     color: ${({ theme }) => theme.textMuted};
     opacity: 0.85;
-    text-align: justify;
+    text-align: left;
+
+    @media (min-width: 768px) {
+      text-align: justify;
+    }
   }
 
   section[id] {
     scroll-margin-top: 88px;
+
+    @media (max-width: 900px) {
+      scroll-margin-top: 72px;
+      scroll-margin-bottom: 80px;
+    }
   }
 `;

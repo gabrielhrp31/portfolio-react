@@ -28,7 +28,7 @@ function About({ technologies = [], media = null }) {
               alt={profileAlt}
               width={480}
               height={480}
-              sizes="(max-width: 1196px) 40vw, 280px"
+              sizes="(max-width: 1023px) 56vw, 280px"
               quality={82}
               priority={false}
             />
@@ -75,7 +75,7 @@ function About({ technologies = [], media = null }) {
                 ) : null}
                 {item.showTechnologies ? (
                   techSlugs.length > 0 ? (
-                    <Tecnologies size={80} padding={25} icons={techSlugs} />
+                    <Tecnologies size={64} padding={18} icons={techSlugs} />
                   ) : (
                     <p className="text">Nenhuma tecnologia cadastrada ainda.</p>
                   )

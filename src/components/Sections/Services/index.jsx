@@ -5,6 +5,8 @@ import { ParallaxWaves } from "./styles";
 import { FaCode, FaMobileAlt, FaServer } from "react-icons/fa";
 import Service from "@/components/Service";
 
+const ICON_SIZE = 56;
+
 function Services() {
   return (
     <ParallaxWaves>
@@ -17,17 +19,17 @@ function Services() {
       <div className="services-wrapper">
         <Service
           name="Web"
-          icon={<FaCode />}
+          icon={<FaCode size={ICON_SIZE} />}
           description="Desenvolvimento de sistemas em nuvem e sites ambos responsivos"
         />
         <Service
           name="Mobile"
-          icon={<FaMobileAlt />}
+          icon={<FaMobileAlt size={ICON_SIZE} />}
           description="Desenvolvimento de aplicações android"
         />
         <Service
           name="API's"
-          icon={<FaServer />}
+          icon={<FaServer size={ICON_SIZE} />}
           description="Desenvolvimentos de serviços para aplicações através de API’s"
         />
       </div>

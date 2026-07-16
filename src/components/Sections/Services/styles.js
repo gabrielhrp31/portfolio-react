@@ -5,57 +5,56 @@ export const ParallaxWaves = styled.div`
   position: relative;
   background: ${colorScheme.gray};
   height: fit-content;
-  overflow: visible;
+  overflow: hidden;
   z-index: 100;
   padding: 20vw 50px 22vw 50px;
 
-  > svg:first-child {
+  &::before {
+    content: "";
+    display: block;
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.18;
+    width: 100%;
+    height: 100%;
+    background-image: url("/assets/backgrounds/binary.jpg");
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+  }
+
+  > svg:first-child,
+  > svg:last-child {
     position: absolute;
     left: 0;
-    top: 0;
     width: 100%;
-    height: unset !important;
+    height: auto;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  > svg:first-child {
+    top: 0;
 
     > * {
       fill: ${({ theme }) => theme.softAccent} !important;
     }
   }
 
-  .services-wrapper {
-    display: flex;
-    justify-content: center;
-    flex-flow: wrap;
-    gap: 150px;
-  }
-
   > svg:last-child {
-    position: absolute;
-    overflow: hidden;
     bottom: 0;
-    left: 0;
-    width: 100%;
-    height: auto;
+    overflow: hidden;
     fill: ${({ theme }) => theme.background} !important;
   }
 
-  svg {
-    z-index: 1;
-  }
-
-  ::before {
-    content: "";
+  .services-wrapper {
+    position: relative;
+    z-index: 2;
     display: flex;
-    position: absolute;
-    left: 0;
-    top: 0;
-    opacity: 0.25;
-
-    width: 100%;
-    height: 100%;
-
-    background-image: url("/assets/backgrounds/binary.jpg");
-    background-attachment: fixed;
-    background-position: center;
-    background-size: cover;
+    justify-content: center;
+    flex-flow: wrap;
+    gap: 80px;
   }
 `;

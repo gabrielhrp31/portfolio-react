@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import { Parallax, TransitionLogo } from "./styles";
-import { FaChevronDown } from "react-icons/fa";
+import { FaChevronDown, FaLinkedin } from "react-icons/fa";
 import { ImMail4 } from "react-icons/im";
-import { SiGithub, SiLinkedin, SiWhatsapp } from "react-icons/si";
+import { SiGithub, SiWhatsapp } from "react-icons/si";
 
 function Presentation() {
   const [writting, setWritting] = useState(false);
@@ -76,8 +76,8 @@ function Presentation() {
       <div className="p-content">
         <TransitionLogo
           id="logo"
-          image="/assets/logos/Isologoverde.png"
-          hoverImage="/assets/logos/Isologomescla.png"
+          $image="/assets/logos/Isologoverde.png"
+          $hoverImage="/assets/logos/Isologomescla.png"
         />
         <div className="p-content__text">
           <span id="sentence" />
@@ -91,7 +91,7 @@ function Presentation() {
             target="_blank"
             rel="noreferrer"
           >
-            <SiLinkedin className="p-content__socials__icon" />
+            <FaLinkedin className="p-content__socials__icon" />
           </a>
           <a
             href="https://github.com/gabrielhrp31"

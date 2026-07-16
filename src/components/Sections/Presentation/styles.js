@@ -148,7 +148,7 @@ export const TransitionLogo = styled.div`
   cursor: pointer;
   position: relative;
 
-  background-image: url(${({ image }) => image});
+  background-image: url(${({ $image }) => $image});
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
@@ -157,7 +157,7 @@ export const TransitionLogo = styled.div`
 
   &:hover,
   &.show {
-    background-image: url(${({ hoverImage }) => hoverImage});
+    background-image: url(${({ $hoverImage }) => $hoverImage});
   }
 
   margin-left: auto;

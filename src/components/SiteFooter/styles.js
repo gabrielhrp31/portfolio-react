@@ -1,9 +1,11 @@
 import styled from "styled-components";
 
 export const FooterWrapper = styled.footer`
+  position: relative;
+  z-index: 2;
   width: 100%;
   padding: 28px 18px 36px;
-  background: transparent;
+  background: ${({ theme }) => theme.background};
 
   .footer-inner {
     width: 100%;

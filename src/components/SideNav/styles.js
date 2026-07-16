@@ -43,12 +43,16 @@ export const SideNavWrapper = styled.nav`
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  gap: 10px;
-  width: max-content;
-  max-width: 168px;
-  padding-right: 0;
+  align-items: flex-end;
+  gap: 8px;
+  width: 156px;
+  max-height: calc(100vh - 24px);
+  padding: 4px 0;
   pointer-events: none;
+
+  @media (max-height: 720px) {
+    gap: 5px;
+  }
 
   @media (max-width: 900px) {
     display: none;
@@ -61,18 +65,24 @@ export const Bookmark = styled.button`
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  width: 100%;
-  min-height: 42px;
+  width: 156px;
+  min-height: 40px;
   padding: 8px 14px 8px 16px;
   cursor: pointer;
   box-shadow: ${({ theme }) => theme.shadow};
   border-radius: 14px 0 0 14px;
-  /* Peek the same right-edge strip on every item (avoids zigzag from % of variable widths). */
+  /* Same width on every item → same 28px peek strip (no zigzag). */
   transform: translateX(${({ $active }) => ($active ? "0" : "calc(100% - 28px)")});
   transition: transform 0.25s ease, background 0.3s ease, color 0.3s ease,
     border-color 0.3s ease;
   writing-mode: horizontal-tb;
   backdrop-filter: blur(8px);
+  overflow: hidden;
+
+  @media (max-height: 720px) {
+    min-height: 34px;
+    padding: 6px 12px 6px 14px;
+  }
 
   ${({ $tone }) => toneStyles[$tone] || toneStyles.onSurface}
 
@@ -87,6 +97,8 @@ export const Bookmark = styled.button`
     letter-spacing: 0.02em;
     white-space: nowrap;
     text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .bookmark__notch {

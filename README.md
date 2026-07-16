@@ -62,3 +62,11 @@ Conteúdo dinâmico (CRUD em `/admin`):
 APIs: `GET /api/portfolio`, `/api/services`, `/api/technologies`, `/api/experiences`, `/api/courses`, `/api/media`, `POST /api/contact/quote`. Upload: `POST /api/media/upload` (admin). Imagens locais passam pelo otimizador do Next.js (AVIF/WebP). Contato/orçamento: salva no MySQL e envia email via SMTP (`CONTACT_SMTP_*` no `.env`).
 
 Sugestões de evolução (inspiradas em [valadao.works](https://valadao.works/)): ver `docs/IMPROVEMENTS.md`.
+
+## Deploy (KingHost + Traefik + Gitea Actions)
+
+Produção em **https://gabrielhrp.com/** com Docker e Traefik.
+
+- Workflow: `.gitea/workflows/deploy.yml`
+- Compose prod: `docker-compose.prod.yml`
+- Guia completo (DNS, secrets, Traefik): [`docs/DEPLOY.md`](docs/DEPLOY.md)

@@ -10,6 +10,7 @@ import FadeContent from "@/components/react-bits/FadeContent";
 import Magnet from "@/components/react-bits/Magnet";
 import OptimizedImage from "@/components/OptimizedImage";
 import { mediaAlt, mediaUrl } from "@/lib/media";
+import { FaLinkedinIn } from "react-icons/fa";
 
 function About({ technologies = [], media = null }) {
   const techSlugs = technologies.map((item) => item.slug).filter(Boolean);
@@ -36,13 +37,15 @@ function About({ technologies = [], media = null }) {
           <p className="text">{about.english}</p>
           <p className="text">Belo Horizonte/MG</p>
           <p className="text">{about.age} Anos</p>
-          <Magnet padding={16} magnetStrength={3}>
+          <Magnet padding={12} magnetStrength={2.5}>
             <a
+              className="linkedin-btn"
               href="https://www.linkedin.com/in/gabrielhrp31/"
               target="_blank"
               rel="noreferrer"
             >
-              Ver Linkedin
+              <FaLinkedinIn aria-hidden size={18} />
+              <span>LinkedIn</span>
             </a>
           </Magnet>
         </FadeContent>

@@ -61,29 +61,50 @@ export const AboutContent = styled.div`
       }
     }
 
-    a {
-      width: 100%;
-      max-width: min(350px, 80%);
-      height: 60px;
-
-      display: flex;
-      justify-content: space-evenly;
+    .linkedin-btn {
+      display: inline-flex;
       align-items: center;
+      justify-content: center;
+      gap: 10px;
 
-      margin-top: 24px;
+      margin-top: 28px;
+      padding: 12px 22px;
+      min-height: 44px;
+      width: auto;
+      max-width: none;
 
-      border-radius: 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(15, 22, 18, 0.22);
+      color: #ffffff;
+      backdrop-filter: blur(8px);
 
-      font-size: 22px;
+      font-size: 15px;
       font-weight: 600;
-			text-decoration: none;
-
-      background-color: ${({theme}) => theme.background};
-      color: ${({theme}) => theme.softAccent};
+      letter-spacing: 0.02em;
+      line-height: 1;
+      text-decoration: none;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+      transition: background-color 0.25s ease, border-color 0.25s ease,
+        transform 0.25s ease, box-shadow 0.25s ease;
 
       svg {
-        width: 26px;
-        height: unset;
+        width: 18px !important;
+        height: 18px !important;
+        flex-shrink: 0;
+        fill: currentColor;
+      }
+
+      &:hover {
+        background: rgba(15, 22, 18, 0.38);
+        border-color: rgba(255, 255, 255, 0.45);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+      }
+
+      &:focus-visible {
+        outline: 2px solid #ffffff;
+        outline-offset: 3px;
       }
     }
 

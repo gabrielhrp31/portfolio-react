@@ -18,6 +18,8 @@ const FadeContent = ({
   disappearAfter = 0,
   disappearDuration = 0.5,
   disappearEase = 'power2.in',
+  playOnMount = false,
+  yOffset = 16,
   onComplete,
   onDisappearanceComplete,
   className = '',
@@ -36,11 +38,11 @@ const FadeContent = ({
     }
 
     const startPct = (1 - threshold) * 100;
-
     const getSeconds = val => (typeof val === 'number' && val > 10 ? val / 1000 : val);
 
     gsap.set(el, {
       autoAlpha: initialOpacity,
+      y: yOffset,
       filter: blur ? 'blur(10px)' : 'blur(0px)',
       willChange: 'opacity, filter, transform'
     });
@@ -65,21 +67,27 @@ const FadeContent = ({
 
     tl.to(el, {
       autoAlpha: 1,
+      y: 0,
       filter: 'blur(0px)',
       duration: getSeconds(duration),
       ease: ease
     });
 
-    const st = ScrollTrigger.create({
-      trigger: el,
-      scroller: scrollerTarget || window,
-      start: `top ${startPct}%`,
-      once: true,
-      onEnter: () => tl.play()
-    });
+    let st = null;
+    if (playOnMount) {
+      tl.play();
+    } else {
+      st = ScrollTrigger.create({
+        trigger: el,
+        scroller: scrollerTarget || window,
+        start: `top ${startPct}%`,
+        once: true,
+        onEnter: () => tl.play()
+      });
+    }
 
     return () => {
-      st.kill();
+      st?.kill();
       tl.kill();
       gsap.killTweensOf(el);
     };

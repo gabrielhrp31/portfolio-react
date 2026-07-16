@@ -63,18 +63,17 @@ export const Parallax = styled.section`
     position: relative;
     z-index: 3;
 
-    max-width: 80vw;
+    width: min(920px, 88vw);
+    max-width: 88vw;
     min-height: 80vh;
     padding: 28px 20px;
     border-radius: 24px;
+  }
 
-    @media (min-width: 769px) {
-      max-width: 50vw;
-    }
-
-    @media (min-width: 1920px) {
-      max-width: 30vw;
-    }
+  .p-content__logo-wrap {
+    display: flex;
+    justify-content: center;
+    width: 100%;
   }
 
   .p-content__logo-hover-show {
@@ -86,7 +85,12 @@ export const Parallax = styled.section`
     font-weight: 200;
     font-size: 22px;
     color: #f5fff8;
-    min-height: 1.4em;
+    min-height: 2.8em;
+    width: 100%;
+
+    &--slot {
+      visibility: hidden;
+    }
     text-shadow:
       0 2px 18px rgba(0, 0, 0, 0.85),
       0 1px 2px rgba(0, 0, 0, 0.9),
@@ -128,15 +132,23 @@ export const Parallax = styled.section`
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 12px;
     z-index: 1;
     font-size: 16px;
     line-height: 1;
+    min-height: 60px;
     padding: 10px 14px;
     border-radius: 999px;
     background: rgba(0, 0, 0, 0.28);
     border: 1px solid rgba(235, 244, 248, 0.12);
     backdrop-filter: blur(6px);
+
+    &--slot {
+      visibility: hidden;
+      background: transparent;
+      border-color: transparent;
+      box-shadow: none;
+    }
 
     a {
       display: inline-flex;
@@ -195,6 +207,13 @@ export const Parallax = styled.section`
       color: ${colorScheme.offWhite};
       filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.7));
     }
+  }
+
+  .p-content__arrow-slot {
+    width: 45px;
+    height: 53px;
+    margin-top: 8px;
+    visibility: hidden;
   }
 `;
 

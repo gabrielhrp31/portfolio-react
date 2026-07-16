@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Bookmark, SideNavWrapper } from "./styles";
+import { useQuoteModal } from "@/components/Contact/QuoteModalContext";
 
 const SECTIONS = [
   { id: "inicio", label: "Início", tone: "onDark" },
@@ -14,6 +15,7 @@ const SECTIONS = [
 
 function SideNav() {
   const [activeId, setActiveId] = useState("inicio");
+  const { openModal } = useQuoteModal();
   const activeTone =
     SECTIONS.find((section) => section.id === activeId)?.tone || "onSurface";
 
@@ -65,6 +67,16 @@ function SideNav() {
           <span className="bookmark__notch" />
         </Bookmark>
       ))}
+      <Bookmark
+        type="button"
+        $active={false}
+        $tone={activeTone}
+        onClick={() => openModal({ source: "sidenav" })}
+        aria-label="Solicitar orçamento"
+      >
+        <span className="bookmark__label">Orçamento</span>
+        <span className="bookmark__notch" />
+      </Bookmark>
     </SideNavWrapper>
   );
 }

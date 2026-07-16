@@ -3,6 +3,7 @@ import {
   listCourses,
   listExperiences,
   listPortfolioItems,
+  listQuoteRequests,
   listServices,
   listSiteMedia,
   listTechnologies,
@@ -20,10 +21,11 @@ export default async function AdminPage() {
   let experiences = [];
   let courses = [];
   let media = [];
+  let quotes = [];
 
   if (authenticated) {
     try {
-      [portfolio, services, technologies, experiences, courses, media] =
+      [portfolio, services, technologies, experiences, courses, media, quotes] =
         await Promise.all([
           listPortfolioItems(),
           listServices(),
@@ -31,6 +33,7 @@ export default async function AdminPage() {
           listExperiences(),
           listCourses(),
           listSiteMedia(),
+          listQuoteRequests(),
         ]);
       media = Object.values(buildMediaMap(media)).sort(
         (a, b) => a.sortOrder - b.sortOrder
@@ -49,6 +52,7 @@ export default async function AdminPage() {
       initialExperiences={experiences}
       initialCourses={courses}
       initialMedia={media}
+      initialQuotes={quotes}
     />
   );
 }

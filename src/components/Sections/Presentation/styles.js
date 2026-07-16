@@ -160,6 +160,19 @@ export const Parallax = styled.section`
       flex: 0 0 40px;
     }
 
+    button.p-content__socials__link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      line-height: 0;
+      flex: 0 0 40px;
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+    }
+
     svg.p-content__socials__icon,
     .p-content__socials__icon {
       display: block;

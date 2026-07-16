@@ -57,7 +57,8 @@ Conteúdo dinâmico (CRUD em `/admin`):
 | `experiences` | Timeline de experiência profissional |
 | `courses` | Formação, cursos e certificados (`kind`: formation/course/certificate) |
 | `site_media` | Imagens configuráveis (perfil, logos, fundos, identidade) |
+| `quote_requests` | Solicitações de orçamento (modal do site) |
 
-APIs: `GET /api/portfolio`, `/api/services`, `/api/technologies`, `/api/experiences`, `/api/courses`, `/api/media`. Upload: `POST /api/media/upload` (admin). Imagens locais passam pelo otimizador do Next.js (AVIF/WebP).
+APIs: `GET /api/portfolio`, `/api/services`, `/api/technologies`, `/api/experiences`, `/api/courses`, `/api/media`, `POST /api/contact/quote`. Upload: `POST /api/media/upload` (admin). Imagens locais passam pelo otimizador do Next.js (AVIF/WebP). Contato/orçamento: salva no MySQL e envia email via SMTP (`CONTACT_SMTP_*` no `.env`).
 
 Sugestões de evolução (inspiradas em [valadao.works](https://valadao.works/)): ver `docs/IMPROVEMENTS.md`.

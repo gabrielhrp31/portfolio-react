@@ -9,6 +9,7 @@ import SpotlightCard from "@/components/react-bits/SpotlightCard";
 import BlurText from "@/components/react-bits/BlurText";
 import { CustomThemeContext } from "@/components/CustomThemeProvider";
 import { mediaUrl } from "@/lib/media";
+import QuoteCta from "@/components/Contact/QuoteCta";
 
 function Services({ items = [], media = null }) {
   const { currentTheme } = useContext(CustomThemeContext);
@@ -64,6 +65,19 @@ function Services({ items = [], media = null }) {
             </FadeContent>
           ))
         )}
+      </div>
+
+      <div
+        className="services-cta"
+        style={{
+          position: "relative",
+          zIndex: 2,
+          display: "flex",
+          justifyContent: "center",
+          marginTop: 28,
+        }}
+      >
+        <QuoteCta source="services" variant="soft" />
       </div>
 
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">

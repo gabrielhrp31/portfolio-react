@@ -70,6 +70,7 @@ export default function AdminClient({
   initialExperiences = [],
   initialCourses = [],
   initialMedia = [],
+  initialQuotes = [],
 }) {
   const [authenticated, setAuthenticated] = useState(initialAuthenticated);
   const [password, setPassword] = useState("");
@@ -82,6 +83,7 @@ export default function AdminClient({
   const [experiences, setExperiences] = useState(initialExperiences);
   const [courses, setCourses] = useState(initialCourses);
   const [media, setMedia] = useState(initialMedia);
+  const [quotes, setQuotes] = useState(initialQuotes);
   const [mediaDrafts, setMediaDrafts] = useState(() =>
     Object.fromEntries(
       (initialMedia || []).map((item) => [
@@ -111,8 +113,9 @@ export default function AdminClient({
       fetch("/api/experiences"),
       fetch("/api/courses"),
       fetch("/api/media"),
+      fetch("/api/contact/quote"),
     ]);
-    const [p, s, t, e, c, m] = await Promise.all(
+    const [p, s, t, e, c, m, q] = await Promise.all(
       responses.map((r) => r.json())
     );
     setPortfolio(Array.isArray(p) ? p : []);
@@ -122,6 +125,7 @@ export default function AdminClient({
     setCourses(Array.isArray(c) ? c : []);
     const mediaList = Array.isArray(m) ? m : [];
     setMedia(mediaList);
+    setQuotes(Array.isArray(q) ? q : []);
     setMediaDrafts(
       Object.fromEntries(
         mediaList.map((item) => [
@@ -215,6 +219,7 @@ export default function AdminClient({
     setExperiences([]);
     setCourses([]);
     setMedia([]);
+    setQuotes([]);
     setMediaDrafts({});
     setEditingPortfolioId(null);
     setEditingServiceId(null);
@@ -312,6 +317,41 @@ export default function AdminClient({
           <Link href="/">Ver site</Link>
         </div>
         {error ? <ErrorText>{error}</ErrorText> : null}
+      </Card>
+
+      <Card>
+        <Title>Orçamentos recebidos</Title>
+        <p style={{ marginBottom: 12 }}>
+          Solicitações enviadas pelo site (salvas no MySQL + email quando SMTP
+          estiver configurado).
+        </p>
+        <ItemList>
+          {quotes.length === 0 ? (
+            <EmptyState>Nenhuma solicitação ainda.</EmptyState>
+          ) : (
+            quotes.map((item) => (
+              <ItemRow key={item.id}>
+                <div>
+                  <strong>
+                    #{item.id} · {item.name}
+                  </strong>
+                  <p>
+                    {item.email}
+                    {item.phone ? ` · ${item.phone}` : ""}
+                    {item.budget ? ` · ${item.budget}` : ""}
+                  </p>
+                  <p style={{ marginTop: 6 }}>{item.message}</p>
+                  <p style={{ marginTop: 6, opacity: 0.75 }}>
+                    origem: {item.source || "-"} · email: {item.emailStatus} ·{" "}
+                    {item.createdAt
+                      ? new Date(item.createdAt).toLocaleString("pt-BR")
+                      : ""}
+                  </p>
+                </div>
+              </ItemRow>
+            ))
+          )}
+        </ItemList>
       </Card>
 
       <Card>

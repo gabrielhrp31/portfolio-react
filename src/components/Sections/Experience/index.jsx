@@ -6,6 +6,7 @@ import BlurText from "@/components/react-bits/BlurText";
 import FadeContent from "@/components/react-bits/FadeContent";
 import SpotlightCard from "@/components/react-bits/SpotlightCard";
 import { CustomThemeContext } from "@/components/CustomThemeProvider";
+import QuoteCta from "@/components/Contact/QuoteCta";
 
 function Experience({ items = [] }) {
   const { currentTheme } = useContext(CustomThemeContext);
@@ -64,6 +65,9 @@ function Experience({ items = [] }) {
           ))}
         </div>
       )}
+      <div style={{ marginTop: 28, display: "flex", justifyContent: "center" }}>
+        <QuoteCta source="experience" variant="outline" />
+      </div>
     </ExperienceWrapper>
   );
 }

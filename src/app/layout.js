@@ -2,6 +2,8 @@ import "devicon/devicon.min.css";
 import StyledComponentsRegistry from "@/lib/registry";
 import CustomThemeProvider from "@/components/CustomThemeProvider";
 import GlobalStyles from "@/styles/globalStyles";
+import QuoteModalProvider from "@/components/Contact/QuoteModalContext";
+import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = {
   title: "Gabriel Rodrigues | Portfolio",
@@ -15,7 +17,10 @@ export default function RootLayout({ children }) {
         <StyledComponentsRegistry>
           <CustomThemeProvider>
             <GlobalStyles />
-            {children}
+            <QuoteModalProvider>
+              {children}
+              <SiteFooter />
+            </QuoteModalProvider>
           </CustomThemeProvider>
         </StyledComponentsRegistry>
       </body>

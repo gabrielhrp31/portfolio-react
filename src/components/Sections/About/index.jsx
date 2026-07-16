@@ -11,6 +11,7 @@ import Magnet from "@/components/react-bits/Magnet";
 import OptimizedImage from "@/components/OptimizedImage";
 import { mediaAlt, mediaUrl } from "@/lib/media";
 import { FaLinkedinIn } from "react-icons/fa";
+import QuoteCta from "@/components/Contact/QuoteCta";
 
 function About({ technologies = [], media = null }) {
   const techSlugs = technologies.map((item) => item.slug).filter(Boolean);
@@ -48,6 +49,9 @@ function About({ technologies = [], media = null }) {
               <span>LinkedIn</span>
             </a>
           </Magnet>
+          <div style={{ marginTop: 14 }}>
+            <QuoteCta source="about" variant="soft" />
+          </div>
         </FadeContent>
         <div className="text-and-infos">
           {about.topics.map((item, index) => (

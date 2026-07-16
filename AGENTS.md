@@ -18,6 +18,7 @@ This is a **Next.js + MySQL** personal portfolio. Standard commands live in `REA
 - If Docker is installed but `docker` fails with permission errors on `/var/run/docker.sock`, fix socket permissions (or run the daemon) before `npm run db:init`.
 - `npm run db:seed` is idempotent: it creates the table if needed and skips inserting when `portfolio_items` already has rows.
 - Home content from MySQL (`force-dynamic`): portfolio, services, technologies, experiences, courses, site_media. If MySQL is down, list sections render empty; site images fall back to defaults in `src/lib/media.js`.
+- Quote requests (`quote_requests`) are created by `POST /api/contact/quote` (always saved). Email is sent when `CONTACT_SMTP_HOST` + `CONTACT_TO_EMAIL` (or `CONTACT_SMTP_TO`) are set; otherwise `email_status=skipped`. Admin lists them under “Orçamentos recebidos”.
 - After pulling schema changes, run `npm run db:seed` (idempotent per table; `site_media` upserts missing keys without overwriting custom URLs).
 - Site images are configurable in `/admin` → “Imagens do site”. Local paths (`/assets/*`, `/uploads/*`) use `next/image` optimization via `OptimizedImage`; uploads land in `public/uploads/`.
 - In `react-icons` v5, Simple Icons no longer exports `SiLinkedin`; use `FaLinkedin` from `react-icons/fa`.

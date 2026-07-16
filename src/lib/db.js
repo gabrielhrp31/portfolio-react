@@ -458,3 +458,58 @@ export async function upsertSiteMediaByKey(data) {
   );
   return getSiteMediaByKey(data.key);
 }
+
+export function mapQuoteRequestRow(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    phone: row.phone || "",
+    budget: row.budget || "",
+    message: row.message,
+    source: row.source || "",
+    emailStatus: row.email_status || "pending",
+    createdAt: row.created_at,
+  };
+}
+
+export async function listQuoteRequests() {
+  const [rows] = await getPool().query(
+    "SELECT * FROM quote_requests ORDER BY created_at DESC, id DESC"
+  );
+  return rows.map(mapQuoteRequestRow);
+}
+
+export async function getQuoteRequest(id) {
+  const [rows] = await getPool().query(
+    "SELECT * FROM quote_requests WHERE id = ?",
+    [id]
+  );
+  return rows[0] ? mapQuoteRequestRow(rows[0]) : null;
+}
+
+export async function createQuoteRequest(data) {
+  const [result] = await getPool().query(
+    `INSERT INTO quote_requests
+      (name, email, phone, budget, message, source, email_status)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [
+      data.name,
+      data.email,
+      data.phone || "",
+      data.budget || "",
+      data.message,
+      data.source || "",
+      data.emailStatus || "pending",
+    ]
+  );
+  return getQuoteRequest(result.insertId);
+}
+
+export async function updateQuoteRequestEmailStatus(id, emailStatus) {
+  await getPool().query(
+    "UPDATE quote_requests SET email_status = ? WHERE id = ?",
+    [emailStatus, id]
+  );
+  return getQuoteRequest(id);
+}

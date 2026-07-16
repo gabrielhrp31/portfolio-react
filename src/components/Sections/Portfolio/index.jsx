@@ -7,6 +7,7 @@ import BlurText from "@/components/react-bits/BlurText";
 import SpotlightCard from "@/components/react-bits/SpotlightCard";
 import FadeContent from "@/components/react-bits/FadeContent";
 import { CustomThemeContext } from "@/components/CustomThemeProvider";
+import QuoteCta from "@/components/Contact/QuoteCta";
 
 function Portfolio({ items = [] }) {
   const { currentTheme } = useContext(CustomThemeContext);
@@ -31,6 +32,9 @@ function Portfolio({ items = [] }) {
             carinho para oferecer o melhor das minhas ideias...
           </div>
         </FadeContent>
+        <div style={{ marginTop: 18 }}>
+          <QuoteCta source="portfolio" />
+        </div>
       </div>
       <div className="portfolio__items">
         {items.map((item, index) => (

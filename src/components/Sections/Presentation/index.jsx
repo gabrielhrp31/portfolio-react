@@ -16,6 +16,8 @@ import LetterGlitch from "@/components/react-bits/LetterGlitch";
 import FadeContent from "@/components/react-bits/FadeContent";
 import OptimizedImage from "@/components/OptimizedImage";
 import { mediaUrl } from "@/lib/media";
+import { useQuoteModal } from "@/components/Contact/QuoteModalContext";
+import QuoteCta from "@/components/Contact/QuoteCta";
 
 const SOCIAL_ICON_SIZE = 40;
 const ARROW_ICON_SIZE = 45;
@@ -63,6 +65,7 @@ function Presentation({ media = null }) {
   const [stage, setStage] = useState(0);
   const [skipTypewriter, setSkipTypewriter] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const { openModal } = useQuoteModal();
   const heroBg = mediaUrl(media, "hero_bg");
   const logoHero = mediaUrl(media, "logo_hero");
   const logoHeroHover = mediaUrl(media, "logo_hero_hover");
@@ -219,12 +222,26 @@ function Presentation({ media = null }) {
                 blur={false}
               >
                 <Magnet padding={10} magnetStrength={3}>
-                  <a href={href} target="_blank" rel="noreferrer" aria-label={label}>
-                    <Icon
-                      className="p-content__socials__icon"
-                      size={SOCIAL_ICON_SIZE}
-                    />
-                  </a>
+                  {key === "email" ? (
+                    <button
+                      type="button"
+                      className="p-content__socials__link"
+                      onClick={() => openModal({ source: "hero-email" })}
+                      aria-label={label}
+                    >
+                      <Icon
+                        className="p-content__socials__icon"
+                        size={SOCIAL_ICON_SIZE}
+                      />
+                    </button>
+                  ) : (
+                    <a href={href} target="_blank" rel="noreferrer" aria-label={label}>
+                      <Icon
+                        className="p-content__socials__icon"
+                        size={SOCIAL_ICON_SIZE}
+                      />
+                    </a>
+                  )}
                 </Magnet>
               </FadeContent>
             ))}
@@ -234,16 +251,25 @@ function Presentation({ media = null }) {
         )}
 
         {stage >= 3 ? (
-          <FadeContent playOnMount blur duration={600} delay={40} yOffset={12}>
-            <button
-              type="button"
-              className="p-content__arrow-btn"
-              onClick={handleArrowClick}
-              aria-label="Rolar para baixo"
-            >
-              <FaChevronDown size={ARROW_ICON_SIZE} />
-            </button>
-          </FadeContent>
+          <>
+            <FadeContent playOnMount blur duration={550} delay={30} yOffset={12}>
+              <QuoteCta
+                source="hero"
+                variant="soft"
+                label="Solicitar orçamento"
+              />
+            </FadeContent>
+            <FadeContent playOnMount blur duration={600} delay={80} yOffset={12}>
+              <button
+                type="button"
+                className="p-content__arrow-btn"
+                onClick={handleArrowClick}
+                aria-label="Rolar para baixo"
+              >
+                <FaChevronDown size={ARROW_ICON_SIZE} />
+              </button>
+            </FadeContent>
+          </>
         ) : (
           <div className="p-content__arrow-slot" aria-hidden="true" />
         )}

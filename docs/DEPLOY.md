@@ -88,8 +88,8 @@ sudo chown "$USER":"$USER" /opt/portfolio
 # o Gitea Actions gera o arquivo a partir dos Secrets a cada deploy.
 ```
 
-Na VPS, autorize a chave pública do deploy em `~/.ssh/authorized_keys` do `SSH_USER`  
-e garanta permissão Docker (`usermod -aG docker deploy` + relogin).
+Garanta que o usuário SSH tem permissão Docker (`usermod -aG docker SEU_USER` + relogin)  
+e que login por senha SSH está habilitado na VPS (padrão na maioria dos painéis KingHost).
 
 ## 4. Secrets no Gitea
 

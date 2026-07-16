@@ -25,13 +25,13 @@ export const CourseCard = styled.article`
   height: 100%;
   transition: background-color 0.45s ease, border-color 0.45s ease;
 
-  .course__kind {
+  .course__kind,
+  .shiny-text.course__kind {
     display: inline-block;
     margin-bottom: 8px;
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: ${({ theme }) => theme.softAccent};
     font-weight: 700;
   }
 

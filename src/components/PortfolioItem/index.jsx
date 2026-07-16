@@ -1,10 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useContext } from "react";
+import { ThemeContext } from "styled-components";
 import { PortfolioItemWrapper } from "./styles";
 import Tecnologies from "@/components/Tecnologies";
+import ShinyText from "@/components/react-bits/ShinyText";
+import Magnet from "@/components/react-bits/Magnet";
 
 function PortfolioItem({ item }) {
+  const theme = useContext(ThemeContext);
+
   return (
     <PortfolioItemWrapper className="portfolio__item">
       <div className="portfolio__item__img-wrapper">
@@ -13,7 +18,13 @@ function PortfolioItem({ item }) {
           <Tecnologies bgColor="titles" icons={item.technologies || []} />
         </div>
       </div>
-      <span className="portfolio__item__title">{item.name}</span>
+      <ShinyText
+        text={item.name}
+        className="portfolio__item__title"
+        color={theme?.titles || "#EBF4F8"}
+        shineColor={theme?.softAccent || "#48c558"}
+        speed={2.8}
+      />
       <span className="portfolio__item__description">
         {item.description}
         <br />
@@ -35,24 +46,28 @@ function PortfolioItem({ item }) {
       </span>
       <div className="portfolio__item__links">
         {item.urlDemo ? (
-          <a
-            href={item.urlDemo}
-            className="text-green"
-            target="_blank"
-            rel="noreferrer"
-          >
-            demo
-          </a>
+          <Magnet padding={12} magnetStrength={2}>
+            <a
+              href={item.urlDemo}
+              className="text-green"
+              target="_blank"
+              rel="noreferrer"
+            >
+              demo
+            </a>
+          </Magnet>
         ) : null}
         {item.urlGithub ? (
-          <a
-            href={item.urlGithub}
-            className="text-green"
-            target="_blank"
-            rel="noreferrer"
-          >
-            github
-          </a>
+          <Magnet padding={12} magnetStrength={2}>
+            <a
+              href={item.urlGithub}
+              className="text-green"
+              target="_blank"
+              rel="noreferrer"
+            >
+              github
+            </a>
+          </Magnet>
         ) : null}
       </div>
     </PortfolioItemWrapper>

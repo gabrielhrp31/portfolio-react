@@ -4,16 +4,18 @@ import React, { useEffect, useState } from "react";
 import { Bookmark, SideNavWrapper } from "./styles";
 
 const SECTIONS = [
-  { id: "inicio", label: "Início" },
-  { id: "sobre", label: "Sobre" },
-  { id: "servicos", label: "Serviços" },
-  { id: "experiencia", label: "Experiência" },
-  { id: "cursos", label: "Cursos" },
-  { id: "portfolio", label: "Portfólio" },
+  { id: "inicio", label: "Início", tone: "onDark" },
+  { id: "sobre", label: "Sobre", tone: "onGreen" },
+  { id: "servicos", label: "Serviços", tone: "onDark" },
+  { id: "experiencia", label: "Experiência", tone: "onSurface" },
+  { id: "cursos", label: "Cursos", tone: "onSurface" },
+  { id: "portfolio", label: "Portfólio", tone: "onSurface" },
 ];
 
 function SideNav() {
   const [activeId, setActiveId] = useState("inicio");
+  const activeTone =
+    SECTIONS.find((section) => section.id === activeId)?.tone || "onSurface";
 
   useEffect(() => {
     const elements = SECTIONS.map((section) =>
@@ -49,12 +51,13 @@ function SideNav() {
   }
 
   return (
-    <SideNavWrapper aria-label="Navegação por seções">
+    <SideNavWrapper aria-label="Navegação por seções" data-tone={activeTone}>
       {SECTIONS.map((section) => (
         <Bookmark
           key={section.id}
           type="button"
           $active={activeId === section.id}
+          $tone={activeTone}
           onClick={() => scrollToSection(section.id)}
           aria-current={activeId === section.id ? "true" : undefined}
         >

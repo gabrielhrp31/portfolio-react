@@ -13,22 +13,34 @@ export const ExperienceWrapper = styled.section`
     border-left: 2px solid ${({ theme }) => theme.softAccent}66;
     padding-left: 24px;
   }
+
+  .experience-spotlight {
+    border-radius: 16px;
+  }
 `;
 
 export const ExperienceItem = styled.article`
   position: relative;
-  padding: 0 0 36px;
+  padding: 0 0 22px;
 
   &::before {
     content: "";
     position: absolute;
     left: -31px;
-    top: 8px;
+    top: 22px;
     width: 12px;
     height: 12px;
     border-radius: 50%;
     background: ${({ theme }) => theme.softAccent};
     box-shadow: 0 0 0 4px ${({ theme }) => theme.background};
+  }
+
+  .experience__card {
+    border: 1px solid ${({ theme }) => theme.border};
+    border-radius: 16px;
+    padding: 18px 20px;
+    background: ${({ theme }) => theme.surface};
+    box-shadow: ${({ theme }) => theme.shadow};
   }
 
   .experience__company {
@@ -48,8 +60,7 @@ export const ExperienceItem = styled.article`
   .experience__meta {
     display: block;
     margin-top: 6px;
-    color: ${({ theme }) => theme.titles};
-    opacity: 0.7;
+    color: ${({ theme }) => theme.textMuted};
     font-size: 14px;
   }
 

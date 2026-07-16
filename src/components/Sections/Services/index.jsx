@@ -1,11 +1,22 @@
 "use client";
 
-import React from "react";
+import React, { useContext } from "react";
 import { ParallaxWaves } from "./styles";
 import Service from "@/components/Service";
 import { getServiceIcon } from "@/lib/serviceIcons";
+import FadeContent from "@/components/react-bits/FadeContent";
+import SpotlightCard from "@/components/react-bits/SpotlightCard";
+import Magnet from "@/components/react-bits/Magnet";
+import BlurText from "@/components/react-bits/BlurText";
+import { CustomThemeContext } from "@/components/CustomThemeProvider";
 
 function Services({ items = [] }) {
+  const { currentTheme } = useContext(CustomThemeContext);
+  const spotlight =
+    currentTheme === "light"
+      ? "rgba(255, 255, 255, 0.18)"
+      : "rgba(72, 197, 88, 0.22)";
+
   return (
     <ParallaxWaves id="servicos">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
@@ -15,18 +26,40 @@ function Services({ items = [] }) {
         />
       </svg>
       <div className="services-wrapper">
+        <div className="services-heading">
+          <BlurText
+            text="Serviços"
+            className="services-title"
+            delay={40}
+            animateBy="letters"
+            direction="top"
+          />
+        </div>
         {items.length === 0 ? (
           <p style={{ color: "#EBF4F8", textAlign: "center", width: "100%" }}>
             Nenhum serviço cadastrado ainda.
           </p>
         ) : (
-          items.map((item) => (
-            <Service
+          items.map((item, index) => (
+            <FadeContent
               key={item.id}
-              name={item.name}
-              icon={getServiceIcon(item.iconKey)}
-              description={item.description}
-            />
+              blur
+              duration={800}
+              delay={100 + index * 100}
+            >
+              <Magnet padding={30} magnetStrength={4}>
+                <SpotlightCard
+                  className="service-spotlight"
+                  spotlightColor={spotlight}
+                >
+                  <Service
+                    name={item.name}
+                    icon={getServiceIcon(item.iconKey)}
+                    description={item.description}
+                  />
+                </SpotlightCard>
+              </Magnet>
+            </FadeContent>
           ))
         )}
       </div>

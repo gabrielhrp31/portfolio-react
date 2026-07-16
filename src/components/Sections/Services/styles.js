@@ -57,6 +57,23 @@ export const ParallaxWaves = styled.section`
     display: flex;
     justify-content: center;
     flex-flow: wrap;
-    gap: 80px;
+    gap: 48px 80px;
+  }
+
+  .services-heading {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .services-title {
+    color: ${colorScheme.offWhite};
+    font-size: 36px;
+    font-weight: 700;
+  }
+
+  .service-spotlight {
+    border-radius: 16px;
+    padding: 8px;
   }
 `;

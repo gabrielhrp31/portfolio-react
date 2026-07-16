@@ -87,33 +87,55 @@ export const Parallax = styled.div`
 
   .p-content__socials {
     display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 20px;
+    z-index: 1;
+
+    a {
+      display: inline-flex;
+      line-height: 0;
+    }
   }
 
   .p-content__socials__icon {
-    height: 40px;
-    width: unset;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px;
+    min-height: 40px;
+    max-width: 40px;
+    max-height: 40px;
+    font-size: 40px;
 
     border-radius: 100%;
     overflow: hidden;
+    flex-shrink: 0;
 
     cursor: pointer;
 
     fill: ${colorScheme.offWhite};
+    color: ${colorScheme.offWhite};
 
     &:hover {
       transform: scale(1.25);
     }
 
     @media (min-width: 1920px) {
-      height: 51px;
+      width: 48px !important;
+      height: 48px !important;
+      min-width: 48px;
+      min-height: 48px;
+      max-width: 48px;
+      max-height: 48px;
+      font-size: 48px;
     }
   }
 
   .p-content__arrow {
     position: absolute;
-    width: 45px;
-    height: unset;
+    width: 45px !important;
+    height: 45px !important;
+    font-size: 45px;
 
     bottom: 0;
     z-index: 100;
@@ -121,6 +143,7 @@ export const Parallax = styled.div`
     cursor: pointer;
 
     fill: ${colorScheme.offWhite};
+    color: ${colorScheme.offWhite};
 
     transform: scale(1);
     animation: pulse 2s infinite;

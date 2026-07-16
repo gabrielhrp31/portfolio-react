@@ -7,7 +7,7 @@ import { getServiceIcon } from "@/lib/serviceIcons";
 
 function Services({ items = [] }) {
   return (
-    <ParallaxWaves>
+    <ParallaxWaves id="servicos">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
         <path
           fill="#0099ff"

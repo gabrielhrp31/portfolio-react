@@ -1,13 +1,15 @@
 import styled from "styled-components";
 import { colorScheme } from "@/styles/themes";
 
-export const ParallaxWaves = styled.div`
+export const ParallaxWaves = styled.section`
   position: relative;
-  background: ${colorScheme.gray};
+  background: ${({ theme }) =>
+    theme.dark ? colorScheme.gray : theme.inverse};
   height: fit-content;
   overflow: hidden;
   z-index: 100;
   padding: 20vw 50px 22vw 50px;
+  transition: background-color 0.45s ease;
 
   &::before {
     content: "";

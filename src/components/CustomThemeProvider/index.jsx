@@ -7,6 +7,7 @@ import getTheme from "@/styles/themes";
 export const CustomThemeContext = React.createContext({
   currentTheme: "dark",
   setTheme: null,
+  toggleTheme: null,
 });
 
 const CustomThemeProvider = ({ children }) => {
@@ -18,14 +19,24 @@ const CustomThemeProvider = ({ children }) => {
     setThemeName(currentTheme);
   }, []);
 
+  useEffect(() => {
+    document.documentElement.dataset.theme = themeName;
+    document.documentElement.style.colorScheme = themeName;
+  }, [themeName]);
+
   const setThemeName = (name) => {
     localStorage.setItem("appTheme", name);
     _setThemeName(name);
   };
 
+  const toggleTheme = () => {
+    setThemeName(themeName === "dark" ? "light" : "dark");
+  };
+
   const contextValue = {
     currentTheme: themeName,
     setTheme: setThemeName,
+    toggleTheme,
   };
 
   return (

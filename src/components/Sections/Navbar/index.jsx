@@ -6,7 +6,7 @@ import { FaMoon, FaSun } from "react-icons/fa";
 import { CustomThemeContext } from "@/components/CustomThemeProvider";
 
 function Navbar() {
-  const { currentTheme, setTheme } = useContext(CustomThemeContext);
+  const { currentTheme, toggleTheme } = useContext(CustomThemeContext);
   const [afterNavbar, setAfterNavbar] = useState(false);
 
   useEffect(() => {
@@ -33,13 +33,13 @@ function Navbar() {
         alt="Logo Gabriel Rodrigues"
         className="n-logo"
       />
-      <ThemeButton>
-        {currentTheme === "light" && (
-          <FaMoon onClick={() => setTheme("dark")} />
-        )}
-        {currentTheme === "dark" && (
-          <FaSun onClick={() => setTheme("light")} />
-        )}
+      <ThemeButton
+        type="button"
+        onClick={toggleTheme}
+        aria-label="Alternar tema claro/escuro"
+      >
+        {currentTheme === "light" ? <FaMoon /> : <FaSun />}
+        <span>{currentTheme === "light" ? "Dark" : "Light"}</span>
       </ThemeButton>
     </NavbarWrapper>
   );

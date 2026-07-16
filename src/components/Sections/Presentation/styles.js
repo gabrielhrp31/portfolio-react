@@ -49,6 +49,22 @@ export const Parallax = styled.div`
     font-weight: 200;
     font-size: 22px;
     color: white;
+    min-height: 1.4em;
+
+    .p-content__shiny-name {
+      font-weight: 500;
+      vertical-align: baseline;
+    }
+
+    .p-content__text-type,
+    .text-type {
+      color: white;
+      font-weight: 200;
+    }
+
+    .text-type__cursor {
+      color: ${({ theme }) => theme.softAccent};
+    }
 
     @media (min-width: 1025px) {
       font-size: 48px;
@@ -166,9 +182,9 @@ export const Parallax = styled.div`
     width: 100%;
     height: 100%;
 
-    background-color: rgb(0, 0, 0);
+    background-color: ${({ theme }) => theme.heroOverlay};
 
-    opacity: 0.8;
+    opacity: 1;
     z-index: 0;
   }
 `;

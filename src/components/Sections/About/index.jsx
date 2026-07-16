@@ -5,12 +5,13 @@ import { AboutContent, AboutWrapper } from "./styles";
 import about from "@/data/about";
 import IdentityDescription from "@/components/IdentityDescription";
 import Tecnologies from "@/components/Tecnologies";
+import BlurText from "@/components/react-bits/BlurText";
 
 function About({ technologies = [] }) {
   const techSlugs = technologies.map((item) => item.slug).filter(Boolean);
 
   return (
-    <AboutWrapper>
+    <AboutWrapper id="sobre">
       <AboutContent>
         <div className="infos-and-picture">
           <img src="/assets/images/profile.jpg" alt="Imagem de Gabriel" />
@@ -30,7 +31,13 @@ function About({ technologies = [] }) {
         <div className="text-and-infos">
           {about.topics.map((item, index) => (
             <div key={index}>
-              <h1 className="title">{item.title}</h1>
+              <BlurText
+                text={item.title}
+                className="title"
+                delay={40}
+                animateBy="words"
+                direction="top"
+              />
               {item.text ? <p className="text">{item.text}</p> : null}
               {item.showIdentity ? <IdentityDescription /> : null}
               {item.showTechnologies ? (

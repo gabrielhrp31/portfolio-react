@@ -20,5 +20,8 @@ This is a **Next.js + MySQL** personal portfolio. Standard commands live in `REA
 - Home content from MySQL (`force-dynamic`): portfolio, services, technologies, experiences, courses. If MySQL is down, those sections render empty instead of crashing.
 - After pulling schema changes, run `npm run db:seed` (idempotent per table) so new tables get created and seeded.
 - In `react-icons` v5, Simple Icons no longer exports `SiLinkedin`; use `FaLinkedin` from `react-icons/fa`.
+- Hero typewriter uses React Bits `TextType` and persists completion in `sessionStorage` (`portfolio-hero-typed-v1`) so Fast Refresh/HMR does not restart or corrupt the text mid-session.
+- Animation helpers live in `src/components/react-bits/` (copied from [React Bits](https://reactbits.dev/), deps: `gsap`, `motion`).
+- Side bookmark nav (`SideNav`) targets section ids: `inicio`, `sobre`, `servicos`, `experiencia`, `cursos`, `portfolio`.
 - Lint (`npm run lint`) may report `@next/next/no-img-element` warnings for existing `<img>` usage; that is expected for this UI.
 - Unit tests: `npm test` (Node test runner). There is no Jest/CRA test runner anymore.

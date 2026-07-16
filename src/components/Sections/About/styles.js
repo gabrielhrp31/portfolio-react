@@ -6,7 +6,7 @@ const calculateSize = () => {
 		return 100 - textAndInfosSize;
 };
 
-export const AboutWrapper = styled.div`
+export const AboutWrapper = styled.section`
 	position: relative;
 	padding: 120px 50px 50px;
 	height: fit-content;
@@ -17,6 +17,7 @@ export const AboutWrapper = styled.div`
 	justify-content: center;
 
 	background-color: ${({theme}) => theme.softAccent};
+	transition: background-color 0.45s ease;
 `
 export const AboutContent = styled.div`
   width: 100%;
@@ -85,8 +86,9 @@ export const AboutContent = styled.div`
 
     .title {
       font-size: 28px;
-      color: ${({theme}) => theme.titles};
+      color: ${({ theme }) => (theme.dark ? theme.titles : theme.text)};
       margin-bottom: 24px;
+      font-weight: 600;
     }
 
     .text {

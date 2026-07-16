@@ -2,11 +2,18 @@
 
 import React from "react";
 import { ExperienceItem, ExperienceWrapper } from "./styles";
+import BlurText from "@/components/react-bits/BlurText";
 
 function Experience({ items = [] }) {
   return (
-    <ExperienceWrapper>
-      <div className="title-green">Experiência</div>
+    <ExperienceWrapper id="experiencia">
+      <BlurText
+        text="Experiência"
+        className="title-green"
+        delay={50}
+        animateBy="letters"
+        direction="top"
+      />
       <div className="text-bg-reverse">
         Resumo de papéis, responsabilidades e evolução na carreira.
       </div>

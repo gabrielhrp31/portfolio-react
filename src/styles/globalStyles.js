@@ -7,12 +7,16 @@ import animations from "./animations";
 export default createGlobalStyle`
   ${fontFaces}
   ${animations}
+
   * {
     box-sizing: border-box;
     margin: 0;
     outline: 0;
-    transition: 0.1s;
     font-family: "Outfit", Arial, sans-serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
 
   button {
@@ -23,12 +27,17 @@ export default createGlobalStyle`
   body {
     position: relative;
     background: ${(props) => props.theme.background};
-    color: ${(props) => props.theme.text};
-    transition: background-color 0.5s ease;
+    color: ${(props) => props.theme.titles};
+    transition: background-color 0.45s ease, color 0.45s ease;
 
     .global-wrapper {
       padding-bottom: 50px;
+      position: relative;
     }
+  }
+
+  a {
+    transition: color 0.2s ease, transform 0.2s ease;
   }
 
   h1 {
@@ -50,14 +59,18 @@ export default createGlobalStyle`
   .text-bg-reverse {
     width: 100%;
     font-size: 16px;
-    color: ${({ theme }) => theme.titles};
+    color: ${({ theme }) => theme.textMuted};
     text-align: justify;
   }
 
   .text-bg-reverse-60 {
     font-size: 16px;
-    color: ${({ theme }) => theme.titles};
-    opacity: 0.6;
+    color: ${({ theme }) => theme.textMuted};
+    opacity: 0.85;
     text-align: justify;
+  }
+
+  section[id] {
+    scroll-margin-top: 88px;
   }
 `;

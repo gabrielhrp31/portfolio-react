@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const ExperienceWrapper = styled.section`
   width: min(1100px, 90vw);
   margin: 80px auto 40px;
+  transition: color 0.45s ease;
 
   .experience__list {
     margin-top: 28px;

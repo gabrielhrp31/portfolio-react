@@ -17,10 +17,13 @@ export const CoursesWrapper = styled.section`
 `;
 
 export const CourseCard = styled.article`
-  border: 1px solid ${({ theme }) => theme.softAccent}66;
+  border: 1px solid ${({ theme }) => theme.border};
   border-radius: 16px;
   padding: 18px 20px;
-  background: ${({ theme }) => theme.background};
+  background: ${({ theme }) => theme.surface};
+  box-shadow: ${({ theme }) => theme.shadow};
+  height: 100%;
+  transition: background-color 0.45s ease, border-color 0.45s ease;
 
   .course__kind {
     display: inline-block;

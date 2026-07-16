@@ -8,6 +8,9 @@ export const PortfolioItemWrapper = styled.div`
   border: 2px solid ${({theme}) => theme.softAccent};
   border-radius: 20px;
   overflow: hidden;
+  background: ${({ theme }) => theme.surface};
+  box-shadow: ${({ theme }) => theme.shadow};
+  transition: background-color 0.45s ease, border-color 0.45s ease;
 
   display: flex;
   flex-direction: column;

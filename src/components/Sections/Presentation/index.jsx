@@ -43,6 +43,8 @@ function Presentation() {
       clearInterval(interval);
       clearText();
     };
+    // Mount-only typewriter + logo pulse; generation guard handles Strict Mode.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const stutterLogo = () => {

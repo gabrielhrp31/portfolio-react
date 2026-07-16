@@ -100,11 +100,11 @@ Em **Repository → Settings → Actions → Secrets**:
 | Secret | Uso |
 |--------|-----|
 | `SSH_HOST` | IP/hostname da VPS |
-| `SSH_USER` | usuário SSH |
-| `SSH_PRIVATE_KEY` | chave privada OpenSSH |
-| `ADMIN_PASSWORD` | senha do `/admin` |
-| `MYSQL_ROOT_PASSWORD` | root do MySQL no compose |
-| `DATABASE_PASSWORD` | senha do usuário MySQL da app |
+| `SSH_USER` | usuário SSH da VPS |
+| `SSH_PASSWORD` | senha SSH da VPS (KingHost) |
+| `ADMIN_PASSWORD` | senha do `/admin` do site |
+| `MYSQL_ROOT_PASSWORD` | senha **root** do MySQL **do Docker** (você escolhe) |
+| `DATABASE_PASSWORD` | senha do user MySQL **do Docker** (você escolhe) |
 
 ### Opcionais
 
@@ -121,7 +121,18 @@ Em **Repository → Settings → Actions → Secrets**:
 | `CONTACT_SMTP_TO` / `CONTACT_TO_EMAIL` | destinatário dos orçamentos |
 | `CONTACT_SMTP_SECURE` | `false` |
 
-O workflow grava esses valores em `${DEPLOY_PATH}/.env.production` (chmod 600) antes do `docker compose up`.
+### MySQL: de onde vêm os dados?
+
+O MySQL **já está no** `docker-compose.prod.yml` (serviço `mysql`).  
+Não é um MySQL externo da KingHost.
+
+1. Você cria nos Secrets as senhas que quiser (`MYSQL_ROOT_PASSWORD`, `DATABASE_PASSWORD`, etc.).
+2. O Actions grava isso em `.env.production` na VPS.
+3. No `docker compose up`, o container MySQL é criado com esses valores.
+4. O script de deploy roda o **seed** (tabelas + dados iniciais).
+5. Depois você gerencia conteúdo pelo `/admin`.
+
+O workflow grava os Secrets em `${DEPLOY_PATH}/.env.production` (chmod 600) antes do `docker compose up`.
 
 ## 5. Runner Gitea (`act_runner`)
 

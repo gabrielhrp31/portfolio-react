@@ -4,10 +4,10 @@
 # Secrets obrigatórios (Repo → Settings → Actions → Secrets):
 #   SSH_HOST
 #   SSH_USER
-#   SSH_PRIVATE_KEY
-#   ADMIN_PASSWORD
-#   MYSQL_ROOT_PASSWORD
-#   DATABASE_PASSWORD
+#   SSH_PASSWORD              — senha SSH da VPS (KingHost)
+#   ADMIN_PASSWORD            — senha do /admin do site
+#   MYSQL_ROOT_PASSWORD       — senha root do MySQL DO DOCKER (você escolhe)
+#   DATABASE_PASSWORD         — senha do user MySQL DO DOCKER (você escolhe)
 #
 # Secrets opcionais:
 #   SSH_PORT                 (default 22)
@@ -23,8 +23,11 @@
 #   CONTACT_TO_EMAIL
 #   CONTACT_SMTP_SECURE      (default false)
 #
+# MySQL sobe no docker-compose.prod.yml (serviço `mysql`).
+# As senhas acima NÃO vêm de um MySQL externo: você as define nos Secrets
+# e o compose cria o container com esses valores.
+#
 # O workflow gera /opt/portfolio/.env.production na VPS a partir desses secrets.
-# Pré-requisitos na VPS: docs/DEPLOY.md
 
 name: Deploy KingHost (Traefik)
 
@@ -51,53 +54,85 @@ jobs:
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
           MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
         run: |
           : "${SSH_HOST:?missing secret SSH_HOST}"
           : "${SSH_USER:?missing secret SSH_USER}"
-          : "${SSH_PRIVATE_KEY:?missing secret SSH_PRIVATE_KEY}"
+          : "${SSH_PASSWORD:?missing secret SSH_PASSWORD}"
           : "${ADMIN_PASSWORD:?missing secret ADMIN_PASSWORD}"
           : "${MYSQL_ROOT_PASSWORD:?missing secret MYSQL_ROOT_PASSWORD}"
           : "${DATABASE_PASSWORD:?missing secret DATABASE_PASSWORD}"
 
-      - name: Setup SSH
+      - name: Install sshpass
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq sshpass openssh-client rsync
+
+      - name: Setup SSH (password auth)
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
           SSH_PORT: ${{ secrets.SSH_PORT }}
         run: |
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
-          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_deploy
-          chmod 600 ~/.ssh/id_deploy
           PORT="${SSH_PORT:-22}"
           ssh-keyscan -p "$PORT" -H "$SSH_HOST" >> ~/.ssh/known_hosts
-          cat > ~/.ssh/config <<EOF
-          Host kinghost
-            HostName ${SSH_HOST}
-            User ${SSH_USER}
-            Port ${PORT}
-            IdentityFile ~/.ssh/id_deploy
-            IdentitiesOnly yes
-            StrictHostKeyChecking accept-new
-            ServerAliveInterval 30
+
+          # Wrappers so the rest of the workflow can call `ssh` / `scp` / `rsync`
+          # with password auth without embedding the password in each step.
+          cat > /tmp/ssh-password-env.sh <<'EOF'
+          export SSHPASS="${SSH_PASSWORD}"
+          export SSH_PORT_EFFECTIVE="${SSH_PORT:-22}"
+          ssh_cmd() {
+            sshpass -e ssh -p "${SSH_PORT_EFFECTIVE}" \
+              -o StrictHostKeyChecking=accept-new \
+              -o PreferredAuthentications=password \
+              -o PubkeyAuthentication=no \
+              -o NumberOfPasswordPrompts=1 \
+              "$@"
+          }
+          scp_cmd() {
+            sshpass -e scp -P "${SSH_PORT_EFFECTIVE}" \
+              -o StrictHostKeyChecking=accept-new \
+              -o PreferredAuthentications=password \
+              -o PubkeyAuthentication=no \
+              "$@"
+          }
+          rsync_ssh() {
+            sshpass -e ssh -p "${SSH_PORT_EFFECTIVE}" \
+              -o StrictHostKeyChecking=accept-new \
+              -o PreferredAuthentications=password \
+              -o PubkeyAuthentication=no
+          }
           EOF
-          chmod 600 ~/.ssh/config
+
+          # Persist for later steps via GITHUB_ENV + helper script
+          echo "SSHPASS=${SSH_PASSWORD}" >> "$GITHUB_ENV"
+          echo "SSH_PORT_EFFECTIVE=${PORT}" >> "$GITHUB_ENV"
+          echo "SSH_TARGET=${SSH_USER}@${SSH_HOST}" >> "$GITHUB_ENV"
 
       - name: Ensure remote directory
         env:
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         run: |
           REMOTE_DIR="${DEPLOY_PATH:-/opt/portfolio}"
-          ssh kinghost "mkdir -p '$REMOTE_DIR' '$REMOTE_DIR/public/uploads'"
+          sshpass -e ssh -p "${SSH_PORT_EFFECTIVE:-22}" \
+            -o StrictHostKeyChecking=accept-new \
+            -o PreferredAuthentications=password \
+            -o PubkeyAuthentication=no \
+            "${SSH_TARGET}" \
+            "mkdir -p '$REMOTE_DIR' '$REMOTE_DIR/public/uploads'"
 
       - name: Write .env.production from Gitea secrets
         env:
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
           MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
           DATABASE_USER: ${{ secrets.DATABASE_USER }}
@@ -142,18 +177,29 @@ jobs:
           ]
           Path("/tmp/portfolio.env.production").write_text("\n".join(lines) + "\n", encoding="utf-8")
           PY
-          scp /tmp/portfolio.env.production "kinghost:${REMOTE_DIR}/.env.production"
-          ssh kinghost "chmod 600 '${REMOTE_DIR}/.env.production'"
+          sshpass -e scp -P "${SSH_PORT_EFFECTIVE:-22}" \
+            -o StrictHostKeyChecking=accept-new \
+            -o PreferredAuthentications=password \
+            -o PubkeyAuthentication=no \
+            /tmp/portfolio.env.production \
+            "${SSH_TARGET}:${REMOTE_DIR}/.env.production"
+          sshpass -e ssh -p "${SSH_PORT_EFFECTIVE:-22}" \
+            -o StrictHostKeyChecking=accept-new \
+            -o PreferredAuthentications=password \
+            -o PubkeyAuthentication=no \
+            "${SSH_TARGET}" \
+            "chmod 600 '${REMOTE_DIR}/.env.production'"
           rm -f /tmp/portfolio.env.production
           echo "Wrote ${REMOTE_DIR}/.env.production from Gitea secrets"
 
       - name: Rsync code to VPS
         env:
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         run: |
           REMOTE_DIR="${DEPLOY_PATH:-/opt/portfolio}"
           rsync -az --delete \
-            -e "ssh" \
+            -e "sshpass -e ssh -p ${SSH_PORT_EFFECTIVE:-22} -o StrictHostKeyChecking=accept-new -o PreferredAuthentications=password -o PubkeyAuthentication=no" \
             --exclude '.git/' \
             --exclude 'node_modules/' \
             --exclude '.next/' \
@@ -163,14 +209,20 @@ jobs:
             --exclude 'public/uploads/*' \
             --exclude '.cursor/' \
             --include 'public/uploads/.gitkeep' \
-            ./ "kinghost:${REMOTE_DIR}/"
+            ./ "${SSH_TARGET}:${REMOTE_DIR}/"
 
       - name: Build and restart containers
         env:
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         run: |
           REMOTE_DIR="${DEPLOY_PATH:-/opt/portfolio}"
-          ssh kinghost "export DEPLOY_PATH='$REMOTE_DIR'; chmod +x '$REMOTE_DIR/scripts/deploy-remote.sh'; '$REMOTE_DIR/scripts/deploy-remote.sh'"
+          sshpass -e ssh -p "${SSH_PORT_EFFECTIVE:-22}" \
+            -o StrictHostKeyChecking=accept-new \
+            -o PreferredAuthentications=password \
+            -o PubkeyAuthentication=no \
+            "${SSH_TARGET}" \
+            "export DEPLOY_PATH='$REMOTE_DIR'; chmod +x '$REMOTE_DIR/scripts/deploy-remote.sh'; '$REMOTE_DIR/scripts/deploy-remote.sh'"
 
       - name: Health check https://gabrielhrp.com
         run: |

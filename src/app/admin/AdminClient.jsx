@@ -1059,13 +1059,15 @@ export default function AdminClient({
                 onChange={(e) =>
                   setPortfolioForm({ ...portfolioForm, image: e.target.value })
                 }
+                placeholder="/uploads/meu-projeto.png ou https://..."
               />
             </label>
             <label>
               Upload da imagem
               <input
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/png,image/webp,image/avif,image/gif,image/svg+xml,.jpg,.jpeg,.png,.webp,.avif,.gif,.svg"
+                disabled={loading}
                 onChange={async (e) => {
                   const file = e.target.files?.[0];
                   if (!file) return;
@@ -1083,6 +1085,25 @@ export default function AdminClient({
                 }}
               />
             </label>
+            {portfolioForm.image ? (
+              <div className="full" style={{ marginTop: 4 }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={portfolioForm.image}
+                  alt="Prévia da imagem do portfólio"
+                  style={{
+                    maxWidth: 220,
+                    maxHeight: 140,
+                    objectFit: "cover",
+                    borderRadius: 8,
+                  }}
+                />
+                <p style={{ marginTop: 6, opacity: 0.7, fontSize: 13 }}>
+                  Após o upload, clique em{" "}
+                  {editingPortfolioId ? "Atualizar" : "Cadastrar"} para salvar.
+                </p>
+              </div>
+            ) : null}
             <label className="full">
               Tecnologias do projeto
               <input

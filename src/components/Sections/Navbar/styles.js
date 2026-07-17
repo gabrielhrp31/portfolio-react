@@ -13,7 +13,7 @@ export const NavbarWrapper = styled.div`
 
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 10px;
 
   background-color: ${({ theme }) => theme.navBg};
@@ -25,11 +25,14 @@ export const NavbarWrapper = styled.div`
     color 0.45s ease;
 
   .n-logo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     width: auto !important;
     height: 70% !important;
     max-height: 44px;
-    margin-left: 0;
-    margin-right: auto;
+    margin: 0;
     object-fit: contain;
   }
 `;
@@ -44,6 +47,8 @@ export const ThemeButton = styled.button`
   justify-content: center;
   gap: 8px;
   flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 
   background-color: ${({ theme }) => theme.surface};
   color: ${({ theme }) => theme.softAccent};

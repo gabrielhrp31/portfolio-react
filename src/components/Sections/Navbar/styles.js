@@ -13,6 +13,7 @@ export const NavbarWrapper = styled.div`
 
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
 
   background-color: ${({ theme }) => theme.navBg};
@@ -27,13 +28,14 @@ export const NavbarWrapper = styled.div`
     width: auto !important;
     height: 70% !important;
     max-height: 44px;
-    margin-left: auto;
+    margin-left: 0;
+    margin-right: auto;
     object-fit: contain;
   }
 `;
 
 export const ThemeButton = styled.button`
-  margin-left: 0;
+  margin-left: auto;
   margin-right: 0;
   padding: 8px;
   border-radius: 999px;

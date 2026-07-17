@@ -24,7 +24,11 @@ export default function OptimizedImage({
   if (!resolved) return null;
 
   const local = isLocalMediaSrc(resolved);
-  const unoptimized = !local || resolved.endsWith(".svg");
+  // DB-backed uploads (/api/uploads/:id) and SVGs skip the optimizer.
+  const unoptimized =
+    !local ||
+    resolved.endsWith(".svg") ||
+    resolved.startsWith("/api/uploads/");
   const mergedStyle =
     objectFit && fill
       ? { objectFit, ...style }

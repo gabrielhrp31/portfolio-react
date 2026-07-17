@@ -427,9 +427,11 @@ async function main() {
   );
 
   // Text settings are upserted so new keys appear without overwriting custom values.
+  // Resolve via __dirname (not cwd): deploy runs seed from /tmp/seed-work with
+  // the repo mounted read-only at /workspace.
   const defaultSettings = JSON.parse(
     fs.readFileSync(
-      path.join(process.cwd(), "src", "lib", "defaultSettings.json"),
+      path.join(__dirname, "..", "src", "lib", "defaultSettings.json"),
       "utf8"
     )
   );

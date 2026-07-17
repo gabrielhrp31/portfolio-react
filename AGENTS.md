@@ -20,6 +20,7 @@ This is a **Next.js + MySQL** personal portfolio. Standard commands live in `REA
 - Home content from MySQL (`force-dynamic`): portfolio, services, technologies, experiences, courses, site_media, site_settings. If MySQL is down, list sections render empty; images/texts fall back to defaults in `src/lib/media.js` and `src/lib/defaultSettings.json`.
 - Quote requests (`quote_requests`) are created by `POST /api/contact/quote` (always saved). Email is sent when `CONTACT_SMTP_HOST` + `CONTACT_TO_EMAIL` (or `CONTACT_SMTP_TO`) are set; otherwise `email_status=skipped`. Admin lists them under “Orçamentos recebidos”.
 - After pulling schema changes, run `npm run db:seed` (idempotent per table; `site_media` / `site_settings` upsert missing keys without overwriting custom values).
+- Production seed (`scripts/deploy-remote.sh`) runs `node /workspace/scripts/seed.js` with cwd `/tmp/seed-work`. Paths inside `seed.js` must use `__dirname`, not `process.cwd()`, so files like `src/lib/defaultSettings.json` resolve under the mounted repo.
 - Site images are configurable in `/admin` → “Imagens”. Site copy (hero, about, section titles, nav, SEO, footer, contacts) is in `/admin` → “Textos”. Defaults live in `src/lib/defaultSettings.json`.
 - Local paths (`/assets/*`, `/uploads/*`) use `next/image` optimization via `OptimizedImage`; uploads land in `public/uploads/`.
 - In `react-icons` v5, Simple Icons no longer exports `SiLinkedin`; use `FaLinkedin` from `react-icons/fa`.

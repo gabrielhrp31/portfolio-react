@@ -175,6 +175,9 @@ Push em `master`/`main` (ou **Run workflow**):
 1. Checkout no runner  
 2. Gera `.env.production` na VPS a partir dos Secrets  
 3. Rsync do código → `/opt/portfolio` (não sobrescreve `.env.production`/`uploads` via rsync)  
+   Uploads do admin (`/admin` → Portfólio / Imagens) gravam em `public/uploads`,
+   montado no container via bind mount. O entrypoint (`scripts/docker-entrypoint.sh`)
+   ajusta dono para uid `1001` (user `nextjs`) a cada start.  
 4. `docker compose -f docker-compose.prod.yml up -d --build`  
 5. Seed MySQL idempotente  
 6. Health check em `https://SEU_DOMINIO.com/`

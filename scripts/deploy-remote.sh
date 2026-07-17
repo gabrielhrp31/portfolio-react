@@ -24,6 +24,17 @@ set +a
 echo "==> Rede Traefik"
 docker network inspect traefik >/dev/null 2>&1 || docker network create traefik
 
+echo "==> Pasta de uploads (bind mount → /app/public/uploads)"
+mkdir -p "$APP_DIR/public/uploads"
+# Best-effort host ownership for Next.js uid inside the container.
+# The container entrypoint also chowns the mount as root on start.
+if chown -R 1001:1001 "$APP_DIR/public/uploads" 2>/dev/null; then
+  echo "uploads owned by 1001:1001"
+else
+  echo "WARN: não foi possível chown 1001:1001 em public/uploads (entryoint do container corrige)"
+fi
+chmod -R ug+rwX "$APP_DIR/public/uploads" 2>/dev/null || true
+
 echo "==> Docker Compose up --build"
 docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --build --remove-orphans
 

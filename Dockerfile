@@ -21,17 +21,20 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
-RUN addgroup --system --gid 1001 nodejs \
+RUN apk add --no-cache su-exec \
+  && addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Uploads persist via volume mount in compose
+# Uploads persist via volume mount in compose. Entrypoint chowns the mount
+# at container start (image chown alone is hidden by the volume).
 RUN mkdir -p /app/public/uploads && chown -R nextjs:nodejs /app/public/uploads
+COPY scripts/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
-USER nextjs
 EXPOSE 3000
-
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["node", "server.js"]

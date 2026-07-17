@@ -55,7 +55,9 @@ services:
       NODE_ENV: production
       PORT: 3000
     volumes:
-      - portfolio_uploads:/app/public/uploads
+      # Bind mount so host ./public/uploads (kept across rsync --exclude) is used.
+      # Entrypoint chowns to uid 1001 so Next can write portfolio/site uploads.
+      - ./public/uploads:/app/public/uploads
     networks:
       - internal
       - traefik
@@ -103,4 +105,3 @@ networks:
 
 volumes:
   portfolio_mysql_data:
-  portfolio_uploads:

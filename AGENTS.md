@@ -22,7 +22,8 @@ This is a **Next.js + MySQL** personal portfolio. Standard commands live in `REA
 - After pulling schema changes, run `npm run db:seed` (idempotent per table; `site_media` / `site_settings` upsert missing keys without overwriting custom values).
 - Production seed (`scripts/deploy-remote.sh`) runs `node /workspace/scripts/seed.js` with cwd `/tmp/seed-work`. Paths inside `seed.js` must use `__dirname`, not `process.cwd()`, so files like `src/lib/defaultSettings.json` resolve under the mounted repo.
 - Site images are configurable in `/admin` → “Imagens”. Site copy (hero, about, section titles, nav, SEO, footer, contacts) is in `/admin` → “Textos”. Defaults live in `src/lib/defaultSettings.json`.
-- Local paths (`/assets/*`, `/uploads/*`) use `next/image` optimization via `OptimizedImage`; uploads land in `public/uploads/`.
+- Local paths (`/assets/*`, `/uploads/*`) use `next/image` optimization via `OptimizedImage`; uploads land in `public/uploads/` via `POST /api/media/upload` (portfolio + site media share this).
+- In production, `public/uploads` is a bind mount; `scripts/docker-entrypoint.sh` chowns it to uid 1001 on container start. Without that, uploads return 500 (EACCES).
 - In `react-icons` v5, Simple Icons no longer exports `SiLinkedin`; use `FaLinkedin` from `react-icons/fa`.
 - Hero typewriter uses React Bits `TextType` and persists completion in `sessionStorage` (`portfolio-hero-typed-v1`) so Fast Refresh/HMR does not restart or corrupt the text mid-session.
 - Animation helpers live in `src/components/react-bits/` (copied from [React Bits](https://reactbits.dev/), deps: `gsap`, `motion`).

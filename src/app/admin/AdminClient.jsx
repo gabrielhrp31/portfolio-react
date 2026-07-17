@@ -12,6 +12,9 @@ import {
   ItemRow,
   PrimaryButton,
   SecondaryButton,
+  SectionTitle,
+  TabButton,
+  TabList,
   Title,
 } from "./styles";
 import { SERVICE_ICON_OPTIONS } from "@/lib/serviceIcons";
@@ -62,6 +65,16 @@ const emptyCourse = {
   sortOrder: 0,
 };
 
+const ADMIN_TABS = [
+  { id: "quotes", label: "Orçamentos" },
+  { id: "media", label: "Imagens" },
+  { id: "experience", label: "Experiência" },
+  { id: "courses", label: "Formação" },
+  { id: "portfolio", label: "Portfólio" },
+  { id: "services", label: "Serviços" },
+  { id: "technologies", label: "Tecnologias" },
+];
+
 export default function AdminClient({
   initialAuthenticated = false,
   initialPortfolio = [],
@@ -76,6 +89,7 @@ export default function AdminClient({
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("quotes");
 
   const [portfolio, setPortfolio] = useState(initialPortfolio);
   const [services, setServices] = useState(initialServices);
@@ -307,8 +321,8 @@ export default function AdminClient({
       <Card>
         <Title>Painel Admin</Title>
         <p>
-          Cadastre portfólio, serviços, tecnologias, experiências, formação e
-          imagens do site.
+          Use as abas abaixo para editar cada bloco do site sem rolar a página
+          inteira.
         </p>
         <div style={{ display: "flex", gap: 12, marginBottom: 8 }}>
           <SecondaryButton type="button" onClick={handleLogout}>
@@ -319,8 +333,27 @@ export default function AdminClient({
         {error ? <ErrorText>{error}</ErrorText> : null}
       </Card>
 
-      <Card>
-        <Title>Orçamentos recebidos</Title>
+      <TabList role="tablist" aria-label="Seções do admin">
+        {ADMIN_TABS.map((tab) => (
+          <TabButton
+            key={tab.id}
+            type="button"
+            role="tab"
+            aria-selected={activeTab === tab.id}
+            $active={activeTab === tab.id}
+            onClick={() => {
+              setActiveTab(tab.id);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          >
+            {tab.label}
+          </TabButton>
+        ))}
+      </TabList>
+
+      {activeTab === "quotes" ? (
+      <Card role="tabpanel" aria-label="Orçamentos">
+        <SectionTitle>Orçamentos recebidos</SectionTitle>
         <p style={{ marginBottom: 12 }}>
           Solicitações enviadas pelo site (salvas no MySQL + email quando SMTP
           estiver configurado).
@@ -353,9 +386,11 @@ export default function AdminClient({
           )}
         </ItemList>
       </Card>
+      ) : null}
 
-      <Card>
-        <Title>Imagens do site</Title>
+      {activeTab === "media" ? (
+      <Card role="tabpanel" aria-label="Imagens do site">
+        <SectionTitle>Imagens do site</SectionTitle>
         <p style={{ marginBottom: 12 }}>
           URLs locais (`/assets/...`, `/uploads/...`) são otimizadas (AVIF/WebP)
           pelo Next.js. Você também pode colar uma URL externa ou fazer upload.
@@ -452,9 +487,11 @@ export default function AdminClient({
           })}
         </ItemList>
       </Card>
+      ) : null}
 
-      <Card>
-        <Title>Experiência</Title>
+      {activeTab === "experience" ? (
+      <Card role="tabpanel" aria-label="Experiência">
+        <SectionTitle>Experiência</SectionTitle>
         <form
           onSubmit={(event) =>
             saveEntity({
@@ -619,9 +656,11 @@ export default function AdminClient({
           )}
         </ItemList>
       </Card>
+      ) : null}
 
-      <Card>
-        <Title>Formação & Cursos</Title>
+      {activeTab === "courses" ? (
+      <Card role="tabpanel" aria-label="Formação e cursos">
+        <SectionTitle>Formação & Cursos</SectionTitle>
         <form
           onSubmit={(event) =>
             saveEntity({
@@ -795,9 +834,11 @@ export default function AdminClient({
           )}
         </ItemList>
       </Card>
+      ) : null}
 
-      <Card>
-        <Title>Portfólio</Title>
+      {activeTab === "portfolio" ? (
+      <Card role="tabpanel" aria-label="Portfólio">
+        <SectionTitle>Portfólio</SectionTitle>
         <form
           onSubmit={(event) =>
             saveEntity({
@@ -975,9 +1016,11 @@ export default function AdminClient({
           ))}
         </ItemList>
       </Card>
+      ) : null}
 
-      <Card>
-        <Title>Serviços</Title>
+      {activeTab === "services" ? (
+      <Card role="tabpanel" aria-label="Serviços">
+        <SectionTitle>Serviços</SectionTitle>
         <form
           onSubmit={(event) =>
             saveEntity({
@@ -1084,9 +1127,11 @@ export default function AdminClient({
           ))}
         </ItemList>
       </Card>
+      ) : null}
 
-      <Card>
-        <Title>Tecnologias</Title>
+      {activeTab === "technologies" ? (
+      <Card role="tabpanel" aria-label="Tecnologias">
+        <SectionTitle>Tecnologias</SectionTitle>
         <form
           onSubmit={(event) =>
             saveEntity({
@@ -1180,6 +1225,7 @@ export default function AdminClient({
           ))}
         </ItemList>
       </Card>
+      ) : null}
     </AdminPage>
   );
 }

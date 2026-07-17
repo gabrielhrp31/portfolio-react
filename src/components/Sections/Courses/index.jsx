@@ -8,6 +8,8 @@ import FadeContent from "@/components/react-bits/FadeContent";
 import ShinyText from "@/components/react-bits/ShinyText";
 import Magnet from "@/components/react-bits/Magnet";
 import { CustomThemeContext } from "@/components/CustomThemeProvider";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { settingValue } from "@/lib/settings";
 
 const KIND_LABELS = {
   formation: "Formação",
@@ -17,28 +19,31 @@ const KIND_LABELS = {
 
 function Courses({ items = [] }) {
   const { currentTheme } = useContext(CustomThemeContext);
+  const settings = useSiteSettings();
   const spotlight =
     currentTheme === "light"
       ? "rgba(29, 185, 84, 0.18)"
       : "rgba(72, 197, 88, 0.25)";
+  const title = settingValue(settings, "section_courses_title");
+  const intro = settingValue(settings, "section_courses_intro");
+  const emptyText = settingValue(settings, "section_courses_empty");
+  const certificateLabel = settingValue(settings, "courses_certificate_label");
 
   return (
     <CoursesWrapper id="cursos">
       <BlurText
-        text="Formação & Cursos"
+        text={title}
         className="title-green"
         delay={50}
         animateBy="words"
         direction="top"
       />
       <FadeContent blur duration={850}>
-        <div className="text-bg-reverse">
-          Trajetória acadêmica, especializações e certificações.
-        </div>
+        <div className="text-bg-reverse">{intro}</div>
       </FadeContent>
       {items.length === 0 ? (
         <p className="text-bg-reverse" style={{ marginTop: 24 }}>
-          Nenhum curso cadastrado ainda.
+          {emptyText}
         </p>
       ) : (
         <div className="courses__grid">
@@ -81,7 +86,7 @@ function Courses({ items = [] }) {
                         target="_blank"
                         rel="noreferrer"
                       >
-                        Ver certificado
+                        {certificateLabel}
                       </a>
                     </Magnet>
                   ) : null}

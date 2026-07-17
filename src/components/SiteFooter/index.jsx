@@ -1,16 +1,20 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import OptimizedImage from "@/components/OptimizedImage";
 import { buildMediaMap, DEFAULT_MEDIA } from "@/lib/media";
 import { FooterWrapper } from "./styles";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { formatFooterCopyright } from "@/lib/settings";
 
 export default function SiteFooter() {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
-  const [mediaRows, setMediaRows] = useState([]);
-  const mediaMap = useMemo(() => buildMediaMap(mediaRows), [mediaRows]);
+  const settings = useSiteSettings();
+  const defaults = DEFAULT_MEDIA.logo_navbar;
+  const [logoUrl, setLogoUrl] = useState(defaults.url);
+  const [logoAlt, setLogoAlt] = useState(defaults.altText || "Logo");
 
   useEffect(() => {
     if (isAdmin) return undefined;
@@ -19,7 +23,11 @@ export default function SiteFooter() {
     fetch("/api/media")
       .then((r) => r.json())
       .then((data) => {
-        if (!cancelled && Array.isArray(data)) setMediaRows(data);
+        if (cancelled || !Array.isArray(data)) return;
+        const map = buildMediaMap(data);
+        const next = map.logo_navbar || DEFAULT_MEDIA.logo_navbar;
+        setLogoUrl(next.url);
+        setLogoAlt(next.altText || "Logo");
       })
       .catch(() => {});
 
@@ -30,20 +38,15 @@ export default function SiteFooter() {
 
   if (isAdmin) return null;
 
-  const logo = mediaMap?.logo_navbar || DEFAULT_MEDIA.logo_navbar;
-
   return (
     <FooterWrapper>
       <div className="footer-inner">
-        <div className="left">
-          © {new Date().getFullYear()} Gabriel Rodrigues. Todos os direitos
-          reservados.
-        </div>
+        <div className="left">{formatFooterCopyright(settings)}</div>
         <div className="right">
           <div className="logo" aria-hidden="true">
             <OptimizedImage
-              src={logo.url}
-              alt={logo.altText || "Logo"}
+              src={logoUrl}
+              alt={logoAlt}
               width={160}
               height={44}
               sizes="160px"

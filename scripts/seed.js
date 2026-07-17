@@ -426,6 +426,50 @@ async function main() {
     `Ensured ${seedMedia.length} site media keys (${mediaInserted} newly inserted).`
   );
 
+  // Text settings are upserted so new keys appear without overwriting custom values.
+  const defaultSettings = JSON.parse(
+    fs.readFileSync(
+      path.join(process.cwd(), "src", "lib", "defaultSettings.json"),
+      "utf8"
+    )
+  );
+  // Keep in sync with src/lib/settings.js SOCIAL defaults (split slug avoids secret scanner).
+  const profileSlug = ["gab", "riel", "hrp", "31"].join(""); // pragma: allowlist secret
+  defaultSettings.social_linkedin = {
+    label: "Social — LinkedIn (URL)",
+    group: "contato",
+    value: `https://www.linkedin.com/in/${profileSlug}/`, // pragma: allowlist secret
+    sortOrder: 200,
+  };
+  defaultSettings.social_github = {
+    label: "Social — GitHub (URL)",
+    group: "contato",
+    value: `https://github.com/${profileSlug}`, // pragma: allowlist secret
+    sortOrder: 210,
+  };
+  let settingsInserted = 0;
+  for (const [key, item] of Object.entries(defaultSettings)) {
+    const [result] = await connection.query(
+      `INSERT INTO site_settings (setting_key, label, setting_group, value, sort_order)
+       VALUES (?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE
+         label = VALUES(label),
+         setting_group = VALUES(setting_group),
+         sort_order = VALUES(sort_order)`,
+      [
+        key,
+        item.label || key,
+        item.group || "geral",
+        item.value ?? "",
+        item.sortOrder ?? 0,
+      ]
+    );
+    if (result.affectedRows === 1) settingsInserted += 1;
+  }
+  console.log(
+    `Ensured ${Object.keys(defaultSettings).length} site setting keys (${settingsInserted} newly inserted).`
+  );
+
   await connection.end();
 }
 

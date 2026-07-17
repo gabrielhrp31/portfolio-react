@@ -10,14 +10,20 @@ import BlurText from "@/components/react-bits/BlurText";
 import { CustomThemeContext } from "@/components/CustomThemeProvider";
 import { mediaUrl } from "@/lib/media";
 import QuoteCta from "@/components/Contact/QuoteCta";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { settingValue } from "@/lib/settings";
 
 function Services({ items = [], media = null }) {
   const { currentTheme } = useContext(CustomThemeContext);
+  const settings = useSiteSettings();
   const spotlight =
     currentTheme === "light"
       ? "rgba(255, 255, 255, 0.18)"
       : "rgba(72, 197, 88, 0.22)";
   const bgImage = mediaUrl(media, "services_bg");
+  const title = settingValue(settings, "section_services_title");
+  const emptyText = settingValue(settings, "section_services_empty");
+  const ctaLabel = settingValue(settings, "cta_quote_label");
 
   return (
     <ParallaxWaves id="servicos" $bgImage={bgImage}>
@@ -30,7 +36,7 @@ function Services({ items = [], media = null }) {
 
       <div className="services-heading">
         <BlurText
-          text="Serviços"
+          text={title}
           className="services-title"
           delay={40}
           animateBy="letters"
@@ -41,7 +47,7 @@ function Services({ items = [], media = null }) {
       <div className="services-grid">
         {items.length === 0 ? (
           <p style={{ color: "#EBF4F8", textAlign: "center", width: "100%" }}>
-            Nenhum serviço cadastrado ainda.
+            {emptyText}
           </p>
         ) : (
           items.map((item, index) => (
@@ -68,7 +74,7 @@ function Services({ items = [], media = null }) {
       </div>
 
       <div className="services-cta">
-        <QuoteCta source="services" variant="soft" />
+        <QuoteCta source="services" variant="soft" label={ctaLabel} />
       </div>
 
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">

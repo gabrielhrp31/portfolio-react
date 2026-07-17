@@ -1,0 +1,302 @@
+{
+  "seo_title": {
+    "label": "SEO — título da página",
+    "group": "seo",
+    "value": "Gabriel Rodrigues | Portfolio",
+    "sortOrder": 10
+  },
+  "seo_description": {
+    "label": "SEO — descrição",
+    "group": "seo",
+    "value": "Portfólio pessoal de Gabriel Henrique Rodrigues Pinto",
+    "sortOrder": 20
+  },
+  "hero_prefix": {
+    "label": "Hero — texto antes do nome",
+    "group": "hero",
+    "value": "Olá me chamo ",
+    "sortOrder": 100
+  },
+  "hero_name": {
+    "label": "Hero — nome destacado",
+    "group": "hero",
+    "value": "Gabriel Rodrigues",
+    "sortOrder": 110
+  },
+  "hero_suffix": {
+    "label": "Hero — texto depois do nome",
+    "group": "hero",
+    "value": " desenvolvedor fullstack.",
+    "sortOrder": 120
+  },
+  "cta_quote_label": {
+    "label": "CTA — texto do botão de orçamento",
+    "group": "hero",
+    "value": "Solicitar orçamento",
+    "sortOrder": 130
+  },
+  "social_email": {
+    "label": "Social — e-mail",
+    "group": "contato",
+    "value": "gabrielws31@gmail.com",
+    "sortOrder": 220
+  },
+  "social_email_subject": {
+    "label": "Social — assunto do e-mail",
+    "group": "contato",
+    "value": "Quero realizar um orçamento!",
+    "sortOrder": 230
+  },
+  "social_whatsapp_phone": {
+    "label": "Social — WhatsApp (só números, com DDI)",
+    "group": "contato",
+    "value": "5537991243949",
+    "sortOrder": 240
+  },
+  "social_whatsapp_message": {
+    "label": "Social — mensagem pré-preenchida do WhatsApp",
+    "group": "contato",
+    "value": "Olá vi seu portfólio e quero realizar um orçamento!",
+    "sortOrder": 250
+  },
+  "about_name": {
+    "label": "Sobre — nome completo",
+    "group": "sobre",
+    "value": "Gabriel Henrique Rodrigues Pinto",
+    "sortOrder": 300
+  },
+  "about_english": {
+    "label": "Sobre — nível de inglês",
+    "group": "sobre",
+    "value": "Inglês Intermediário",
+    "sortOrder": 310
+  },
+  "about_location": {
+    "label": "Sobre — cidade/UF",
+    "group": "sobre",
+    "value": "Belo Horizonte/MG",
+    "sortOrder": 320
+  },
+  "about_birthdate": {
+    "label": "Sobre — data de nascimento (MM/DD/AAAA)",
+    "group": "sobre",
+    "value": "01/31/2000",
+    "sortOrder": 330
+  },
+  "about_career_start": {
+    "label": "Sobre — início da carreira (MM/DD/AAAA)",
+    "group": "sobre",
+    "value": "06/30/2018",
+    "sortOrder": 340
+  },
+  "about_xp_label": {
+    "label": "Sobre — rótulo após anos de experiência",
+    "group": "sobre",
+    "value": "Anos de Experiência",
+    "sortOrder": 350
+  },
+  "about_age_label": {
+    "label": "Sobre — rótulo após idade",
+    "group": "sobre",
+    "value": "Anos",
+    "sortOrder": 360
+  },
+  "about_topic_me_title": {
+    "label": "Sobre — título do bloco bio",
+    "group": "sobre",
+    "value": "Sobre Mim",
+    "sortOrder": 370
+  },
+  "about_topic_me_text": {
+    "label": "Sobre — texto da bio",
+    "group": "sobre",
+    "value": "Olá! Meu nome é Gabriel e, além do meu trabalho como Desenvolvedor Java Sênior, estou focado em expandir meu lado criativo através de projetos pessoais. Minha jornada na tecnologia começou cedo, quando ingressei como estagiário, impulsionado pela curiosidade e pela vontade constante de aprender. Desde então, venho aprimorando minhas habilidades e adquirindo experiências valiosas ao longo da minha trajetória. Neste novo ano, tenho como meta conquistar certificações internacionais e finalizar meu curso de inglês para agregar ainda mais à minha carreira. Além do desenvolvimento de software, gosto de explorar o universo da música tocando alguns instrumentos, assistir sitcoms e estudar temas variados, desde história até assuntos técnicos da minha área. Se quiser trocar ideias sobre tecnologia, certificações ou qualquer outro assunto, será um prazer conversar!",
+    "sortOrder": 380
+  },
+  "about_topic_brand_title": {
+    "label": "Sobre — título do bloco marca",
+    "group": "sobre",
+    "value": "Minha \"Marca\"",
+    "sortOrder": 390
+  },
+  "about_topic_brand_text": {
+    "label": "Sobre — texto do bloco marca",
+    "group": "sobre",
+    "value": "Todo o trabalho da logo foi desenvolvido pelo designer Breno Ribeiro após uma breve conversa sobre gostos e a imagem que eu queria passar aos clientes com a mesma, foram discutidas semelhanças com logos de grandes empresas e minhas inspirações.",
+    "sortOrder": 400
+  },
+  "about_topic_tech_title": {
+    "label": "Sobre — título do bloco tecnologias",
+    "group": "sobre",
+    "value": "Tecnologias",
+    "sortOrder": 410
+  },
+  "about_tech_empty": {
+    "label": "Sobre — aviso sem tecnologias",
+    "group": "sobre",
+    "value": "Nenhuma tecnologia cadastrada ainda.",
+    "sortOrder": 420
+  },
+  "identity_caption_1": {
+    "label": "Identidade — legenda 1 (chaves)",
+    "group": "sobre",
+    "value": "Em grande parte das linguagens as chaves “{}” determinam o início e o fim de uma determinada função.",
+    "sortOrder": 430
+  },
+  "identity_caption_2": {
+    "label": "Identidade — legenda 2 (arrow)",
+    "group": "sobre",
+    "value": "Alusão ao conjunto “ => ” usado para declarar uma “arrow function” na linguagem javascript na qual utilizo bastante em projetos que trabalho grande parte do tempo.",
+    "sortOrder": 440
+  },
+  "identity_caption_3": {
+    "label": "Identidade — legenda 3 (letra G)",
+    "group": "sobre",
+    "value": "A junção dos dois símbolos formam a letra “G” remetendo ao nome “Gabriel”.",
+    "sortOrder": 450
+  },
+  "section_services_title": {
+    "label": "Seção Serviços — título",
+    "group": "secoes",
+    "value": "Serviços",
+    "sortOrder": 500
+  },
+  "section_services_empty": {
+    "label": "Seção Serviços — vazio",
+    "group": "secoes",
+    "value": "Nenhum serviço cadastrado ainda.",
+    "sortOrder": 510
+  },
+  "section_experience_title": {
+    "label": "Seção Experiência — título",
+    "group": "secoes",
+    "value": "Experiência",
+    "sortOrder": 520
+  },
+  "section_experience_intro": {
+    "label": "Seção Experiência — introdução",
+    "group": "secoes",
+    "value": "Resumo de papéis, responsabilidades e evolução na carreira.",
+    "sortOrder": 530
+  },
+  "section_experience_empty": {
+    "label": "Seção Experiência — vazio",
+    "group": "secoes",
+    "value": "Nenhuma experiência cadastrada ainda.",
+    "sortOrder": 540
+  },
+  "section_courses_title": {
+    "label": "Seção Formação — título",
+    "group": "secoes",
+    "value": "Formação & Cursos",
+    "sortOrder": 550
+  },
+  "section_courses_intro": {
+    "label": "Seção Formação — introdução",
+    "group": "secoes",
+    "value": "Trajetória acadêmica, especializações e certificações.",
+    "sortOrder": 560
+  },
+  "section_courses_empty": {
+    "label": "Seção Formação — vazio",
+    "group": "secoes",
+    "value": "Nenhum curso cadastrado ainda.",
+    "sortOrder": 570
+  },
+  "courses_certificate_label": {
+    "label": "Seção Formação — link do certificado",
+    "group": "secoes",
+    "value": "Ver certificado",
+    "sortOrder": 580
+  },
+  "section_portfolio_title": {
+    "label": "Seção Portfólio — título",
+    "group": "secoes",
+    "value": "Portfólio",
+    "sortOrder": 590
+  },
+  "section_portfolio_intro": {
+    "label": "Seção Portfólio — introdução",
+    "group": "secoes",
+    "value": "Em breve mais projetos em que trabalhei e dediquei meu amor e carinho para oferecer o melhor das minhas ideias...",
+    "sortOrder": 600
+  },
+  "nav_inicio": {
+    "label": "Navegação — Início",
+    "group": "navegacao",
+    "value": "Início",
+    "sortOrder": 700
+  },
+  "nav_sobre": {
+    "label": "Navegação — Sobre",
+    "group": "navegacao",
+    "value": "Sobre",
+    "sortOrder": 710
+  },
+  "nav_servicos": {
+    "label": "Navegação — Serviços",
+    "group": "navegacao",
+    "value": "Serviços",
+    "sortOrder": 720
+  },
+  "nav_experiencia": {
+    "label": "Navegação — Experiência",
+    "group": "navegacao",
+    "value": "Experiência",
+    "sortOrder": 730
+  },
+  "nav_cursos": {
+    "label": "Navegação — Cursos",
+    "group": "navegacao",
+    "value": "Cursos",
+    "sortOrder": 740
+  },
+  "nav_portfolio": {
+    "label": "Navegação — Portfólio",
+    "group": "navegacao",
+    "value": "Portfólio",
+    "sortOrder": 750
+  },
+  "nav_orcamento": {
+    "label": "Navegação — Orçamento",
+    "group": "navegacao",
+    "value": "Orçamento",
+    "sortOrder": 760
+  },
+  "quote_modal_title": {
+    "label": "Modal orçamento — título",
+    "group": "contato",
+    "value": "Solicitar Orçamento",
+    "sortOrder": 800
+  },
+  "quote_modal_helper": {
+    "label": "Modal orçamento — texto de ajuda",
+    "group": "contato",
+    "value": "Envie os detalhes do que você precisa. A solicitação é salva no sistema e enviada por email.",
+    "sortOrder": 810
+  },
+  "quote_modal_submit": {
+    "label": "Modal orçamento — botão enviar",
+    "group": "contato",
+    "value": "Enviar solicitação",
+    "sortOrder": 820
+  },
+  "quote_modal_success": {
+    "label": "Modal orçamento — mensagem de sucesso",
+    "group": "contato",
+    "value": "Solicitação registrada!",
+    "sortOrder": 830
+  },
+  "footer_copyright": {
+    "label": "Rodapé — copyright (use {year} e {name})",
+    "group": "rodape",
+    "value": "© {year} {name}. Todos os direitos reservados.",
+    "sortOrder": 900
+  },
+  "footer_name": {
+    "label": "Rodapé — nome no copyright",
+    "group": "rodape",
+    "value": "Gabriel Rodrigues",
+    "sortOrder": 910
+  }
+}

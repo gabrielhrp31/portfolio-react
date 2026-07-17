@@ -7,31 +7,36 @@ import FadeContent from "@/components/react-bits/FadeContent";
 import SpotlightCard from "@/components/react-bits/SpotlightCard";
 import { CustomThemeContext } from "@/components/CustomThemeProvider";
 import QuoteCta from "@/components/Contact/QuoteCta";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { settingValue } from "@/lib/settings";
 
 function Experience({ items = [] }) {
   const { currentTheme } = useContext(CustomThemeContext);
+  const settings = useSiteSettings();
   const spotlight =
     currentTheme === "light"
       ? "rgba(29, 185, 84, 0.14)"
       : "rgba(72, 197, 88, 0.2)";
+  const title = settingValue(settings, "section_experience_title");
+  const intro = settingValue(settings, "section_experience_intro");
+  const emptyText = settingValue(settings, "section_experience_empty");
+  const ctaLabel = settingValue(settings, "cta_quote_label");
 
   return (
     <ExperienceWrapper id="experiencia">
       <BlurText
-        text="Experiência"
+        text={title}
         className="title-green"
         delay={50}
         animateBy="letters"
         direction="top"
       />
       <FadeContent blur duration={850}>
-        <div className="text-bg-reverse">
-          Resumo de papéis, responsabilidades e evolução na carreira.
-        </div>
+        <div className="text-bg-reverse">{intro}</div>
       </FadeContent>
       {items.length === 0 ? (
         <p className="text-bg-reverse" style={{ marginTop: 24 }}>
-          Nenhuma experiência cadastrada ainda.
+          {emptyText}
         </p>
       ) : (
         <div className="experience__list">
@@ -66,7 +71,7 @@ function Experience({ items = [] }) {
         </div>
       )}
       <div style={{ marginTop: 28, display: "flex", justifyContent: "center" }}>
-        <QuoteCta source="experience" variant="outline" />
+        <QuoteCta source="experience" variant="outline" label={ctaLabel} />
       </div>
     </ExperienceWrapper>
   );

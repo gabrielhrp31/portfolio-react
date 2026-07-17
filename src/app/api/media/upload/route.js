@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { promises as fs } from "fs";
 import path from "path";
 import { isAuthenticated } from "@/lib/auth";
+import { createUploadedFile } from "@/lib/db";
 
 const ALLOWED_TYPES = new Set([
   "image/jpeg",
@@ -39,7 +39,6 @@ function sanitizeFilename(name) {
 function resolveMimeType(file) {
   const reported = String(file.type || "").toLowerCase();
   if (ALLOWED_TYPES.has(reported)) return reported;
-  // Some browsers send empty type or application/octet-stream for camera rolls.
   const ext = path.extname(String(file.name || "")).toLowerCase();
   return EXT_TO_MIME[ext] || "";
 }
@@ -75,24 +74,24 @@ export async function POST(request) {
     }
 
     const bytes = Buffer.from(await file.arrayBuffer());
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
-    await fs.mkdir(uploadsDir, { recursive: true });
+    const filename = sanitizeFilename(file.name);
+    const saved = await createUploadedFile({
+      filename,
+      mimeType: mime,
+      data: bytes,
+    });
 
-    const safeName = sanitizeFilename(file.name);
-    const filename = `${Date.now()}-${safeName}`;
-    const dest = path.join(uploadsDir, filename);
-    await fs.writeFile(dest, bytes);
-
-    return NextResponse.json({ url: `/uploads/${filename}` }, { status: 201 });
+    // URL is served by GET /api/uploads/:id (MySQL-backed — no Docker volume needed).
+    return NextResponse.json(
+      { url: saved.url, id: saved.id, filename: saved.filename },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Upload failed:", error);
-    const code = error?.code || "";
     const message =
-      code === "EACCES" || code === "EPERM"
-        ? "Sem permissão para gravar em public/uploads (verifique o volume Docker)."
-        : code === "ENOSPC"
-          ? "Disco cheio — não foi possível salvar o upload."
-          : "Falha ao enviar arquivo";
+      error?.code === "ER_NO_SUCH_TABLE"
+        ? "Tabela uploaded_files ausente — rode o seed/deploy novamente."
+        : "Falha ao enviar arquivo";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

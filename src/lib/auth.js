@@ -13,12 +13,20 @@ export function isAuthenticated() {
   return Boolean(token && token === expectedToken());
 }
 
+function cookieSecureFlag() {
+  // Required on HTTPS production so browsers keep the admin session cookie.
+  if (process.env.COOKIE_SECURE === "true") return true;
+  if (process.env.COOKIE_SECURE === "false") return false;
+  return process.env.NODE_ENV === "production";
+}
+
 export function getAuthCookieOptions() {
   return {
     name: COOKIE_NAME,
     value: expectedToken(),
     httpOnly: true,
     sameSite: "lax",
+    secure: cookieSecureFlag(),
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
   };
@@ -30,6 +38,7 @@ export function clearAuthCookieOptions() {
     value: "",
     httpOnly: true,
     sameSite: "lax",
+    secure: cookieSecureFlag(),
     path: "/",
     maxAge: 0,
   };

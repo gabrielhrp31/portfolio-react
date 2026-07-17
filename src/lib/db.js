@@ -582,3 +582,48 @@ export async function upsertSiteSettingByKey(data) {
   );
   return getSiteSettingByKey(data.key);
 }
+
+export async function createUploadedFile({ filename, mimeType, data }) {
+  const buffer = Buffer.isBuffer(data) ? data : Buffer.from(data);
+  const [result] = await getPool().query(
+    `INSERT INTO uploaded_files (filename, mime_type, byte_size, data)
+     VALUES (?, ?, ?, ?)`,
+    [filename || "upload", mimeType || "application/octet-stream", buffer.length, buffer]
+  );
+  return getUploadedFileMeta(result.insertId);
+}
+
+export async function getUploadedFileMeta(id) {
+  const [rows] = await getPool().query(
+    `SELECT id, filename, mime_type, byte_size, created_at
+     FROM uploaded_files WHERE id = ?`,
+    [id]
+  );
+  if (!rows[0]) return null;
+  return {
+    id: rows[0].id,
+    filename: rows[0].filename || "upload",
+    mimeType: rows[0].mime_type || "application/octet-stream",
+    byteSize: rows[0].byte_size || 0,
+    createdAt: rows[0].created_at,
+    url: `/api/uploads/${rows[0].id}`,
+  };
+}
+
+export async function getUploadedFileWithData(id) {
+  const [rows] = await getPool().query(
+    `SELECT id, filename, mime_type, byte_size, data, created_at
+     FROM uploaded_files WHERE id = ?`,
+    [id]
+  );
+  if (!rows[0]) return null;
+  return {
+    id: rows[0].id,
+    filename: rows[0].filename || "upload",
+    mimeType: rows[0].mime_type || "application/octet-stream",
+    byteSize: rows[0].byte_size || 0,
+    data: rows[0].data,
+    createdAt: rows[0].created_at,
+    url: `/api/uploads/${rows[0].id}`,
+  };
+}

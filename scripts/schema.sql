@@ -95,3 +95,14 @@ CREATE TABLE IF NOT EXISTS quote_requests (
   email_status VARCHAR(32) NOT NULL DEFAULT 'pending',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Admin uploads (portfolio / site media). Stored in MySQL so production
+-- does not depend on a writable Docker volume for public/uploads.
+CREATE TABLE IF NOT EXISTS uploaded_files (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  filename VARCHAR(255) NOT NULL DEFAULT '',
+  mime_type VARCHAR(128) NOT NULL DEFAULT 'application/octet-stream',
+  byte_size INT NOT NULL DEFAULT 0,
+  data LONGBLOB NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

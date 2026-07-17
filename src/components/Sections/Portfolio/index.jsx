@@ -8,32 +8,35 @@ import SpotlightCard from "@/components/react-bits/SpotlightCard";
 import FadeContent from "@/components/react-bits/FadeContent";
 import { CustomThemeContext } from "@/components/CustomThemeProvider";
 import QuoteCta from "@/components/Contact/QuoteCta";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { settingValue } from "@/lib/settings";
 
 function Portfolio({ items = [] }) {
   const { currentTheme } = useContext(CustomThemeContext);
+  const settings = useSiteSettings();
   const spotlight =
     currentTheme === "light"
       ? "rgba(29, 185, 84, 0.16)"
       : "rgba(72, 197, 88, 0.22)";
+  const title = settingValue(settings, "section_portfolio_title");
+  const intro = settingValue(settings, "section_portfolio_intro");
+  const ctaLabel = settingValue(settings, "cta_quote_label");
 
   return (
     <PortfolioWrapper id="portfolio">
       <div className="portfolio__intro">
         <BlurText
-          text="Portfólio"
+          text={title}
           className="title-green"
           delay={50}
           animateBy="letters"
           direction="top"
         />
         <FadeContent blur duration={900} delay={120}>
-          <div className="text-bg-reverse">
-            Em breve mais projetos em que trabalhei e dediquei meu amor e
-            carinho para oferecer o melhor das minhas ideias...
-          </div>
+          <div className="text-bg-reverse">{intro}</div>
         </FadeContent>
         <div style={{ marginTop: 18 }}>
-          <QuoteCta source="portfolio" />
+          <QuoteCta source="portfolio" label={ctaLabel} />
         </div>
       </div>
       <div className="portfolio__items">

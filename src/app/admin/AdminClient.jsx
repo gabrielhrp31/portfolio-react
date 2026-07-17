@@ -18,6 +18,7 @@ import {
   Title,
 } from "./styles";
 import { SERVICE_ICON_OPTIONS } from "@/lib/serviceIcons";
+import { SETTING_GROUP_LABELS } from "@/lib/settings";
 
 const emptyPortfolio = {
   name: "",
@@ -67,6 +68,7 @@ const emptyCourse = {
 
 const ADMIN_TABS = [
   { id: "quotes", label: "Orçamentos" },
+  { id: "texts", label: "Textos" },
   { id: "media", label: "Imagens" },
   { id: "experience", label: "Experiência" },
   { id: "courses", label: "Formação" },
@@ -74,6 +76,15 @@ const ADMIN_TABS = [
   { id: "services", label: "Serviços" },
   { id: "technologies", label: "Tecnologias" },
 ];
+
+function isMultilineSetting(item) {
+  const key = item?.key || "";
+  const value = String(item?.value || "");
+  return (
+    value.length > 90 ||
+    /_(text|intro|helper|message|caption|description|copyright)$/.test(key)
+  );
+}
 
 export default function AdminClient({
   initialAuthenticated = false,
@@ -84,6 +95,7 @@ export default function AdminClient({
   initialCourses = [],
   initialMedia = [],
   initialQuotes = [],
+  initialSettings = [],
 }) {
   const [authenticated, setAuthenticated] = useState(initialAuthenticated);
   const [password, setPassword] = useState("");
@@ -98,12 +110,18 @@ export default function AdminClient({
   const [courses, setCourses] = useState(initialCourses);
   const [media, setMedia] = useState(initialMedia);
   const [quotes, setQuotes] = useState(initialQuotes);
+  const [settings, setSettings] = useState(initialSettings);
   const [mediaDrafts, setMediaDrafts] = useState(() =>
     Object.fromEntries(
       (initialMedia || []).map((item) => [
         item.key,
         { url: item.url || "", altText: item.altText || "" },
       ])
+    )
+  );
+  const [settingsDrafts, setSettingsDrafts] = useState(() =>
+    Object.fromEntries(
+      (initialSettings || []).map((item) => [item.key, item.value || ""])
     )
   );
 
@@ -128,8 +146,9 @@ export default function AdminClient({
       fetch("/api/courses"),
       fetch("/api/media"),
       fetch("/api/contact/quote"),
+      fetch("/api/settings"),
     ]);
-    const [p, s, t, e, c, m, q] = await Promise.all(
+    const [p, s, t, e, c, m, q, st] = await Promise.all(
       responses.map((r) => r.json())
     );
     setPortfolio(Array.isArray(p) ? p : []);
@@ -146,6 +165,13 @@ export default function AdminClient({
           item.key,
           { url: item.url || "", altText: item.altText || "" },
         ])
+      )
+    );
+    const settingsList = Array.isArray(st) ? st : [];
+    setSettings(settingsList);
+    setSettingsDrafts(
+      Object.fromEntries(
+        settingsList.map((item) => [item.key, item.value || ""])
       )
     );
   }
@@ -205,6 +231,50 @@ export default function AdminClient({
     }
   }
 
+  async function saveSettingItem(item) {
+    setLoading(true);
+    setError("");
+    const draftValue =
+      settingsDrafts[item.key] !== undefined
+        ? settingsDrafts[item.key]
+        : item.value || "";
+    try {
+      let response;
+      if (item.id) {
+        response = await fetch(`/api/settings/${item.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            label: item.label,
+            group: item.group,
+            value: draftValue,
+            sortOrder: item.sortOrder || 0,
+          }),
+        });
+      } else {
+        response = await fetch("/api/settings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            key: item.key,
+            label: item.label,
+            group: item.group,
+            value: draftValue,
+            sortOrder: item.sortOrder || 0,
+          }),
+        });
+      }
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        setError(data.error || "Falha ao salvar texto");
+        return;
+      }
+      await refreshAll();
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function handleLogin(event) {
     event.preventDefault();
     setLoading(true);
@@ -234,7 +304,9 @@ export default function AdminClient({
     setCourses([]);
     setMedia([]);
     setQuotes([]);
+    setSettings([]);
     setMediaDrafts({});
+    setSettingsDrafts({});
     setEditingPortfolioId(null);
     setEditingServiceId(null);
     setEditingTechnologyId(null);
@@ -294,8 +366,8 @@ export default function AdminClient({
         <Card as="form" onSubmit={handleLogin}>
           <Title>Admin do Portfólio</Title>
           <p>
-            Gerencie portfólio, serviços, tecnologias, experiências, cursos e
-            imagens.
+            Gerencie textos, imagens, portfólio, serviços, tecnologias,
+            experiências e cursos.
           </p>
           <label>
             Senha
@@ -384,6 +456,92 @@ export default function AdminClient({
               </ItemRow>
             ))
           )}
+        </ItemList>
+      </Card>
+      ) : null}
+
+      {activeTab === "texts" ? (
+      <Card role="tabpanel" aria-label="Textos do site">
+        <SectionTitle>Textos do site</SectionTitle>
+        <p style={{ marginBottom: 12 }}>
+          Edite hero, sobre, títulos das seções, navegação, contatos, SEO e
+          rodapé. No copyright use <code>{"{year}"}</code> e{" "}
+          <code>{"{name}"}</code>.
+        </p>
+        <ItemList>
+          {Object.entries(
+            settings.reduce((acc, item) => {
+              const group = item.group || "geral";
+              if (!acc[group]) acc[group] = [];
+              acc[group].push(item);
+              return acc;
+            }, {})
+          ).map(([group, items]) => (
+            <div key={group} style={{ width: "100%", marginBottom: 18 }}>
+              <h3
+                style={{
+                  margin: "8px 0 12px",
+                  fontSize: 16,
+                  opacity: 0.9,
+                }}
+              >
+                {SETTING_GROUP_LABELS[group] || group}
+              </h3>
+              {items.map((item) => {
+                const draft =
+                  settingsDrafts[item.key] !== undefined
+                    ? settingsDrafts[item.key]
+                    : item.value || "";
+                const multiline = isMultilineSetting(item);
+                return (
+                  <ItemRow key={item.key}>
+                    <div style={{ width: "100%" }}>
+                      <strong>
+                        {item.label}{" "}
+                        <span style={{ opacity: 0.65 }}>({item.key})</span>
+                      </strong>
+                      <FormGrid style={{ marginTop: 10 }}>
+                        <label className="full">
+                          Valor
+                          {multiline ? (
+                            <textarea
+                              rows={5}
+                              value={draft}
+                              onChange={(e) =>
+                                setSettingsDrafts((prev) => ({
+                                  ...prev,
+                                  [item.key]: e.target.value,
+                                }))
+                              }
+                            />
+                          ) : (
+                            <input
+                              value={draft}
+                              onChange={(e) =>
+                                setSettingsDrafts((prev) => ({
+                                  ...prev,
+                                  [item.key]: e.target.value,
+                                }))
+                              }
+                            />
+                          )}
+                        </label>
+                      </FormGrid>
+                      <div style={{ display: "flex", gap: 12, marginTop: 12 }}>
+                        <PrimaryButton
+                          type="button"
+                          disabled={loading}
+                          onClick={() => saveSettingItem(item)}
+                        >
+                          Salvar
+                        </PrimaryButton>
+                      </div>
+                    </div>
+                  </ItemRow>
+                );
+              })}
+            </div>
+          ))}
         </ItemList>
       </Card>
       ) : null}

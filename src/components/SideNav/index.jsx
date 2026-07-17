@@ -1,28 +1,61 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Bookmark, SideNavWrapper } from "./styles";
 import { useQuoteModal } from "@/components/Contact/QuoteModalContext";
-
-const SECTIONS = [
-  { id: "inicio", label: "Início", tone: "onDark" },
-  { id: "sobre", label: "Sobre", tone: "onGreen" },
-  { id: "servicos", label: "Serviços", tone: "onDark" },
-  { id: "experiencia", label: "Experiência", tone: "onSurface" },
-  { id: "cursos", label: "Cursos", tone: "onSurface" },
-  { id: "portfolio", label: "Portfólio", tone: "onSurface" },
-];
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { settingValue } from "@/lib/settings";
 
 function SideNav() {
   const [activeId, setActiveId] = useState("inicio");
   const { openModal } = useQuoteModal();
+  const settings = useSiteSettings();
+
+  const sections = useMemo(
+    () => [
+      {
+        id: "inicio",
+        label: settingValue(settings, "nav_inicio"),
+        tone: "onDark",
+      },
+      {
+        id: "sobre",
+        label: settingValue(settings, "nav_sobre"),
+        tone: "onGreen",
+      },
+      {
+        id: "servicos",
+        label: settingValue(settings, "nav_servicos"),
+        tone: "onDark",
+      },
+      {
+        id: "experiencia",
+        label: settingValue(settings, "nav_experiencia"),
+        tone: "onSurface",
+      },
+      {
+        id: "cursos",
+        label: settingValue(settings, "nav_cursos"),
+        tone: "onSurface",
+      },
+      {
+        id: "portfolio",
+        label: settingValue(settings, "nav_portfolio"),
+        tone: "onSurface",
+      },
+    ],
+    [settings]
+  );
+
+  const quoteLabel = settingValue(settings, "nav_orcamento");
+  const ctaLabel = settingValue(settings, "cta_quote_label");
   const activeTone =
-    SECTIONS.find((section) => section.id === activeId)?.tone || "onSurface";
+    sections.find((section) => section.id === activeId)?.tone || "onSurface";
 
   useEffect(() => {
-    const elements = SECTIONS.map((section) =>
-      document.getElementById(section.id)
-    ).filter(Boolean);
+    const elements = sections
+      .map((section) => document.getElementById(section.id))
+      .filter(Boolean);
 
     if (!elements.length) return undefined;
 
@@ -44,7 +77,7 @@ function SideNav() {
 
     elements.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, []);
+  }, [sections]);
 
   function scrollToSection(id) {
     const el = document.getElementById(id);
@@ -55,7 +88,7 @@ function SideNav() {
 
   return (
     <SideNavWrapper aria-label="Navegação por seções" data-tone={activeTone}>
-      {SECTIONS.map((section) => (
+      {sections.map((section) => (
         <Bookmark
           key={section.id}
           type="button"
@@ -73,9 +106,9 @@ function SideNav() {
         $active={false}
         $tone={activeTone}
         onClick={() => openModal({ source: "sidenav" })}
-        aria-label="Solicitar orçamento"
+        aria-label={ctaLabel}
       >
-        <span className="bookmark__label">Orçamento</span>
+        <span className="bookmark__label">{quoteLabel}</span>
         <span className="bookmark__notch" />
       </Bookmark>
     </SideNavWrapper>

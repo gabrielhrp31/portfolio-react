@@ -6,9 +6,11 @@ import {
   listQuoteRequests,
   listServices,
   listSiteMedia,
+  listSiteSettings,
   listTechnologies,
 } from "@/lib/db";
 import { buildMediaMap } from "@/lib/media";
+import { buildSettingsMap } from "@/lib/settings";
 import AdminClient from "./AdminClient";
 
 export const dynamic = "force-dynamic";
@@ -22,20 +24,33 @@ export default async function AdminPage() {
   let courses = [];
   let media = [];
   let quotes = [];
+  let settings = [];
 
   if (authenticated) {
     try {
-      [portfolio, services, technologies, experiences, courses, media, quotes] =
-        await Promise.all([
-          listPortfolioItems(),
-          listServices(),
-          listTechnologies(),
-          listExperiences(),
-          listCourses(),
-          listSiteMedia(),
-          listQuoteRequests(),
-        ]);
+      [
+        portfolio,
+        services,
+        technologies,
+        experiences,
+        courses,
+        media,
+        quotes,
+        settings,
+      ] = await Promise.all([
+        listPortfolioItems(),
+        listServices(),
+        listTechnologies(),
+        listExperiences(),
+        listCourses(),
+        listSiteMedia(),
+        listQuoteRequests(),
+        listSiteSettings(),
+      ]);
       media = Object.values(buildMediaMap(media)).sort(
+        (a, b) => a.sortOrder - b.sortOrder
+      );
+      settings = Object.values(buildSettingsMap(settings)).sort(
         (a, b) => a.sortOrder - b.sortOrder
       );
     } catch (error) {
@@ -53,6 +68,7 @@ export default async function AdminPage() {
       initialCourses={courses}
       initialMedia={media}
       initialQuotes={quotes}
+      initialSettings={settings}
     />
   );
 }

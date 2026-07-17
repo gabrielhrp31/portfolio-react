@@ -3,6 +3,8 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { useQuoteModal } from "./QuoteModalContext";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { settingValue } from "@/lib/settings";
 
 const variants = {
   solid: css`
@@ -57,12 +59,15 @@ const Button = styled.button`
 `;
 
 export default function QuoteCta({
-  label = "Solicitar orçamento",
+  label,
   variant = "solid",
   source = "cta",
   className = "",
 }) {
   const { openModal } = useQuoteModal();
+  const settings = useSiteSettings();
+  const resolvedLabel =
+    label || settingValue(settings, "cta_quote_label", "Solicitar orçamento");
 
   return (
     <Button
@@ -71,7 +76,7 @@ export default function QuoteCta({
       $variant={variant}
       onClick={() => openModal({ source })}
     >
-      {label}
+      {resolvedLabel}
     </Button>
   );
 }

@@ -513,3 +513,72 @@ export async function updateQuoteRequestEmailStatus(id, emailStatus) {
   );
   return getQuoteRequest(id);
 }
+
+export function mapSettingRow(row) {
+  return {
+    id: row.id,
+    key: row.setting_key,
+    label: row.label || row.setting_key,
+    group: row.setting_group || "geral",
+    value: row.value ?? "",
+    sortOrder: row.sort_order,
+  };
+}
+
+export async function listSiteSettings() {
+  const [rows] = await getPool().query(
+    "SELECT * FROM site_settings ORDER BY sort_order ASC, id ASC"
+  );
+  return rows.map(mapSettingRow);
+}
+
+export async function getSiteSetting(id) {
+  const [rows] = await getPool().query(
+    "SELECT * FROM site_settings WHERE id = ?",
+    [id]
+  );
+  return rows[0] ? mapSettingRow(rows[0]) : null;
+}
+
+export async function getSiteSettingByKey(key) {
+  const [rows] = await getPool().query(
+    "SELECT * FROM site_settings WHERE setting_key = ?",
+    [key]
+  );
+  return rows[0] ? mapSettingRow(rows[0]) : null;
+}
+
+export async function updateSiteSetting(id, data) {
+  await getPool().query(
+    `UPDATE site_settings
+     SET label = ?, setting_group = ?, value = ?, sort_order = ?
+     WHERE id = ?`,
+    [
+      data.label || "",
+      data.group || "geral",
+      data.value ?? "",
+      data.sortOrder ?? 0,
+      id,
+    ]
+  );
+  return getSiteSetting(id);
+}
+
+export async function upsertSiteSettingByKey(data) {
+  await getPool().query(
+    `INSERT INTO site_settings (setting_key, label, setting_group, value, sort_order)
+     VALUES (?, ?, ?, ?, ?)
+     ON DUPLICATE KEY UPDATE
+       label = VALUES(label),
+       setting_group = VALUES(setting_group),
+       sort_order = VALUES(sort_order)`,
+    [
+      data.key,
+      data.label || data.key,
+      data.group || "geral",
+      data.value ?? "",
+      data.sortOrder ?? 0,
+    ]
+  );
+  return getSiteSettingByKey(data.key);
+}

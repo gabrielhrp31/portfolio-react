@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Parallax, TransitionLogo } from "./styles";
 import {
   FaChevronDown,
@@ -18,38 +18,16 @@ import OptimizedImage from "@/components/OptimizedImage";
 import { mediaUrl } from "@/lib/media";
 import { useQuoteModal } from "@/components/Contact/QuoteModalContext";
 import QuoteCta from "@/components/Contact/QuoteCta";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import {
+  heroTypedText,
+  settingValue,
+  whatsappHref,
+} from "@/lib/settings";
 
 const SOCIAL_ICON_SIZE = 40;
 const ARROW_ICON_SIZE = 45;
 const HERO_TYPED_KEY = "portfolio-hero-typed-v1";
-const HERO_FULL_TEXT = "Olá me chamo Gabriel Rodrigues desenvolvedor fullstack.";
-
-const SOCIALS = [
-  {
-    key: "linkedin",
-    href: "https://www.linkedin.com/in/gabrielhrp31/",
-    Icon: FaLinkedin,
-    label: "LinkedIn",
-  },
-  {
-    key: "github",
-    href: "https://github.com/gabrielhrp31",
-    Icon: FaGithub,
-    label: "GitHub",
-  },
-  {
-    key: "email",
-    href: "mailto:gabrielws31@gmail.com?subject=Quero realizar um orçamento!",
-    Icon: ImMail4,
-    label: "E-mail",
-  },
-  {
-    key: "whatsapp",
-    href: "https://api.whatsapp.com/send?phone=5537991243949&text=Ol%C3%A1%20vi%20seu%20portf%C3%B3lio%20e%20quero%20realizar%20um%20or%C3%A7amento!",
-    Icon: FaWhatsapp,
-    label: "WhatsApp",
-  },
-];
 
 function readHeroTyped() {
   if (typeof window === "undefined") return false;
@@ -66,9 +44,46 @@ function Presentation({ media = null }) {
   const [skipTypewriter, setSkipTypewriter] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const { openModal } = useQuoteModal();
+  const settings = useSiteSettings();
   const heroBg = mediaUrl(media, "hero_bg");
   const logoHero = mediaUrl(media, "logo_hero");
   const logoHeroHover = mediaUrl(media, "logo_hero_hover");
+
+  const heroPrefix = settingValue(settings, "hero_prefix");
+  const heroName = settingValue(settings, "hero_name");
+  const heroSuffix = settingValue(settings, "hero_suffix");
+  const fullTypedText = heroTypedText(settings);
+  const ctaLabel = settingValue(settings, "cta_quote_label");
+
+  const socials = useMemo(
+    () => [
+      {
+        key: "linkedin",
+        href: settingValue(settings, "social_linkedin"),
+        Icon: FaLinkedin,
+        label: "LinkedIn",
+      },
+      {
+        key: "github",
+        href: settingValue(settings, "social_github"),
+        Icon: FaGithub,
+        label: "GitHub",
+      },
+      {
+        key: "email",
+        href: "#",
+        Icon: ImMail4,
+        label: "E-mail",
+      },
+      {
+        key: "whatsapp",
+        href: whatsappHref(settings),
+        Icon: FaWhatsapp,
+        label: "WhatsApp",
+      },
+    ],
+    [settings]
+  );
 
   useEffect(() => {
     setSkipTypewriter(readHeroTyped());
@@ -175,19 +190,19 @@ function Presentation({ media = null }) {
           >
             {skipTypewriter ? (
               <>
-                <span>Olá me chamo </span>
+                <span>{heroPrefix}</span>
                 <ShinyText
-                  text="Gabriel Rodrigues"
+                  text={heroName}
                   className="p-content__shiny-name"
                   color="#48c558"
                   shineColor="#EBF4F8"
                   speed={2.4}
                 />
-                <span> desenvolvedor fullstack.</span>
+                <span>{heroSuffix}</span>
               </>
             ) : (
               <TextType
-                text={HERO_FULL_TEXT}
+                text={fullTypedText}
                 typingSpeed={48}
                 loop={false}
                 showCursor
@@ -212,7 +227,7 @@ function Presentation({ media = null }) {
             className="p-content__socials"
             onComplete={handleSocialsDone}
           >
-            {SOCIALS.map(({ key, href, Icon, label }, index) => (
+            {socials.map(({ key, href, Icon, label }, index) => (
               <FadeContent
                 key={key}
                 playOnMount
@@ -253,11 +268,7 @@ function Presentation({ media = null }) {
         {stage >= 3 ? (
           <>
             <FadeContent playOnMount blur duration={550} delay={30} yOffset={12}>
-              <QuoteCta
-                source="hero"
-                variant="soft"
-                label="Solicitar orçamento"
-              />
+              <QuoteCta source="hero" variant="soft" label={ctaLabel} />
             </FadeContent>
             <FadeContent playOnMount blur duration={600} delay={80} yOffset={12}>
               <button

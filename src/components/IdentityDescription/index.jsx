@@ -3,8 +3,12 @@
 import React from "react";
 import OptimizedImage from "@/components/OptimizedImage";
 import { mediaAlt, mediaUrl } from "@/lib/media";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { settingValue } from "@/lib/settings";
 
 function IdentityDescription({ media = null }) {
+  const settings = useSiteSettings();
+
   return (
     <>
       <p className="text-and-image">
@@ -15,8 +19,7 @@ function IdentityDescription({ media = null }) {
           height={64}
           sizes="64px"
         />
-        Em grande parte das linguagens as chaves “{"{}"}” determinam o início e
-        o fim de uma determinada função.
+        {settingValue(settings, "identity_caption_1")}
       </p>
       <p className="text-and-image">
         <OptimizedImage
@@ -26,9 +29,7 @@ function IdentityDescription({ media = null }) {
           height={64}
           sizes="64px"
         />
-        Alusão ao conjunto “ =&gt; ” usado para declarar uma “arrow function” na
-        linguagem javascript na qual utilizo bastante em projetos que trabalho
-        grande parte do tempo.
+        {settingValue(settings, "identity_caption_2")}
       </p>
       <p className="text-and-image">
         <OptimizedImage
@@ -38,8 +39,7 @@ function IdentityDescription({ media = null }) {
           height={64}
           sizes="64px"
         />
-        A junção dos dois símbolos formam a letra “G” remetendo ao nome
-        “Gabriel”.
+        {settingValue(settings, "identity_caption_3")}
       </p>
     </>
   );

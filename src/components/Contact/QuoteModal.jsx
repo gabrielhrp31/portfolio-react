@@ -3,6 +3,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import FadeContent from "@/components/react-bits/FadeContent";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { settingValue } from "@/lib/settings";
 
 const Overlay = styled.div`
   position: fixed;
@@ -176,6 +178,11 @@ function isValidEmail(email) {
 }
 
 export default function QuoteModal({ open, onClose, prefill = null }) {
+  const settings = useSiteSettings();
+  const modalTitle = settingValue(settings, "quote_modal_title");
+  const modalHelper = settingValue(settings, "quote_modal_helper");
+  const modalSubmit = settingValue(settings, "quote_modal_submit");
+  const modalSuccess = settingValue(settings, "quote_modal_success");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -280,11 +287,8 @@ export default function QuoteModal({ open, onClose, prefill = null }) {
         <Card>
           <div className="header">
             <div>
-              <h2>Solicitar Orçamento</h2>
-              <p>
-                Envie os detalhes do que você precisa. A solicitação é salva no
-                sistema e enviada por email.
-              </p>
+              <h2>{modalTitle}</h2>
+              <p>{modalHelper}</p>
             </div>
             <button type="button" className="close-btn" onClick={onClose}>
               Fechar
@@ -363,13 +367,13 @@ export default function QuoteModal({ open, onClose, prefill = null }) {
                   className="btn btn-primary"
                   disabled={!canSubmit || submitting}
                 >
-                  {submitting ? "Enviando..." : "Enviar solicitação"}
+                  {submitting ? "Enviando..." : modalSubmit}
                 </button>
               </div>
             </form>
           ) : (
             <div className="status ok">
-              <b>Solicitação registrada!</b>
+              <b>{modalSuccess}</b>
               <div style={{ marginTop: 8 }}>
                 {warning ||
                   "Recebi seu pedido. Assim que possível respondo por email."}

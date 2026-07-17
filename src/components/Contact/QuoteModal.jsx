@@ -11,22 +11,35 @@ const Overlay = styled.div`
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 24px;
+  padding: max(16px, env(safe-area-inset-top, 0px)) 16px
+    max(16px, env(safe-area-inset-bottom, 0px));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  @media (min-width: 768px) {
+    align-items: center;
+    padding: 24px;
+  }
 `;
 
 const Card = styled.div`
   width: 100%;
   max-width: 720px;
+  max-height: min(92dvh, 900px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   background: ${({ theme }) => theme.surface};
   border: 1px solid ${({ theme }) => theme.border};
   border-radius: 20px;
   box-shadow: ${({ theme }) => theme.shadow};
   padding: 20px 18px;
+  margin: auto 0;
 
-  @media (min-width: 769px) {
+  @media (min-width: 768px) {
     padding: 26px 24px;
+    margin: 0;
   }
 
   .header {
@@ -70,7 +83,7 @@ const Card = styled.div`
     display: grid;
     gap: 12px;
 
-    @media (min-width: 769px) {
+    @media (min-width: 768px) {
       grid-template-columns: 1fr 1fr;
     }
   }

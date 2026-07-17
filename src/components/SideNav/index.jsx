@@ -36,8 +36,9 @@ function SideNav() {
         }
       },
       {
-        rootMargin: "-35% 0px -45% 0px",
-        threshold: [0.15, 0.35, 0.55],
+        root: null,
+        rootMargin: "-30% 0px -40% 0px",
+        threshold: [0.1, 0.25, 0.45, 0.65],
       }
     );
 

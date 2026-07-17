@@ -58,16 +58,22 @@ export const Parallax = styled.section`
     flex-flow: column;
     justify-content: center;
     align-items: center;
-    gap: 28px;
+    gap: clamp(16px, 4vw, 28px);
 
     position: relative;
     z-index: 3;
 
-    width: min(920px, 88vw);
-    max-width: 88vw;
-    min-height: 80vh;
-    padding: 28px 20px;
+    width: min(920px, calc(100% - 32px));
+    max-width: calc(100% - 32px);
+    min-height: min(80vh, 720px);
+    padding: clamp(16px, 4vw, 28px) clamp(12px, 3vw, 20px);
     border-radius: 24px;
+
+    @media (max-height: 700px) {
+      min-height: auto;
+      padding-top: 48px;
+      padding-bottom: 48px;
+    }
   }
 
   .p-content__logo-wrap {
@@ -83,10 +89,11 @@ export const Parallax = styled.section`
   .p-content__text {
     text-align: center;
     font-weight: 200;
-    font-size: 22px;
+    font-size: clamp(18px, 2.8vw + 0.75rem, 48px);
     color: #f5fff8;
     min-height: 2.8em;
     width: 100%;
+    line-height: 1.35;
 
     &--slot {
       visibility: hidden;
@@ -115,10 +122,6 @@ export const Parallax = styled.section`
       text-shadow: 0 0 10px ${({ theme }) => theme.softAccent};
     }
 
-    @media (min-width: 1025px) {
-      font-size: 48px;
-    }
-
     @media (min-width: 1920px) {
       font-size: 64px;
     }
@@ -132,16 +135,18 @@ export const Parallax = styled.section`
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    flex-wrap: wrap;
+    gap: 10px 12px;
     z-index: 1;
     font-size: 16px;
     line-height: 1;
-    min-height: 60px;
-    padding: 10px 14px;
+    min-height: 52px;
+    padding: 8px 12px;
     border-radius: 999px;
     background: rgba(0, 0, 0, 0.28);
     border: 1px solid rgba(235, 244, 248, 0.12);
     backdrop-filter: blur(6px);
+    max-width: 100%;
 
     &--slot {
       visibility: hidden;
@@ -250,8 +255,13 @@ export const TransitionLogo = styled.div`
 
   margin-left: auto;
   margin-right: auto;
-  width: min(175px, 80vw);
-  height: min(175px, 80vw);
+  width: min(175px, 42vw, 160px);
+  height: min(175px, 42vw, 160px);
+
+  @media (min-width: 768px) {
+    width: min(175px, 80vw);
+    height: min(175px, 80vw);
+  }
 
   @media (min-width: 1920px) {
     width: min(230px, 80vw);

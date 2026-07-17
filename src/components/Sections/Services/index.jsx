@@ -67,16 +67,7 @@ function Services({ items = [], media = null }) {
         )}
       </div>
 
-      <div
-        className="services-cta"
-        style={{
-          position: "relative",
-          zIndex: 2,
-          display: "flex",
-          justifyContent: "center",
-          marginTop: 28,
-        }}
-      >
+      <div className="services-cta">
         <QuoteCta source="services" variant="soft" />
       </div>
 

@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import OptimizedImage from "@/components/OptimizedImage";
 import { buildMediaMap, DEFAULT_MEDIA } from "@/lib/media";
-import FadeContent from "@/components/react-bits/FadeContent";
 import { FooterWrapper } from "./styles";
 
 export default function SiteFooter() {
@@ -35,28 +34,26 @@ export default function SiteFooter() {
 
   return (
     <FooterWrapper>
-      <FadeContent blur={false} duration={600} delay={20} className="fade">
-        <div className="footer-inner">
-          <div className="left">
-            © {new Date().getFullYear()} Gabriel Rodrigues. Todos os direitos
-            reservados.
-          </div>
-          <div className="right">
-            <div className="logo" aria-hidden="true">
-              <OptimizedImage
-                src={logo.url}
-                alt={logo.altText || "Logo"}
-                width={160}
-                height={44}
-                sizes="160px"
-                quality={90}
-                priority={false}
-                style={{ height: "100%", width: "auto" }}
-              />
-            </div>
+      <div className="footer-inner">
+        <div className="left">
+          © {new Date().getFullYear()} Gabriel Rodrigues. Todos os direitos
+          reservados.
+        </div>
+        <div className="right">
+          <div className="logo" aria-hidden="true">
+            <OptimizedImage
+              src={logo.url}
+              alt={logo.altText || "Logo"}
+              width={160}
+              height={44}
+              sizes="160px"
+              quality={90}
+              priority={false}
+              style={{ height: "100%", width: "auto" }}
+            />
           </div>
         </div>
-      </FadeContent>
+      </div>
     </FooterWrapper>
   );
 }

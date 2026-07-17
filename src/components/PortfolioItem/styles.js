@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const PortfolioItemWrapper = styled.div`
   width: 100%;
   height: 100%;
-  min-height: 420px;
+  min-height: 0;
 
   border: 2px solid ${({ theme }) => theme.softAccent};
   border-radius: 20px;
@@ -16,8 +16,14 @@ export const PortfolioItemWrapper = styled.div`
   display: flex;
   flex-direction: column;
 
-  &:hover {
-    transform: translateY(-4px);
+  @media (min-width: 768px) {
+    min-height: 420px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: translateY(-4px);
+    }
   }
 
   a {
@@ -32,7 +38,7 @@ export const PortfolioItemWrapper = styled.div`
     width: 100%;
     padding: 12px 16px 0;
     color: ${({ theme }) => theme.titles};
-    font-size: 28px;
+    font-size: clamp(20px, 4vw, 28px);
     text-transform: capitalize;
     text-align: center;
     font-weight: 600;
@@ -53,9 +59,9 @@ export const PortfolioItemWrapper = styled.div`
     display: flex;
     justify-content: flex-end;
     flex-flow: wrap;
-    gap: 24px;
+    gap: 16px 24px;
     width: 100%;
-    padding: 12px 24px 20px;
+    padding: 12px clamp(14px, 4vw, 24px) 20px;
 
     a {
       text-decoration: none;
@@ -70,7 +76,7 @@ export const PortfolioItemWrapper = styled.div`
 
   .portfolio__item__img-wrapper {
     width: 100%;
-    height: 210px;
+    height: clamp(160px, 40vw, 210px);
     overflow: hidden;
     position: relative;
     flex-shrink: 0;
@@ -80,6 +86,7 @@ export const PortfolioItemWrapper = styled.div`
       bottom: 10px;
       right: 10px;
       z-index: 2;
+      max-width: calc(100% - 20px);
     }
 
     img {
@@ -90,8 +97,9 @@ export const PortfolioItemWrapper = styled.div`
     }
   }
 
-  &:hover .portfolio__item__img-wrapper img {
-    transform: scale(1.06);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover .portfolio__item__img-wrapper img {
+      transform: scale(1.06);
+    }
   }
 `;
-

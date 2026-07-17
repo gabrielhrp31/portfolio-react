@@ -26,22 +26,25 @@ export default function HomeView({
   const mediaMap = media || buildMediaMap([]);
 
   return (
-    <ClickSpark
-      sparkColor={sparkColor}
-      sparkCount={8}
-      sparkRadius={18}
-      duration={450}
-    >
-      <div className="global-wrapper">
-        <SideNav />
-        <Presentation media={mediaMap} />
-        <Navbar media={mediaMap} />
-        <About technologies={technologies} media={mediaMap} />
-        <Services items={services} media={mediaMap} />
-        <Experience items={experiences} />
-        <Courses items={courses} />
-        <Portfolio items={portfolio} />
-      </div>
-    </ClickSpark>
+    <>
+      {/* Outside ClickSpark so position:fixed is viewport-relative on mobile. */}
+      <SideNav />
+      <ClickSpark
+        sparkColor={sparkColor}
+        sparkCount={8}
+        sparkRadius={18}
+        duration={450}
+      >
+        <div className="global-wrapper">
+          <Presentation media={mediaMap} />
+          <Navbar media={mediaMap} />
+          <About technologies={technologies} media={mediaMap} />
+          <Services items={services} media={mediaMap} />
+          <Experience items={experiences} />
+          <Courses items={courses} />
+          <Portfolio items={portfolio} />
+        </div>
+      </ClickSpark>
+    </>
   );
 }

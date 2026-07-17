@@ -32,13 +32,14 @@ const FadeContent = ({
     const el = ref.current;
     if (!el) return;
 
-    let scrollerTarget = container || document.getElementById('snap-main-container') || null;
+    let scrollerTarget = container || null;
     if (typeof scrollerTarget === 'string') {
       scrollerTarget = document.querySelector(scrollerTarget);
     }
 
     const startPct = (1 - threshold) * 100;
     const getSeconds = val => (typeof val === 'number' && val > 10 ? val / 1000 : val);
+    let played = false;
 
     gsap.set(el, {
       autoAlpha: initialOpacity,
@@ -73,20 +74,42 @@ const FadeContent = ({
       ease: ease
     });
 
-    let st = null;
-    if (playOnMount) {
+    const play = () => {
+      if (played) return;
+      played = true;
       tl.play();
+    };
+
+    let st = null;
+    let fallbackId = null;
+
+    const rect = el.getBoundingClientRect();
+    const alreadyInView =
+      rect.top < window.innerHeight * (1 - threshold * 0.5) && rect.bottom > 0;
+
+    if (playOnMount || alreadyInView) {
+      play();
     } else {
       st = ScrollTrigger.create({
         trigger: el,
         scroller: scrollerTarget || window,
         start: `top ${startPct}%`,
         once: true,
-        onEnter: () => tl.play()
+        onEnter: play,
+        onEnterBack: play
       });
+
+      // Safety: never leave content stuck at opacity 0 if ST never fires.
+      fallbackId = window.setTimeout(() => {
+        const r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight && r.bottom > 0) play();
+      }, 1200);
+
+      requestAnimationFrame(() => ScrollTrigger.refresh());
     }
 
     return () => {
+      if (fallbackId) window.clearTimeout(fallbackId);
       st?.kill();
       tl.kill();
       gsap.killTweensOf(el);

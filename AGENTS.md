@@ -24,7 +24,10 @@ This is a **Next.js + MySQL** personal portfolio. Standard commands live in `REA
 - In `react-icons` v5, Simple Icons no longer exports `SiLinkedin`; use `FaLinkedin` from `react-icons/fa`.
 - Hero typewriter uses React Bits `TextType` and persists completion in `sessionStorage` (`portfolio-hero-typed-v1`) so Fast Refresh/HMR does not restart or corrupt the text mid-session.
 - Animation helpers live in `src/components/react-bits/` (copied from [React Bits](https://reactbits.dev/), deps: `gsap`, `motion`).
-- Side bookmark nav (`SideNav`) targets section ids: `inicio`, `sobre`, `servicos`, `experiencia`, `cursos`, `portfolio`.
+- Side bookmark nav (`SideNav`) targets section ids: `inicio`, `sobre`, `servicos`, `experiencia`, `cursos`, `portfolio`. Desktop: fixed 156px width + 28px right-edge peek. ≤900px: becomes a horizontal bottom bar (do not hide without a replacement).
+- Prefer `calc(100% - 32px)` / `clamp()` over raw `90vw` + fixed `50px` side padding to avoid mobile horizontal scroll (Services grid, Experience timeline dots, Portfolio `minmax`).
+- `SiteFooter` must stay visible without scroll-triggered fade (`FadeContent`). Do not wrap the footer in opacity-0 enter animations — in prod ScrollTrigger can leave it invisible.
+- `FadeContent` scrolls with `window` (no `snap-main-container`). It plays immediately if already in view and has a short fallback so content cannot stay stuck at `autoAlpha: 0`.
 - Services cards use a fixed 240px grid + equal min-heights so unequal description lengths do not skew layout.
 - Lint (`npm run lint`) may still report `@next/next/no-img-element` in admin previews; public UI uses `OptimizedImage`.
 - Unit tests: `npm test` (Node test runner). There is no Jest/CRA test runner anymore.

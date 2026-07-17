@@ -18,7 +18,7 @@ export const ServiceWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 149px;
+    height: clamp(120px, 28vw, 149px);
     flex-shrink: 0;
     overflow: hidden;
 
@@ -53,7 +53,7 @@ export const ServiceWrapper = styled.div`
 
   .description {
     margin-top: 15px;
-    font-size: 16px;
+    font-size: clamp(14px, 3.2vw, 16px);
     font-weight: 500;
     text-align: center;
     color: ${colorScheme.offWhite};
@@ -61,7 +61,11 @@ export const ServiceWrapper = styled.div`
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
     line-height: 1.45;
     flex: 1;
-    min-height: 93px;
+    min-height: 0;
+
+    @media (min-width: 768px) {
+      min-height: 93px;
+    }
     display: -webkit-box;
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;

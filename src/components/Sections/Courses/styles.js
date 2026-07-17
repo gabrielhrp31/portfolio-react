@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 export const CoursesWrapper = styled.section`
-  width: min(1100px, 90vw);
-  margin: 40px auto 60px;
+  width: min(1100px, calc(100% - 32px));
+  margin: clamp(28px, 5vw, 40px) auto clamp(40px, 6vw, 60px);
 
   .courses__grid {
     margin-top: 28px;
@@ -19,7 +19,7 @@ export const CoursesWrapper = styled.section`
 export const CourseCard = styled.article`
   border: 1px solid ${({ theme }) => theme.border};
   border-radius: 16px;
-  padding: 18px 20px;
+  padding: clamp(14px, 3vw, 20px);
   background: ${({ theme }) => theme.surface};
   box-shadow: ${({ theme }) => theme.shadow};
   height: 100%;
@@ -37,7 +37,7 @@ export const CourseCard = styled.article`
 
   .course__title {
     color: ${({ theme }) => theme.titles};
-    font-size: 20px;
+    font-size: clamp(17px, 3.5vw, 20px);
     font-weight: 600;
     margin-bottom: 6px;
   }

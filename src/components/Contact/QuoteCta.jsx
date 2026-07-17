@@ -32,12 +32,18 @@ const Button = styled.button`
   border-radius: 999px;
   padding: 12px 20px;
   min-height: 44px;
+  max-width: 100%;
   font-size: 14px;
   font-weight: 800;
   letter-spacing: 0.02em;
   transition: transform 0.2s ease, filter 0.2s ease, background 0.2s ease;
   box-shadow: ${({ theme }) => theme.shadow};
   ${({ $variant }) => variants[$variant] || variants.solid}
+
+  @media (max-width: 480px) {
+    width: 100%;
+    padding: 12px 16px;
+  }
 
   &:hover {
     transform: translateY(-1px);

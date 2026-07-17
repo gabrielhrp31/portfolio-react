@@ -1,9 +1,17 @@
 import styled from "styled-components";
 
 export const FooterWrapper = styled.footer`
+  position: relative;
+  z-index: 2;
   width: 100%;
-  padding: 28px 18px 36px;
-  background: transparent;
+  max-width: 100%;
+  padding: 28px clamp(14px, 4vw, 18px) clamp(28px, 6vw, 36px);
+  background: ${({ theme }) => theme.background};
+
+  @media (max-width: 900px) {
+    /* Clear fixed bottom section nav */
+    padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+  }
 
   .footer-inner {
     width: 100%;
@@ -21,23 +29,25 @@ export const FooterWrapper = styled.footer`
     color: ${({ theme }) => theme.textMuted};
     font-size: 13px;
     font-weight: 600;
+    line-height: 1.45;
   }
 
   .right {
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    flex-shrink: 0;
   }
 
   .logo {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    height: 44px;
-    width: 130px;
+    height: 40px;
+    width: min(130px, 36vw);
   }
 
-  @media (max-width: 560px) {
+  @media (max-width: 640px) {
     .footer-inner {
       flex-direction: column;
       align-items: flex-start;
@@ -45,7 +55,7 @@ export const FooterWrapper = styled.footer`
 
     .right {
       width: 100%;
-      justify-content: flex-end;
+      justify-content: flex-start;
     }
   }
 `;

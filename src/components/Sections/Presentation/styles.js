@@ -14,7 +14,7 @@ export const Parallax = styled.section`
     position: absolute;
     inset: 0;
     z-index: 0;
-    filter: saturate(1.15) contrast(1.05) brightness(0.55);
+    filter: saturate(1.1) contrast(1.02) brightness(0.78);
     transform: scale(1.02);
 
     img {
@@ -27,7 +27,7 @@ export const Parallax = styled.section`
     position: absolute;
     inset: 0;
     z-index: 1;
-    opacity: 0.42;
+    opacity: 0.55;
     mix-blend-mode: screen;
     pointer-events: none;
   }
@@ -40,15 +40,15 @@ export const Parallax = styled.section`
     background:
       radial-gradient(
         ellipse 70% 55% at 50% 45%,
-        rgba(0, 0, 0, 0.28) 0%,
-        rgba(0, 0, 0, 0.72) 70%,
-        rgba(0, 0, 0, 0.88) 100%
+        rgba(0, 0, 0, 0.12) 0%,
+        rgba(0, 0, 0, 0.42) 70%,
+        rgba(0, 0, 0, 0.58) 100%
       ),
       linear-gradient(
         180deg,
-        rgba(0, 0, 0, 0.55) 0%,
-        rgba(0, 0, 0, 0.35) 40%,
-        rgba(0, 0, 0, 0.7) 100%
+        rgba(0, 0, 0, 0.32) 0%,
+        rgba(0, 0, 0, 0.18) 40%,
+        rgba(0, 0, 0, 0.45) 100%
       ),
       ${({ theme }) => theme.heroOverlay};
   }

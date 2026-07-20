@@ -23,7 +23,16 @@ export const CourseCard = styled.article`
   background: ${({ theme }) => theme.surface};
   box-shadow: ${({ theme }) => theme.shadow};
   height: 100%;
-  transition: background-color 0.45s ease, border-color 0.45s ease;
+  transition: background-color 0.45s ease, border-color 0.35s ease,
+    transform 0.25s ease, box-shadow 0.35s ease;
+
+  .course-spotlight:hover &,
+  .course-spotlight:focus-within &,
+  .card-spotlight:hover &,
+  .card-spotlight:focus-within & {
+    border-color: ${({ theme }) => theme.softAccent};
+    transform: translateY(-2px);
+  }
 
   .course__kind,
   .shiny-text.course__kind {

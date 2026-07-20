@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import {
   AdminPage,
@@ -15,10 +15,18 @@ import {
   SectionTitle,
   TabButton,
   TabList,
+  TextsCard,
+  TextsLayout,
+  TextsNavButton,
+  TextsPanel,
+  TextsSideNav,
   Title,
 } from "./styles";
 import { SERVICE_ICON_OPTIONS } from "@/lib/serviceIcons";
-import { SETTING_GROUP_LABELS } from "@/lib/settings";
+import {
+  SETTING_GROUP_LABELS,
+  SETTING_GROUP_ORDER,
+} from "@/lib/settings";
 
 const emptyPortfolio = {
   name: "",
@@ -102,6 +110,7 @@ export default function AdminClient({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("quotes");
+  const [textsGroup, setTextsGroup] = useState("hero");
 
   const [portfolio, setPortfolio] = useState(initialPortfolio);
   const [services, setServices] = useState(initialServices);
@@ -360,6 +369,35 @@ export default function AdminClient({
     await refreshAll();
   }
 
+  const settingsByGroup = useMemo(() => {
+    const grouped = {};
+    for (const item of settings) {
+      const group = item.group || "geral";
+      if (!grouped[group]) grouped[group] = [];
+      grouped[group].push(item);
+    }
+    for (const group of Object.keys(grouped)) {
+      grouped[group].sort(
+        (a, b) => (a.sortOrder || 0) - (b.sortOrder || 0) || a.key.localeCompare(b.key)
+      );
+    }
+    return grouped;
+  }, [settings]);
+
+  const textGroupIds = useMemo(() => {
+    const present = new Set(Object.keys(settingsByGroup));
+    const ordered = SETTING_GROUP_ORDER.filter((id) => present.has(id));
+    for (const id of present) {
+      if (!ordered.includes(id)) ordered.push(id);
+    }
+    return ordered;
+  }, [settingsByGroup]);
+
+  const activeTextsGroup = textGroupIds.includes(textsGroup)
+    ? textsGroup
+    : textGroupIds[0] || "hero";
+  const activeTextsItems = settingsByGroup[activeTextsGroup] || [];
+
   if (!authenticated) {
     return (
       <AdminPage>
@@ -461,89 +499,92 @@ export default function AdminClient({
       ) : null}
 
       {activeTab === "texts" ? (
-      <Card role="tabpanel" aria-label="Textos do site">
+      <TextsCard role="tabpanel" aria-label="Textos do site">
         <SectionTitle>Textos do site</SectionTitle>
-        <p style={{ marginBottom: 12 }}>
-          Edite hero, sobre, títulos das seções, navegação, contatos, SEO e
-          rodapé. No copyright use <code>{"{year}"}</code> e{" "}
-          <code>{"{name}"}</code>.
+        <p style={{ marginBottom: 4 }}>
+          Escolha a seção na lateral para editar só aquele bloco. No copyright
+          use <code>{"{year}"}</code> e <code>{"{name}"}</code>.
         </p>
-        <ItemList>
-          {Object.entries(
-            settings.reduce((acc, item) => {
-              const group = item.group || "geral";
-              if (!acc[group]) acc[group] = [];
-              acc[group].push(item);
-              return acc;
-            }, {})
-          ).map(([group, items]) => (
-            <div key={group} style={{ width: "100%", marginBottom: 18 }}>
-              <h3
-                style={{
-                  margin: "8px 0 12px",
-                  fontSize: 16,
-                  opacity: 0.9,
-                }}
+        <TextsLayout>
+          <TextsSideNav aria-label="Seções de texto">
+            {textGroupIds.map((groupId) => (
+              <TextsNavButton
+                key={groupId}
+                type="button"
+                $active={activeTextsGroup === groupId}
+                aria-current={activeTextsGroup === groupId ? "true" : undefined}
+                onClick={() => setTextsGroup(groupId)}
               >
-                {SETTING_GROUP_LABELS[group] || group}
-              </h3>
-              {items.map((item) => {
-                const draft =
-                  settingsDrafts[item.key] !== undefined
-                    ? settingsDrafts[item.key]
-                    : item.value || "";
-                const multiline = isMultilineSetting(item);
-                return (
-                  <ItemRow key={item.key}>
-                    <div style={{ width: "100%" }}>
-                      <strong>
-                        {item.label}{" "}
-                        <span style={{ opacity: 0.65 }}>({item.key})</span>
-                      </strong>
-                      <FormGrid style={{ marginTop: 10 }}>
-                        <label className="full">
-                          Valor
-                          {multiline ? (
-                            <textarea
-                              rows={5}
-                              value={draft}
-                              onChange={(e) =>
-                                setSettingsDrafts((prev) => ({
-                                  ...prev,
-                                  [item.key]: e.target.value,
-                                }))
-                              }
-                            />
-                          ) : (
-                            <input
-                              value={draft}
-                              onChange={(e) =>
-                                setSettingsDrafts((prev) => ({
-                                  ...prev,
-                                  [item.key]: e.target.value,
-                                }))
-                              }
-                            />
-                          )}
-                        </label>
-                      </FormGrid>
-                      <div style={{ display: "flex", gap: 12, marginTop: 12 }}>
-                        <PrimaryButton
-                          type="button"
-                          disabled={loading}
-                          onClick={() => saveSettingItem(item)}
-                        >
-                          Salvar
-                        </PrimaryButton>
+                {SETTING_GROUP_LABELS[groupId] || groupId}
+              </TextsNavButton>
+            ))}
+          </TextsSideNav>
+          <TextsPanel>
+            <h3 style={{ margin: "0 0 12px", fontSize: 17 }}>
+              {SETTING_GROUP_LABELS[activeTextsGroup] || activeTextsGroup}
+            </h3>
+            <ItemList>
+              {activeTextsItems.length === 0 ? (
+                <EmptyState>Nenhum texto nesta seção.</EmptyState>
+              ) : (
+                activeTextsItems.map((item) => {
+                  const draft =
+                    settingsDrafts[item.key] !== undefined
+                      ? settingsDrafts[item.key]
+                      : item.value || "";
+                  const multiline = isMultilineSetting(item);
+                  return (
+                    <ItemRow key={item.key}>
+                      <div style={{ width: "100%" }}>
+                        <strong>
+                          {item.label}{" "}
+                          <span style={{ opacity: 0.65 }}>({item.key})</span>
+                        </strong>
+                        <FormGrid style={{ marginTop: 10 }}>
+                          <label className="full">
+                            Valor
+                            {multiline ? (
+                              <textarea
+                                rows={5}
+                                value={draft}
+                                onChange={(e) =>
+                                  setSettingsDrafts((prev) => ({
+                                    ...prev,
+                                    [item.key]: e.target.value,
+                                  }))
+                                }
+                              />
+                            ) : (
+                              <input
+                                value={draft}
+                                onChange={(e) =>
+                                  setSettingsDrafts((prev) => ({
+                                    ...prev,
+                                    [item.key]: e.target.value,
+                                  }))
+                                }
+                              />
+                            )}
+                          </label>
+                        </FormGrid>
+                        <div style={{ display: "flex", gap: 12, marginTop: 12 }}>
+                          <PrimaryButton
+                            type="button"
+                            disabled={loading}
+                            onClick={() => saveSettingItem(item)}
+                          >
+                            Salvar
+                          </PrimaryButton>
+                        </div>
                       </div>
-                    </div>
-                  </ItemRow>
-                );
-              })}
-            </div>
-          ))}
-        </ItemList>
-      </Card>
+                    </ItemRow>
+                  );
+                })
+              )}
+            </ItemList>
+          </TextsPanel>
+        </TextsLayout>
+      </TextsCard>
       ) : null}
 
       {activeTab === "media" ? (

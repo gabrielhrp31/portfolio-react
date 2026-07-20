@@ -177,3 +177,79 @@ export const SectionTitle = styled.h2`
   color: ${({ theme }) => theme.softAccent};
   margin: 0;
 `;
+
+/** Wider card used by the Textos tab (side nav + editor). */
+export const TextsCard = styled(Card)`
+  width: min(1100px, 100%);
+`;
+
+export const TextsLayout = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: start;
+
+  @media (min-width: 860px) {
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 20px;
+  }
+`;
+
+export const TextsSideNav = styled.nav`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+
+  @media (min-width: 860px) {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    overflow-x: visible;
+    position: sticky;
+    top: 64px;
+    max-height: calc(100vh - 96px);
+    overflow-y: auto;
+    padding-bottom: 0;
+  }
+`;
+
+export const TextsNavButton = styled.button`
+  cursor: pointer;
+  flex: 0 0 auto;
+  text-align: left;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+  border: 1px solid
+    ${({ theme, $active }) =>
+      $active ? theme.softAccent : `${theme.titles}44`} !important;
+  background: ${({ theme, $active }) =>
+    $active ? theme.softAccent : "transparent"};
+  color: ${({ theme, $active }) => ($active ? theme.text : theme.titles)};
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    color 0.2s ease;
+
+  @media (min-width: 860px) {
+    white-space: normal;
+    width: 100%;
+  }
+
+  &:hover {
+    border-color: ${({ theme }) => theme.softAccent} !important;
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.softAccent};
+    outline-offset: 2px;
+  }
+`;
+
+export const TextsPanel = styled.div`
+  min-width: 0;
+`;

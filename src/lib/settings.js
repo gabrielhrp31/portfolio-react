@@ -35,6 +35,18 @@ export const SETTING_GROUP_LABELS = {
   geral: "Geral",
 };
 
+/** Display order for the admin Textos side nav (site flow first). */
+export const SETTING_GROUP_ORDER = [
+  "hero",
+  "sobre",
+  "secoes",
+  "navegacao",
+  "contato",
+  "rodape",
+  "seo",
+  "geral",
+];
+
 export function buildSettingsMap(rows = []) {
   const map = {};
   for (const [key, defaults] of Object.entries(DEFAULT_SETTINGS)) {

@@ -17,12 +17,16 @@ export const PortfolioWrapper = styled.section`
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
     gap: clamp(16px, 3vw, 28px);
     align-items: stretch;
+    /* Room for hover lift so cards aren't clipped by neighbors/section */
+    padding-top: 8px;
+    padding-bottom: 4px;
   }
 
   .portfolio-spotlight {
     width: 100%;
     max-width: 100%;
     height: 100%;
+    overflow: visible;
   }
 
   @media (min-width: 1100px) {

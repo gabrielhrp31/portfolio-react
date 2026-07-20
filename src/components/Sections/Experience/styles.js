@@ -18,6 +18,12 @@ export const ExperienceWrapper = styled.section`
   .experience-spotlight {
     border-radius: 16px;
   }
+
+  .experience-spotlight:hover .experience__card,
+  .experience-spotlight:focus-within .experience__card {
+    border-color: ${({ theme }) => theme.softAccent};
+    transform: translateY(-2px);
+  }
 `;
 
 export const ExperienceItem = styled.article`
@@ -42,6 +48,8 @@ export const ExperienceItem = styled.article`
     padding: clamp(14px, 3vw, 20px);
     background: ${({ theme }) => theme.surface};
     box-shadow: ${({ theme }) => theme.shadow};
+    transition: border-color 0.35s ease, transform 0.25s ease,
+      box-shadow 0.35s ease;
   }
 
   .experience__company {

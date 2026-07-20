@@ -15,8 +15,8 @@ function Experience({ items = [] }) {
   const settings = useSiteSettings();
   const spotlight =
     currentTheme === "light"
-      ? "rgba(29, 185, 84, 0.14)"
-      : "rgba(72, 197, 88, 0.2)";
+      ? "rgba(29, 185, 84, 0.28)"
+      : "rgba(72, 197, 88, 0.38)";
   const title = settingValue(settings, "section_experience_title");
   const intro = settingValue(settings, "section_experience_intro");
   const emptyText = settingValue(settings, "section_experience_empty");

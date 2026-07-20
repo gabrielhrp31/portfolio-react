@@ -7,6 +7,8 @@
   --spotlight-color: rgba(72, 197, 88, 0.22);
 }
 
+/* Overlay sits above card content so the hover glow is visible
+   even when children use opaque backgrounds (experience / courses). */
 .card-spotlight::before {
   content: "";
   position: absolute;
@@ -19,7 +21,7 @@
   opacity: 0;
   transition: opacity 0.45s ease;
   pointer-events: none;
-  z-index: 1;
+  z-index: 3;
 }
 
 .card-spotlight:hover::before,
@@ -30,4 +32,9 @@
 .card-spotlight > * {
   position: relative;
   z-index: 2;
+}
+
+/* Portfolio cards lift on hover — don't clip the translateY. */
+.card-spotlight.portfolio-spotlight {
+  overflow: visible;
 }

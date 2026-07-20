@@ -22,8 +22,8 @@ function Courses({ items = [] }) {
   const settings = useSiteSettings();
   const spotlight =
     currentTheme === "light"
-      ? "rgba(29, 185, 84, 0.18)"
-      : "rgba(72, 197, 88, 0.25)";
+      ? "rgba(29, 185, 84, 0.3)"
+      : "rgba(72, 197, 88, 0.4)";
   const title = settingValue(settings, "section_courses_title");
   const intro = settingValue(settings, "section_courses_intro");
   const emptyText = settingValue(settings, "section_courses_empty");

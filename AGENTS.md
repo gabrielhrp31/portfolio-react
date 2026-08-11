@@ -24,6 +24,7 @@ This is a **Next.js + MySQL** personal portfolio. Standard commands live in `REA
 - Site images are configurable in `/admin` → “Imagens”. Site copy (hero, about, section titles, nav, SEO, footer, contacts) is in `/admin` → “Textos”. Defaults live in `src/lib/defaultSettings.json`.
 - Local paths (`/assets/*`, `/uploads/*`) use `next/image` optimization via `OptimizedImage`.
 - Admin uploads (`POST /api/media/upload`) store bytes in MySQL `uploaded_files` and return `/api/uploads/:id` (served by `GET /api/uploads/[id]`). This avoids Docker volume permission issues on the VPS.
+- Resume PDF: `GET /api/resume/pdf` (pdfkit + DejaVu in `public/fonts/`) builds a CV from experiences, courses (formação/cursos/certificações), and site_settings. Button lives in About (`ResumePdfButton`). Label: `cta_resume_pdf_label`.
 - In `react-icons` v5, Simple Icons no longer exports `SiLinkedin`; use `FaLinkedin` from `react-icons/fa`.
 - Hero typewriter uses React Bits `TextType` and persists completion in `sessionStorage` (`portfolio-hero-typed-v1`) so Fast Refresh/HMR does not restart or corrupt the text mid-session.
 - Animation helpers live in `src/components/react-bits/` (copied from [React Bits](https://reactbits.dev/), deps: `gsap`, `motion`).

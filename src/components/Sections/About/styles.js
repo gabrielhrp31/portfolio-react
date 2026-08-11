@@ -65,7 +65,8 @@ export const AboutContent = styled.div`
       }
     }
 
-    .linkedin-btn {
+          .linkedin-btn,
+          .resume-pdf-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -106,6 +107,23 @@ export const AboutContent = styled.div`
       &:focus-visible {
         outline: 2px solid #ffffff;
         outline-offset: 3px;
+      }
+    }
+
+    .about-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-top: 14px;
+      width: 100%;
+
+      .resume-pdf-btn {
+        margin-top: 0;
+      }
+
+      @media (min-width: 1024px) {
+        align-items: flex-start;
       }
     }
 

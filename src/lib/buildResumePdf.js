@@ -104,9 +104,6 @@ export function buildResumePdf({ settings, experiences = [], courses = [] }) {
   };
 
   const name = get("about_name") || get("hero_name") || "Currículo";
-  const headline =
-    `${get("hero_prefix")}${get("hero_name")}${get("hero_suffix")}`.trim() ||
-    "Desenvolvedor fullstack";
   const location = get("about_location");
   const english = get("about_english");
   const email = get("social_email");
@@ -122,7 +119,7 @@ export function buildResumePdf({ settings, experiences = [], courses = [] }) {
       info: {
         Title: `Currículo — ${name}`,
         Author: name,
-        Subject: "Currículo gerado a partir do portfólio",
+        Subject: "Currículo",
       },
     });
 
@@ -136,12 +133,6 @@ export function buildResumePdf({ settings, experiences = [], courses = [] }) {
 
     // Header
     doc.font("Bold").fontSize(20).fillColor("#0f1b12").text(name);
-    doc
-      .moveDown(0.2)
-      .font("Regular")
-      .fontSize(10.5)
-      .fillColor("#333333")
-      .text(headline);
 
     const contactBits = [
       location,
@@ -200,16 +191,6 @@ export function buildResumePdf({ settings, experiences = [], courses = [] }) {
         });
       }
     }
-
-    doc
-      .moveDown(1.2)
-      .font("Regular")
-      .fontSize(8)
-      .fillColor("#888888")
-      .text(
-        `Gerado em ${new Date().toLocaleDateString("pt-BR")} a partir do portfólio.`,
-        { align: "center" }
-      );
 
     doc.end();
   });

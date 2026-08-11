@@ -35,6 +35,12 @@
     "value": "Solicitar orçamento",
     "sortOrder": 130
   },
+  "cta_resume_pdf_label": {
+    "label": "CTA — texto do botão de currículo PDF",
+    "group": "hero",
+    "value": "Baixar currículo PDF",
+    "sortOrder": 135
+  },
   "social_email": {
     "label": "Social — e-mail",
     "group": "contato",

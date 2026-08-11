@@ -11,6 +11,7 @@ import OptimizedImage from "@/components/OptimizedImage";
 import { mediaAlt, mediaUrl } from "@/lib/media";
 import { FaLinkedinIn } from "react-icons/fa";
 import QuoteCta from "@/components/Contact/QuoteCta";
+import ResumePdfButton from "@/components/ResumePdfButton";
 import { useSiteSettings } from "@/components/SiteSettingsProvider";
 import {
   calculateAgeFromBirthdate,
@@ -93,7 +94,8 @@ function About({ technologies = [], media = null }) {
               <span>LinkedIn</span>
             </a>
           </Magnet>
-          <div style={{ marginTop: 14 }}>
+          <div className="about-actions">
+            <ResumePdfButton />
             <QuoteCta source="about" variant="soft" label={ctaLabel} />
           </div>
         </FadeContent>

@@ -1158,7 +1158,7 @@ export default function AdminClient({
               />
             </label>
             <label>
-              URL Demo
+              URL do site / projeto
               <input
                 value={portfolioForm.urlDemo}
                 onChange={(e) =>
@@ -1167,10 +1167,11 @@ export default function AdminClient({
                     urlDemo: e.target.value,
                   })
                 }
+                placeholder="https://..."
               />
             </label>
             <label>
-              URL Github
+              URL GitHub
               <input
                 value={portfolioForm.urlGithub}
                 onChange={(e) =>

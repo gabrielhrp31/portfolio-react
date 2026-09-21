@@ -227,6 +227,18 @@
     "value": "Em breve mais projetos em que trabalhei e dediquei meu amor e carinho para oferecer o melhor das minhas ideias...",
     "sortOrder": 600
   },
+  "portfolio_visit_label": {
+    "label": "Portfólio — link do site/projeto",
+    "group": "secoes",
+    "value": "Visitar",
+    "sortOrder": 610
+  },
+  "portfolio_github_label": {
+    "label": "Portfólio — link do GitHub",
+    "group": "secoes",
+    "value": "GitHub",
+    "sortOrder": 620
+  },
   "nav_inicio": {
     "label": "Navegação — Início",
     "group": "navegacao",

@@ -7,9 +7,14 @@ import Tecnologies from "@/components/Tecnologies";
 import ShinyText from "@/components/react-bits/ShinyText";
 import Magnet from "@/components/react-bits/Magnet";
 import OptimizedImage from "@/components/OptimizedImage";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
+import { settingValue } from "@/lib/settings";
 
 function PortfolioItem({ item }) {
   const theme = useContext(ThemeContext);
+  const settings = useSiteSettings();
+  const visitLabel = settingValue(settings, "portfolio_visit_label", "Visitar");
+  const githubLabel = settingValue(settings, "portfolio_github_label", "GitHub");
 
   return (
     <PortfolioItemWrapper className="portfolio__item">
@@ -63,7 +68,7 @@ function PortfolioItem({ item }) {
               target="_blank"
               rel="noreferrer"
             >
-              demo
+              {visitLabel}
             </a>
           </Magnet>
         ) : null}
@@ -75,7 +80,7 @@ function PortfolioItem({ item }) {
               target="_blank"
               rel="noreferrer"
             >
-              github
+              {githubLabel}
             </a>
           </Magnet>
         ) : null}

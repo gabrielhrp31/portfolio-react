@@ -137,8 +137,12 @@ O workflow grava os Secrets em `${DEPLOY_PATH}/.env.production` (chmod 600) ante
 ## 5. Runner Gitea (`act_runner`)
 
 1. Gitea Admin → Actions → Runners → criar token  
-2. Registrar runner com label `ubuntu-latest`  
-3. Habilitar Actions no repositório  
+2. Registrar runner com labels `deploy:host` e (opcional) `ubuntu-latest:host`  
+3. Este repo usa `runs-on: deploy` no workflow de deploy (job roda no host da VPS)  
+4. Habilitar Actions no repositório  
+
+O step “Install sshpass” não depende de `sudo`: no runner `:host` costuma ser root
+(sem `sudo` no PATH). Se as ferramentas já existirem, o step só confirma e segue.
 
 ### Erro `Could not resolve host: server`
 

@@ -134,6 +134,17 @@ Não é um MySQL externo da KingHost.
 
 O workflow grava os Secrets em `${DEPLOY_PATH}/.env.production` (chmod 600) antes do `docker compose up`.
 
+### Deploy leve na VPS (anti-OOM)
+
+O `scripts/deploy-remote.sh` evita matar a VPS pequena durante o `next build`:
+
+1. **Para só o `app`** antes do build (downtime curto e previsível; MySQL fica de pé)
+2. **Prune** de imagens/cache Docker (`image prune` + `builder prune`)
+3. **`compose build app`** com heap Node limitado no Dockerfile (`NODE_OPTIONS=--max-old-space-size=1536`)
+4. Sobe o app com **`up -d --no-deps`** (não recria o MySQL à toa)
+
+Não rode `docker compose down` no stack do Gitea/runner durante o deploy do portfólio.
+
 ## 5. Runner Gitea (`act_runner`)
 
 1. Gitea Admin → Actions → Runners → criar token  

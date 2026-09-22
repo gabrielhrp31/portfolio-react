@@ -2,15 +2,22 @@
 
 FROM node:20-alpine AS deps
 WORKDIR /app
+# Cap Node heap so npm ci is less likely to OOM-kill a small VPS.
+ENV NODE_OPTIONS=--max-old-space-size=1536
+ENV npm_config_fund=false
+ENV npm_config_audit=false
 COPY package.json package-lock.json ./
 RUN npm ci
 
 FROM node:20-alpine AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+# Cap Node heap so the Next.js build is less likely to OOM-kill a small VPS.
+ENV NODE_OPTIONS=--max-old-space-size=1536
+ENV npm_config_fund=false
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
 RUN npm run build
 
 FROM node:20-alpine AS runner

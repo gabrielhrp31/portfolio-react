@@ -21,6 +21,10 @@ set -a
 source "$ENV_FILE"
 set +a
 
+compose() {
+  docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" "$@"
+}
+
 echo "==> Rede Traefik"
 docker network inspect traefik >/dev/null 2>&1 || docker network create traefik
 
@@ -35,18 +39,33 @@ else
 fi
 chmod -R ug+rwX "$APP_DIR/public/uploads" 2>/dev/null || true
 
-echo "==> Docker Compose up --build"
-docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --build --remove-orphans
+# Stop only the app before build so npm/Next has RAM headroom.
+# Short, predictable downtime beats an OOM crash that kills SSH/runner.
+echo "==> Stopping app to free RAM for build"
+compose stop app >/dev/null 2>&1 || true
+
+echo "==> Freeing Docker disk/memory before build..."
+docker image prune -f || true
+docker builder prune -f --filter until=72h || true
+
+echo "==> Building app image"
+compose build app
+
+echo "==> Ensuring MySQL is up"
+compose up -d mysql
 
 echo "==> Aguardando MySQL"
 for _ in $(seq 1 40); do
-  if docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" exec -T mysql \
+  if compose exec -T mysql \
     mysqladmin ping -h localhost -uroot -p"${MYSQL_ROOT_PASSWORD}" --silent 2>/dev/null; then
     echo "MySQL OK"
     break
   fi
   sleep 3
 done
+
+echo "==> Starting app (--no-deps so MySQL is not recreated)"
+compose up -d --no-deps --remove-orphans app
 
 echo "==> Seed idempotente"
 MYSQL_NET="$(docker inspect portfolio-mysql --format '{{range $k, $v := .NetworkSettings.Networks}}{{println $k}}{{end}}' | head -n1)"
@@ -60,12 +79,13 @@ docker run --rm \
   -e "DATABASE_USER=${DATABASE_USER}" \
   -e "DATABASE_PASSWORD=${DATABASE_PASSWORD}" \
   -e "DATABASE_NAME=${DATABASE_NAME}" \
+  -e NODE_OPTIONS=--max-old-space-size=512 \
   node:20-alpine \
   sh -c 'set -e
     mkdir -p /tmp/seed-work
     cd /tmp/seed-work
     npm init -y >/dev/null 2>&1
-    npm install --no-save mysql2@3 >/dev/null
+    npm install --no-save --no-fund --no-audit mysql2@3 >/dev/null
     export NODE_PATH=/tmp/seed-work/node_modules
     node /workspace/scripts/seed.js
   '
@@ -73,5 +93,5 @@ docker run --rm \
 docker image prune -f >/dev/null || true
 
 echo "==> Status"
-docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" ps
+compose ps
 echo "Deploy OK"

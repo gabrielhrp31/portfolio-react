@@ -225,35 +225,25 @@ jobs:
           CONTACT_SMTP_SECURE: ${{ secrets.CONTACT_SMTP_SECURE }}
         run: |
           set -euo pipefail
+          export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${PATH:-}"
           REMOTE_DIR="${DEPLOY_PATH:-/opt/portfolio}"
           umask 077
-          python3 - <<'PY'
-          import os
-          from pathlib import Path
-
-          def val(key, default=""):
-              v = os.environ.get(key)
-              if v is None or v == "":
-                  return default
-              return v
-
-          lines = [
-              f"MYSQL_ROOT_PASSWORD={val('MYSQL_ROOT_PASSWORD')}",
-              f"DATABASE_NAME={val('DATABASE_NAME', 'portfolio')}",
-              f"DATABASE_USER={val('DATABASE_USER', 'portfolio')}",
-              f"DATABASE_PASSWORD={val('DATABASE_PASSWORD')}",
-              f"ADMIN_PASSWORD={val('ADMIN_PASSWORD')}",
-              f"CONTACT_SMTP_HOST={val('CONTACT_SMTP_HOST')}",
-              f"CONTACT_SMTP_PORT={val('CONTACT_SMTP_PORT', '587')}",
-              f"CONTACT_SMTP_USER={val('CONTACT_SMTP_USER')}",
-              f"CONTACT_SMTP_PASS={val('CONTACT_SMTP_PASS')}",
-              f"CONTACT_SMTP_FROM={val('CONTACT_SMTP_FROM')}",
-              f"CONTACT_SMTP_TO={val('CONTACT_SMTP_TO')}",
-              f"CONTACT_TO_EMAIL={val('CONTACT_TO_EMAIL')}",
-              f"CONTACT_SMTP_SECURE={val('CONTACT_SMTP_SECURE', 'false')}",
-          ]
-          Path("/tmp/portfolio.env.production").write_text("\n".join(lines) + "\n", encoding="utf-8")
-          PY
+          # Pure shell — Alpine act_runner host jobs have no python3.
+          {
+            printf 'MYSQL_ROOT_PASSWORD=%s\n' "${MYSQL_ROOT_PASSWORD}"
+            printf 'DATABASE_NAME=%s\n' "${DATABASE_NAME:-portfolio}"
+            printf 'DATABASE_USER=%s\n' "${DATABASE_USER:-portfolio}"
+            printf 'DATABASE_PASSWORD=%s\n' "${DATABASE_PASSWORD}"
+            printf 'ADMIN_PASSWORD=%s\n' "${ADMIN_PASSWORD}"
+            printf 'CONTACT_SMTP_HOST=%s\n' "${CONTACT_SMTP_HOST:-}"
+            printf 'CONTACT_SMTP_PORT=%s\n' "${CONTACT_SMTP_PORT:-587}"
+            printf 'CONTACT_SMTP_USER=%s\n' "${CONTACT_SMTP_USER:-}"
+            printf 'CONTACT_SMTP_PASS=%s\n' "${CONTACT_SMTP_PASS:-}"
+            printf 'CONTACT_SMTP_FROM=%s\n' "${CONTACT_SMTP_FROM:-}"
+            printf 'CONTACT_SMTP_TO=%s\n' "${CONTACT_SMTP_TO:-}"
+            printf 'CONTACT_TO_EMAIL=%s\n' "${CONTACT_TO_EMAIL:-}"
+            printf 'CONTACT_SMTP_SECURE=%s\n' "${CONTACT_SMTP_SECURE:-false}"
+          } > /tmp/portfolio.env.production
           sshpass -e scp -P "${SSH_PORT_EFFECTIVE:-22}" \
             -o StrictHostKeyChecking=accept-new \
             -o PreferredAuthentications=password \

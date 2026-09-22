@@ -141,8 +141,9 @@ O workflow grava os Secrets em `${DEPLOY_PATH}/.env.production` (chmod 600) ante
 3. Este repo usa `runs-on: deploy` no workflow de deploy (job roda no host da VPS)  
 4. Habilitar Actions no repositório  
 
-O step “Install sshpass” não depende de `sudo`: no runner `:host` costuma ser root
-(sem `sudo` no PATH). Se as ferramentas já existirem, o step só confirma e segue.
+O step “Install sshpass” detecta o gerenciador de pacotes do ambiente do job:
+`apk` (imagem Alpine do `act_runner` com label `:host`), `apt-get`, `dnf` ou `yum`.
+Se as ferramentas já existirem, o step só confirma e segue.
 
 ### Erro `Could not resolve host: server`
 

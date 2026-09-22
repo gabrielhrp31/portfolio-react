@@ -101,27 +101,52 @@ jobs:
       - name: Install sshpass
         run: |
           set -euo pipefail
-          # Host runners often have no `sudo` (already root) or tools preinstalled.
+          export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${PATH:-}"
+
+          # act_runner with ":host" often executes inside the Alpine runner image
+          # (no apt-get). Prefer tools already present; otherwise use apk/apt/yum.
           if command -v sshpass >/dev/null 2>&1 \
             && command -v rsync >/dev/null 2>&1 \
             && command -v ssh >/dev/null 2>&1; then
             echo "sshpass, rsync and ssh already available"
+            command -v sshpass; command -v rsync; command -v ssh
             exit 0
           fi
-          if ! command -v apt-get >/dev/null 2>&1; then
-            echo "apt-get not found; install sshpass openssh-client rsync on the runner host" >&2
-            exit 1
-          fi
-          if [ "$(id -u)" -eq 0 ]; then
-            apt-get update -qq
-            apt-get install -y -qq sshpass openssh-client rsync
-          elif command -v sudo >/dev/null 2>&1; then
-            sudo apt-get update -qq
-            sudo apt-get install -y -qq sshpass openssh-client rsync
+
+          run_as_root() {
+            if [ "$(id -u)" -eq 0 ]; then
+              "$@"
+            elif command -v sudo >/dev/null 2>&1; then
+              sudo "$@"
+            else
+              echo "Need root or sudo to install packages" >&2
+              return 1
+            fi
+          }
+
+          if command -v apk >/dev/null 2>&1; then
+            echo "Installing via apk (Alpine)"
+            run_as_root apk add --no-cache openssh-client rsync sshpass
+          elif command -v apt-get >/dev/null 2>&1; then
+            echo "Installing via apt-get"
+            run_as_root apt-get update -qq
+            run_as_root apt-get install -y -qq sshpass openssh-client rsync
+          elif command -v dnf >/dev/null 2>&1; then
+            echo "Installing via dnf"
+            run_as_root dnf install -y sshpass openssh-clients rsync
+          elif command -v yum >/dev/null 2>&1; then
+            echo "Installing via yum"
+            run_as_root yum install -y sshpass openssh-clients rsync
           else
-            echo "Need root or sudo to install sshpass/rsync" >&2
+            echo "No supported package manager (apk/apt/dnf/yum)." >&2
+            echo "Install sshpass, openssh-client and rsync in the runner image/host." >&2
             exit 1
           fi
+
+          command -v sshpass >/dev/null
+          command -v rsync >/dev/null
+          command -v ssh >/dev/null
+          echo "Tools ready"
 
       - name: Setup SSH (password auth)
         env:

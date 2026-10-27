@@ -68,9 +68,9 @@ function About({ technologies = [], media = null }) {
               src={profileSrc}
               alt={profileAlt}
               width={480}
-              height={480}
+              height={600}
               sizes="(max-width: 1023px) 56vw, 280px"
-              quality={82}
+              quality={72}
               priority={false}
             />
           </div>

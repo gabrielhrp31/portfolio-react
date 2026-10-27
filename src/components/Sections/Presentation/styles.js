@@ -239,24 +239,38 @@ export const TransitionLogo = styled.div`
   cursor: pointer;
   position: relative;
   z-index: 2;
-
-  background-image: url(${({ $image }) => $image});
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-
-  transition: background 0.5s;
-  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.55));
-
-  &:hover,
-  &.show {
-    background-image: url(${({ $hoverImage }) => $hoverImage});
-  }
-
   margin-left: auto;
   margin-right: auto;
   width: min(175px, 42vw, 160px);
   height: min(175px, 42vw, 160px);
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.55));
+
+  .logo-img {
+    position: absolute !important;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
+    transition: opacity 0.45s ease;
+  }
+
+  .logo-img--default {
+    opacity: 1;
+  }
+
+  .logo-img--hover {
+    opacity: 0;
+  }
+
+  &:hover .logo-img--default,
+  &.show .logo-img--default {
+    opacity: 0;
+  }
+
+  &:hover .logo-img--hover,
+  &.show .logo-img--hover {
+    opacity: 1;
+  }
 
   @media (min-width: 768px) {
     width: min(175px, 80vw);

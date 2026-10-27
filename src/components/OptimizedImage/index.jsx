@@ -38,6 +38,8 @@ export default function OptimizedImage({
 
   const safeAlt = alt ?? "";
 
+  const fetchPriority = priority ? "high" : undefined;
+
   if (fill) {
     return (
       <Image
@@ -46,6 +48,7 @@ export default function OptimizedImage({
         className={className}
         style={mergedStyle}
         priority={priority}
+        fetchPriority={fetchPriority}
         quality={quality}
         unoptimized={unoptimized}
         fill
@@ -61,6 +64,7 @@ export default function OptimizedImage({
       className={className}
       style={mergedStyle}
       priority={priority}
+      fetchPriority={fetchPriority}
       quality={quality}
       unoptimized={unoptimized}
       width={width || 800}

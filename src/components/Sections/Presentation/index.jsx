@@ -145,14 +145,15 @@ function Presentation({ media = null }) {
           fill
           priority
           sizes="100vw"
-          quality={70}
+          quality={55}
           objectFit="cover"
         />
       </div>
       <div className="hero-glitch" aria-hidden="true">
         <LetterGlitch
-          glitchSpeed={70}
-          smooth
+          glitchSpeed={120}
+          smooth={false}
+          startDelayMs={1200}
           outerVignette={false}
           centerVignette={false}
           backgroundColor="transparent"
@@ -172,11 +173,29 @@ function Presentation({ media = null }) {
           className="p-content__logo-wrap"
           onComplete={handleLogoDone}
         >
-          <TransitionLogo
-            id="logo"
-            $image={logoHero}
-            $hoverImage={logoHeroHover}
-          />
+          <TransitionLogo id="logo">
+            <OptimizedImage
+              className="logo-img logo-img--default"
+              src={logoHero}
+              alt={heroName || "Logo"}
+              width={230}
+              height={230}
+              priority
+              quality={82}
+              sizes="(max-width: 768px) 42vw, 175px"
+              objectFit="contain"
+            />
+            <OptimizedImage
+              className="logo-img logo-img--hover"
+              src={logoHeroHover}
+              alt=""
+              width={230}
+              height={230}
+              quality={82}
+              sizes="(max-width: 768px) 42vw, 175px"
+              objectFit="contain"
+            />
+          </TransitionLogo>
         </FadeContent>
 
         {hydrated && stage >= 1 ? (

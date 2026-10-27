@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { listSiteMedia, upsertSiteMediaByKey } from "@/lib/db";
 import { isAuthenticated } from "@/lib/auth";
 import { DEFAULT_MEDIA, buildMediaMap } from "@/lib/media";
+import { revalidateHome } from "@/lib/revalidateHome";
 
 export async function GET() {
   try {
@@ -38,6 +39,7 @@ export async function POST(request) {
       altText: String(body.altText ?? defaults.altText).trim(),
       sortOrder: Number(body.sortOrder ?? defaults.sortOrder),
     });
+    revalidateHome();
     return NextResponse.json(item, { status: 201 });
   } catch (error) {
     console.error(error);

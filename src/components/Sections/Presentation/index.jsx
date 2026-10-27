@@ -94,6 +94,12 @@ function Presentation({ media = null }) {
     setStage((current) => Math.max(current, 1));
   }, []);
 
+  // Logo is visible immediately (LCP); advance intro shortly after mount.
+  useEffect(() => {
+    const timer = setTimeout(handleLogoDone, 120);
+    return () => clearTimeout(timer);
+  }, [handleLogoDone]);
+
   const handleTextDone = useCallback(() => {
     try {
       sessionStorage.setItem(HERO_TYPED_KEY, "1");
@@ -144,8 +150,8 @@ function Presentation({ media = null }) {
           alt=""
           fill
           priority
-          sizes="100vw"
-          quality={55}
+          sizes="(max-width: 1200px) 100vw, 1200px"
+          quality={50}
           objectFit="cover"
         />
       </div>
@@ -164,15 +170,8 @@ function Presentation({ media = null }) {
       <div className="hero-veil" aria-hidden="true" />
 
       <div className="p-content">
-        <FadeContent
-          playOnMount
-          blur
-          duration={850}
-          delay={80}
-          yOffset={22}
-          className="p-content__logo-wrap"
-          onComplete={handleLogoDone}
-        >
+        {/* Keep LCP logo visible from first paint — opacity-0 fades delay desktop LCP. */}
+        <div className="p-content__logo-wrap">
           <TransitionLogo id="logo">
             <OptimizedImage
               className="logo-img logo-img--default"
@@ -196,7 +195,7 @@ function Presentation({ media = null }) {
               objectFit="contain"
             />
           </TransitionLogo>
-        </FadeContent>
+        </div>
 
         {hydrated && stage >= 1 ? (
           <FadeContent

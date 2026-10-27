@@ -9,7 +9,8 @@ import {
 } from "@/lib/db";
 import { buildMediaMap } from "@/lib/media";
 
-export const dynamic = "force-dynamic";
+/** Cache HTML between visits; admin APIs call revalidateHome() on writes. */
+export const revalidate = 60;
 
 async function safeList(loader, label) {
   try {

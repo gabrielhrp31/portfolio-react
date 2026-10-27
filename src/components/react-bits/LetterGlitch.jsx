@@ -1,3 +1,5 @@
+'use client';
+
 import { useRef, useEffect } from 'react';
 
 const LetterGlitch = ({
@@ -9,13 +11,18 @@ const LetterGlitch = ({
   smooth = true,
   characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$&*()-_+=/[]{};:<>.,0123456789',
   backgroundColor = 'transparent',
+  /** Defer animation start to keep Speed Index / TBT healthier on first paint. */
+  startDelayMs = 900,
 }) => {
   const canvasRef = useRef(null);
+  const containerRef = useRef(null);
   const animationRef = useRef(null);
   const letters = useRef([]);
   const grid = useRef({ columns: 0, rows: 0 });
   const context = useRef(null);
   const lastGlitchTime = useRef(Date.now());
+  const visibleRef = useRef(true);
+  const runningRef = useRef(false);
 
   const lettersAndSymbols = Array.from(characters);
 
@@ -73,33 +80,8 @@ const LetterGlitch = ({
     }));
   };
 
-  const resizeCanvas = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const parent = canvas.parentElement;
-    if (!parent) return;
-
-    const dpr = window.devicePixelRatio || 1;
-    const rect = parent.getBoundingClientRect();
-
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-
-    canvas.style.width = `${rect.width}px`;
-    canvas.style.height = `${rect.height}px`;
-
-    if (context.current) {
-      context.current.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-
-    const { columns, rows } = calculateGrid(rect.width, rect.height);
-    initializeLetters(columns, rows);
-
-    drawLetters();
-  };
-
   const drawLetters = () => {
-    if (!context.current || letters.current.length === 0) return;
+    if (!context.current || !canvasRef.current || letters.current.length === 0) return;
     const ctx = context.current;
     const { width, height } = canvasRef.current.getBoundingClientRect();
     ctx.clearRect(0, 0, width, height);
@@ -114,10 +96,37 @@ const LetterGlitch = ({
     });
   };
 
+  const resizeCanvas = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const parent = canvas.parentElement;
+    if (!parent) return;
+
+    // Cap DPR to reduce fill cost on mobile (PageSpeed main-thread).
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    const rect = parent.getBoundingClientRect();
+
+    canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+    canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+
+    canvas.style.width = `${rect.width}px`;
+    canvas.style.height = `${rect.height}px`;
+
+    if (context.current) {
+      context.current.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    const { columns, rows } = calculateGrid(rect.width, rect.height);
+    initializeLetters(columns, rows);
+
+    drawLetters();
+  };
+
   const updateLetters = () => {
     if (!letters.current || letters.current.length === 0) return;
 
-    const updateCount = Math.max(1, Math.floor(letters.current.length * 0.05));
+    // Update fewer cells per tick to cut main-thread work.
+    const updateCount = Math.max(1, Math.floor(letters.current.length * 0.025));
 
     for (let i = 0; i < updateCount; i++) {
       const index = Math.floor(Math.random() * letters.current.length);
@@ -157,47 +166,91 @@ const LetterGlitch = ({
   };
 
   const animate = () => {
-    const now = Date.now();
-    if (now - lastGlitchTime.current >= glitchSpeed) {
-      updateLetters();
-      drawLetters();
-      lastGlitchTime.current = now;
-    }
+    if (!runningRef.current) return;
+    if (visibleRef.current && !document.hidden) {
+      const now = Date.now();
+      if (now - lastGlitchTime.current >= glitchSpeed) {
+        updateLetters();
+        drawLetters();
+        lastGlitchTime.current = now;
+      }
 
-    if (smooth) {
-      handleSmoothTransitions();
+      if (smooth) {
+        handleSmoothTransitions();
+      }
     }
 
     animationRef.current = requestAnimationFrame(animate);
   };
 
+  const startLoop = () => {
+    if (runningRef.current) return;
+    runningRef.current = true;
+    lastGlitchTime.current = Date.now();
+    animationRef.current = requestAnimationFrame(animate);
+  };
+
+  const stopLoop = () => {
+    runningRef.current = false;
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+    }
+  };
+
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const container = containerRef.current;
+    if (!canvas || !container) return undefined;
 
-    context.current = canvas.getContext('2d');
+    context.current = canvas.getContext('2d', { alpha: true });
     resizeCanvas();
-    animate();
 
     let resizeTimeout;
+    let startTimer;
+    let io;
 
     const handleResize = () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
-        cancelAnimationFrame(animationRef.current);
+        stopLoop();
         resizeCanvas();
-        animate();
-      }, 100);
+        if (visibleRef.current) startLoop();
+      }, 150);
+    };
+
+    const handleVisibility = () => {
+      if (document.hidden) return;
+      lastGlitchTime.current = Date.now();
     };
 
     window.addEventListener('resize', handleResize);
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    if (typeof IntersectionObserver !== 'undefined') {
+      io = new IntersectionObserver(
+        (entries) => {
+          visibleRef.current = entries.some((e) => e.isIntersecting);
+        },
+        { threshold: 0.05 }
+      );
+      io.observe(container);
+    }
+
+    startTimer = setTimeout(() => {
+      startLoop();
+    }, Math.max(0, startDelayMs));
 
     return () => {
-      cancelAnimationFrame(animationRef.current);
+      clearTimeout(startTimer);
+      clearTimeout(resizeTimeout);
+      stopLoop();
       window.removeEventListener('resize', handleResize);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      if (io) io.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [glitchSpeed, smooth]);
+  }, [glitchSpeed, smooth, startDelayMs]);
 
   const containerStyle = {
     position: 'relative',
@@ -234,7 +287,7 @@ const LetterGlitch = ({
   };
 
   return (
-    <div style={containerStyle} className={className}>
+    <div ref={containerRef} style={containerStyle} className={className}>
       <canvas ref={canvasRef} style={canvasStyle} />
       {outerVignette && <div style={outerVignetteStyle}></div>}
       {centerVignette && <div style={centerVignetteStyle}></div>}

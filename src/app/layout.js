@@ -1,4 +1,3 @@
-import "devicon/devicon.min.css";
 import StyledComponentsRegistry from "@/lib/registry";
 import CustomThemeProvider from "@/components/CustomThemeProvider";
 import GlobalStyles from "@/styles/globalStyles";

@@ -35,14 +35,15 @@ function Services({ items = [], media = null }) {
           alt=""
           fill
           sizes="100vw"
-          quality={70}
+          quality={45}
           objectFit="cover"
         />
       </div>
       <div className="services-glitch" aria-hidden="true">
         <LetterGlitch
-          glitchSpeed={70}
-          smooth
+          glitchSpeed={140}
+          smooth={false}
+          startDelayMs={400}
           outerVignette={false}
           centerVignette={false}
           backgroundColor="transparent"

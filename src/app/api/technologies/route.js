@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createTechnology, listTechnologies } from "@/lib/db";
 import { isAuthenticated } from "@/lib/auth";
+import { revalidateHome } from "@/lib/revalidateHome";
 
 function parseBody(body) {
   const slug = String(body.slug || "")
@@ -36,7 +37,9 @@ export async function POST(request) {
     if (!data.slug) {
       return NextResponse.json({ error: "slug is required" }, { status: 400 });
     }
-    return NextResponse.json(await createTechnology(data), { status: 201 });
+    const item = await createTechnology(data);
+    revalidateHome();
+    return NextResponse.json(item, { status: 201 });
   } catch (error) {
     console.error(error);
     return NextResponse.json(

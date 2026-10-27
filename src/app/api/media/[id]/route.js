@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSiteMedia, updateSiteMedia } from "@/lib/db";
 import { isAuthenticated } from "@/lib/auth";
+import { revalidateHome } from "@/lib/revalidateHome";
 
 function parseBody(body) {
   return {
@@ -42,14 +43,14 @@ export async function PUT(request, { params }) {
     if (!data.url) {
       return NextResponse.json({ error: "url is required" }, { status: 400 });
     }
-    return NextResponse.json(
-      await updateSiteMedia(id, {
-        label: data.label || existing.label,
-        url: data.url,
-        altText: data.altText,
-        sortOrder: data.sortOrder || existing.sortOrder,
-      })
-    );
+    const item = await updateSiteMedia(id, {
+      label: data.label || existing.label,
+      url: data.url,
+      altText: data.altText,
+      sortOrder: data.sortOrder || existing.sortOrder,
+    });
+    revalidateHome();
+    return NextResponse.json(item);
   } catch (error) {
     console.error(error);
     return NextResponse.json(

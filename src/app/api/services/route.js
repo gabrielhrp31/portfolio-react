@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createService, listServices } from "@/lib/db";
 import { isAuthenticated } from "@/lib/auth";
+import { revalidateHome } from "@/lib/revalidateHome";
 
 function parseBody(body) {
   return {
@@ -36,6 +37,7 @@ export async function POST(request) {
         { status: 400 }
       );
     }
+    revalidateHome();
     return NextResponse.json(await createService(data), { status: 201 });
   } catch (error) {
     console.error(error);

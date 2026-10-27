@@ -14,7 +14,8 @@ const nextConfig = {
   serverExternalPackages: ["pdfkit"],
   images: {
     formats: ["image/avif", "image/webp"],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    // Cap at 1200 — hero/services use sizes max 1200px (desktop PageSpeed).
+    deviceSizes: [640, 750, 828, 1080, 1200],
     imageSizes: [64, 96, 128, 256, 384],
     // Remote hosts are rendered with unoptimized next/image (see OptimizedImage).
     // Local /assets and /uploads go through the built-in AVIF/WebP optimizer.

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createCourse, listCourses } from "@/lib/db";
 import { isAuthenticated } from "@/lib/auth";
+import { revalidateHome } from "@/lib/revalidateHome";
 
 function parseBody(body) {
   return {
@@ -37,7 +38,9 @@ export async function POST(request) {
     if (!data.title) {
       return NextResponse.json({ error: "title is required" }, { status: 400 });
     }
-    return NextResponse.json(await createCourse(data), { status: 201 });
+    const item = await createCourse(data);
+    revalidateHome();
+    return NextResponse.json(item, { status: 201 });
   } catch (error) {
     console.error(error);
     return NextResponse.json(

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { listSiteSettings, upsertSiteSettingByKey } from "@/lib/db";
 import { isAuthenticated } from "@/lib/auth";
 import { DEFAULT_SETTINGS, buildSettingsMap } from "@/lib/settings";
+import { revalidateHome } from "@/lib/revalidateHome";
 
 export async function GET() {
   try {
@@ -41,6 +42,7 @@ export async function POST(request) {
       value: String(body.value ?? defaults.value),
       sortOrder: Number(body.sortOrder ?? defaults.sortOrder),
     });
+    revalidateHome();
     return NextResponse.json(item, { status: 201 });
   } catch (error) {
     console.error(error);

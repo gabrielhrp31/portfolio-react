@@ -4,6 +4,7 @@ import {
   listPortfolioItems,
 } from "@/lib/db";
 import { isAuthenticated } from "@/lib/auth";
+import { revalidateHome } from "@/lib/revalidateHome";
 
 function parseBody(body) {
   const technologies =
@@ -57,6 +58,7 @@ export async function POST(request) {
       );
     }
     const item = await createPortfolioItem(data);
+    revalidateHome();
     return NextResponse.json(item, { status: 201 });
   } catch (error) {
     console.error(error);

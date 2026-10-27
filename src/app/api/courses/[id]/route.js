@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { deleteCourse, getCourse, updateCourse } from "@/lib/db";
 import { isAuthenticated } from "@/lib/auth";
+import { revalidateHome } from "@/lib/revalidateHome";
 
 function parseBody(body) {
   return {
@@ -29,7 +30,9 @@ export async function PUT(request, { params }) {
     if (!data.title) {
       return NextResponse.json({ error: "title is required" }, { status: 400 });
     }
-    return NextResponse.json(await updateCourse(id, data));
+    const item = await updateCourse(id, data);
+    revalidateHome();
+    return NextResponse.json(item);
   } catch (error) {
     console.error(error);
     return NextResponse.json(
@@ -49,6 +52,7 @@ export async function DELETE(_request, { params }) {
     if (!deleted) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
+    revalidateHome();
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error(error);

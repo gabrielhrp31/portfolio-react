@@ -34,8 +34,8 @@ function Services({ items = [], media = null }) {
           src={bgImage}
           alt=""
           fill
-          sizes="100vw"
-          quality={45}
+          sizes="(max-width: 1200px) 100vw, 1200px"
+          quality={50}
           objectFit="cover"
         />
       </div>

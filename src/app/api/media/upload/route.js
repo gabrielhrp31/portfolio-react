@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import path from "path";
 import { isAuthenticated } from "@/lib/auth";
 import { createUploadedFile } from "@/lib/db";
+import { revalidateHome } from "@/lib/revalidateHome";
 
 const ALLOWED_TYPES = new Set([
   "image/jpeg",
@@ -82,6 +83,7 @@ export async function POST(request) {
     });
 
     // URL is served by GET /api/uploads/:id (MySQL-backed — no Docker volume needed).
+    revalidateHome();
     return NextResponse.json(
       { url: saved.url, id: saved.id, filename: saved.filename },
       { status: 201 }

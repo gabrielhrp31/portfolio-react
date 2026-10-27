@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSiteSetting, updateSiteSetting } from "@/lib/db";
 import { isAuthenticated } from "@/lib/auth";
+import { revalidateHome } from "@/lib/revalidateHome";
 
 function parseBody(body) {
   return {
@@ -39,6 +40,7 @@ export async function PUT(request, { params }) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
     const data = parseBody(await request.json());
+    revalidateHome();
     return NextResponse.json(
       await updateSiteSetting(id, {
         label: data.label || existing.label,

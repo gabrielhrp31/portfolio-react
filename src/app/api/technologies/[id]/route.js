@@ -5,6 +5,7 @@ import {
   updateTechnology,
 } from "@/lib/db";
 import { isAuthenticated } from "@/lib/auth";
+import { revalidateHome } from "@/lib/revalidateHome";
 
 function parseBody(body) {
   const slug = String(body.slug || "")
@@ -48,7 +49,9 @@ export async function PUT(request, { params }) {
     if (!data.slug) {
       return NextResponse.json({ error: "slug is required" }, { status: 400 });
     }
-    return NextResponse.json(await updateTechnology(id, data));
+    const item = await updateTechnology(id, data);
+    revalidateHome();
+    return NextResponse.json(item);
   } catch (error) {
     console.error(error);
     return NextResponse.json(
@@ -68,6 +71,7 @@ export async function DELETE(_request, { params }) {
     if (!deleted) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
+    revalidateHome();
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error(error);
